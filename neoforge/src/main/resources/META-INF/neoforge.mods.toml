@@ -1,0 +1,38 @@
+modLoader="javafml"
+loaderVersion="[1,)"
+license="All Rights Reserved"
+
+[[mods]]
+modId="primordial"
+version="2.0.0-neo-dev"
+displayName="Primordial NeoForge Migration Scaffold"
+authors="空之律者-西琳大人"
+description='''NeoForge 1.21.1 migration scaffold. Gameplay systems have not been ported yet.'''
+
+[[dependencies.primordial]]
+modId="neoforge"
+type="required"
+versionRange="[21.1.264,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.primordial]]
+modId="minecraft"
+type="required"
+versionRange="[1.21.1,1.21.2)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.primordial]]
+modId="projecte"
+type="required"
+versionRange="[1.1.0,)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.primordial]]
+modId="curios"
+type="required"
+versionRange="[9.5.1,)"
+ordering="AFTER"
+side="BOTH"

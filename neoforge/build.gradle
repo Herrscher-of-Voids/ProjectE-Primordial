@@ -1,0 +1,54 @@
+plugins {
+    id 'java-library'
+    id 'net.neoforged.moddev' version '2.0.148'
+}
+
+version = project.mod_version
+group = project.mod_group_id
+
+base {
+    archivesName = project.mod_id
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+repositories {
+    maven { name = 'CurseMaven'; url = 'https://www.cursemaven.com' }
+    maven { name = 'Curios'; url = 'https://maven.theillusivec4.top/' }
+}
+
+dependencies {
+    runtimeOnly "curse.maven:projecte-226410:${project.projecte_file_id}"
+    runtimeOnly "top.theillusivec4.curios:curios-neoforge:${project.curios_version}"
+}
+
+neoForge {
+    version = project.neo_version
+
+    runs {
+        client {
+            client()
+            gameDirectory = project.file('run/client')
+        }
+
+        server {
+            server()
+            programArgument '--nogui'
+            gameDirectory = project.file('run/server')
+        }
+
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+        }
+    }
+
+    mods {
+        primordial {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
