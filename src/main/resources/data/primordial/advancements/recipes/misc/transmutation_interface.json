@@ -1,0 +1,18 @@
+{
+  "_comment": "变更记录 #1 2026-10-14 22:24:50 · 2.0.0：玩家获得转化桌后解锁转化接口的原版配方书条目；配方奖励触发时与已有原版惯例相同，不发放物品或 EMC。",
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_transmutation_table": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [{ "items": ["projecte:transmutation_table"] }]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": { "recipe": "primordial:transmutation_interface" }
+    }
+  },
+  "requirements": [["has_transmutation_table", "has_the_recipe"]],
+  "rewards": { "recipes": ["primordial:transmutation_interface"] }
+}

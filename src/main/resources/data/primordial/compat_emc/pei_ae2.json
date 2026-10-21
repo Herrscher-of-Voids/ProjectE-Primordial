@@ -1,0 +1,34 @@
+{
+  "comment": "Set defaults conversions for Applied Energistics; Change #1 2026-10-14 21:10:41: Import the published Forge 1.20.1/7.2.5 defaults without changing prices or conversion quantities. NativeCompatEmcMapper applies these after Expanded Equivalence supplements, before native datapack/admin overrides; missing mods/IDs are skipped. Special machine recipe mapper code is not included.",
+  "values": {
+    "before": {
+      "ae2:certus_quartz_crystal": 256
+    },
+    "conversion": [
+      {
+        "ingredients": [
+          "ae2:certus_quartz_crystal"
+        ],
+        "output": "ae2:charged_certus_quartz_crystal"
+      },
+      {
+        "count": 2,
+        "ingredients": [
+          "ae2:charged_certus_quartz_crystal",
+          "#forge:dusts/redstone",
+          "minecraft:quartz"
+        ],
+        "output": "ae2:fluix_dust"
+      }
+    ]
+  },
+  "required_mod": "ae2",
+  "source": {
+    "name": "ProjectE Integration",
+    "version": "1.20.1-7.2.5",
+    "url": "https://github.com/TagnumElite/ProjectE-Integration",
+    "jar_resource": "data/ae2/pe_custom_conversions/ae2_default.json",
+    "sha256": "a6bdd22c08d53ffef351c669f307e1f4c86a1b63c578ed9eac5f4a41d53eae7f",
+    "license": "MIT; META-INF/licenses/ProjectE-Integration-LICENSE.txt"
+  }
+}

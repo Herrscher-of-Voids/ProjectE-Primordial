@@ -1,0 +1,43 @@
+{
+  "comment": "Default conversions for Blue Skies; Change #1 2026-10-14 21:10:41: Import the published Forge 1.20.1/7.2.5 defaults without changing prices or conversion quantities. NativeCompatEmcMapper applies these after Expanded Equivalence supplements, before native datapack/admin overrides; missing mods/IDs are skipped. Special machine recipe mapper code is not included.",
+  "values": {
+    "before": {
+      "blue_skies:horizofin_tunid": 64,
+      "blue_skies:charscale_moki": 64,
+      "blue_skies:municipal_monkfish": 64,
+      "blue_skies:grittle_flatfish": 64,
+      "blue_skies:monitor_tail": 64,
+      "blue_skies:venison": 64,
+      "blue_skies:carabeef": 64,
+      "blue_skies:black_brewberry": 32,
+      "blue_skies:pink_brewberry": 32,
+      "blue_skies:brewberry": 32,
+      "blue_skies:crescent_fruit": 32,
+      "blue_skies:cherry": 16,
+      "blue_skies:raw_charoite": 128,
+      "blue_skies:raw_aquite": 128,
+      "blue_skies:raw_falsite": 128,
+      "blue_skies:raw_horizonite": 128,
+      "blue_skies:raw_ventium": 128,
+      "blue_skies:diopside_gem": 96,
+      "blue_skies:aquatic_arc": 96,
+      "blue_skies:pyrope_gem": 96,
+      "blue_skies:moonstone_shard": 96,
+      "blue_skies:pearl": 128,
+      "blue_skies:soul_fragment": 156,
+      "blue_skies:bug_guts": 1,
+      "blue_skies:fox_pelt": 8,
+      "blue_skies:azulfo_horn": 24,
+      "blue_skies:snowcap_pinhead": 1
+    }
+  },
+  "required_mod": "blue_skies",
+  "source": {
+    "name": "ProjectE Integration",
+    "version": "1.20.1-7.2.5",
+    "url": "https://github.com/TagnumElite/ProjectE-Integration",
+    "jar_resource": "data/blue_skies/pe_custom_conversions/blue_skies_default.json",
+    "sha256": "5fbc0e77bc0f774ffb777f9dd87aeab2677c06638cebbd1cc0b5237e0927e3d0",
+    "license": "MIT; META-INF/licenses/ProjectE-Integration-LICENSE.txt"
+  }
+}

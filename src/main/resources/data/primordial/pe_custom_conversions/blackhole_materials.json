@@ -1,0 +1,70 @@
+{
+  "comment": "2026-10-14 13:36:00: Black-hole material price ladder. Primordial is 3,733,899 EMC; each ordered tier doubles the previous material's total EMC. Collector target selection order matches the values. Fixed values are applied after the conversion graph so recipe propagation cannot flatten the ladder.; Change #2 2026-10-14 14:40:00: Each tier consumes only the preceding tier and the collector pays their positive EMC difference. Historical fixed prices remain unchanged.",
+  "values": {
+    "after": {
+      "primordial:blackhole_material_primordial": 3733899,
+      "primordial:blackhole_material_stellar": 7467798,
+      "primordial:blackhole_material_intermediate": 14935596,
+      "primordial:blackhole_material_supermassive": 29871192,
+      "primordial:blackhole_material_ultramassive": 59742384,
+      "primordial:blackhole_material_schwarzschild": 119484768,
+      "primordial:blackhole_material_reissner_nordstrom": 238969536,
+      "primordial:blackhole_material_kerr": 477939072,
+      "primordial:blackhole_material_kerr_newman": 955878144
+    }
+  },
+  "groups": {
+    "blackhole_collector_upgrade": {
+      "conversions": [
+        {
+          "output": "primordial:blackhole_material_stellar",
+          "ingredients": [
+            "primordial:blackhole_material_primordial"
+          ]
+        },
+        {
+          "output": "primordial:blackhole_material_intermediate",
+          "ingredients": [
+            "primordial:blackhole_material_stellar"
+          ]
+        },
+        {
+          "output": "primordial:blackhole_material_supermassive",
+          "ingredients": [
+            "primordial:blackhole_material_intermediate"
+          ]
+        },
+        {
+          "output": "primordial:blackhole_material_ultramassive",
+          "ingredients": [
+            "primordial:blackhole_material_supermassive"
+          ]
+        },
+        {
+          "output": "primordial:blackhole_material_schwarzschild",
+          "ingredients": [
+            "primordial:blackhole_material_ultramassive"
+          ]
+        },
+        {
+          "output": "primordial:blackhole_material_reissner_nordstrom",
+          "ingredients": [
+            "primordial:blackhole_material_schwarzschild"
+          ]
+        },
+        {
+          "output": "primordial:blackhole_material_kerr",
+          "ingredients": [
+            "primordial:blackhole_material_reissner_nordstrom"
+          ]
+        },
+        {
+          "output": "primordial:blackhole_material_kerr_newman",
+          "ingredients": [
+            "primordial:blackhole_material_kerr"
+          ]
+        }
+      ]
+    }
+  }
+}

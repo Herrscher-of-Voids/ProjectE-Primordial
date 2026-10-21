@@ -1,0 +1,20 @@
+{
+  "comment": "Default conversions for Allthemodium; Change #1 2026-10-14 21:10:41: Import the published Forge 1.20.1/7.2.5 defaults without changing prices or conversion quantities. NativeCompatEmcMapper applies these after Expanded Equivalence supplements, before native datapack/admin overrides; missing mods/IDs are skipped. Special machine recipe mapper code is not included.",
+  "values": {
+    "before": {
+      "allthemodium:allthemodium_ingot": 122800,
+      "allthemodium:ancient_cavevines_plant": 16,
+      "allthemodium:ancient_soulberries": 16,
+      "allthemodium:ancient_stone": 8
+    }
+  },
+  "required_mod": "allthemodium",
+  "source": {
+    "name": "ProjectE Integration",
+    "version": "1.20.1-7.2.5",
+    "url": "https://github.com/TagnumElite/ProjectE-Integration",
+    "jar_resource": "data/allthemodium/pe_custom_conversions/allthemodium_default.json",
+    "sha256": "d25cbfdf4f83d6a2e8a23a8497cc73346bfe254b70aac8feaa9a5fc22419897e",
+    "license": "MIT; META-INF/licenses/ProjectE-Integration-LICENSE.txt"
+  }
+}

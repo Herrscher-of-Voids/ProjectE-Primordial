@@ -1,0 +1,20 @@
+{
+  "comment": "default conversions for Mystical Agriculture; Change #1 2026-10-14 21:10:41: Import the published Forge 1.20.1/7.2.5 defaults without changing prices or conversion quantities. NativeCompatEmcMapper applies these after Expanded Equivalence supplements, before native datapack/admin overrides; missing mods/IDs are skipped. Special machine recipe mapper code is not included.",
+  "values": {
+    "before": {
+      "mysticalagriculture:inferium_essence": 32,
+      "mysticalagriculture:prosperity_shard": 128,
+      "mysticalagriculture:soulium_dust": 128,
+      "mysticalagriculture:soulstone_cobble": 16
+    }
+  },
+  "required_mod": "mysticalagriculture",
+  "source": {
+    "name": "ProjectE Integration",
+    "version": "1.20.1-7.2.5",
+    "url": "https://github.com/TagnumElite/ProjectE-Integration",
+    "jar_resource": "data/mysticalagriculture/pe_custom_conversions/mysticalagriculture_default.json",
+    "sha256": "dc442c562d0e0774bfc152ad163c3f570b09c38da2117f5b356cbd82e0bb7f5a",
+    "license": "MIT; META-INF/licenses/ProjectE-Integration-LICENSE.txt"
+  }
+}

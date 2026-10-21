@@ -1,0 +1,26 @@
+{
+  "comment": "Default conversions for Natures Aura; Change #1 2026-10-14 21:10:41: Import the published Forge 1.20.1/7.2.5 defaults without changing prices or conversion quantities. NativeCompatEmcMapper applies these after Expanded Equivalence supplements, before native datapack/admin overrides; missing mods/IDs are skipped. Special machine recipe mapper code is not included.",
+  "values": {
+    "before": {
+      "naturesaura:end_flower": 32,
+      "naturesaura:gold_leaf": 2
+    },
+    "conversion": [
+      {
+        "ingredients": [
+          "naturesaura:bottle_two_the_rebottling"
+        ],
+        "output": "naturesaura:aura_bottle"
+      }
+    ]
+  },
+  "required_mod": "naturesaura",
+  "source": {
+    "name": "ProjectE Integration",
+    "version": "1.20.1-7.2.5",
+    "url": "https://github.com/TagnumElite/ProjectE-Integration",
+    "jar_resource": "data/naturesaura/pe_custom_conversions/naturesaura_default.json",
+    "sha256": "e212261db356233d252ee2926e08f35d2587e562ed0f42da91a0edf22a7d1d14",
+    "license": "MIT; META-INF/licenses/ProjectE-Integration-LICENSE.txt"
+  }
+}

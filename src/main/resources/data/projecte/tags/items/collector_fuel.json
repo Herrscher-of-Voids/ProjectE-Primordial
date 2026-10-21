@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "_comment": "2026-10-14 05:54:38: Primordial black hole is the collector upgrading input; Kerr-Newman is the terminal fuel entry so ProjectE accepts the input. The other seven targets are selected by the collector menu and must not become variant-to-variant fuel routes.; Change #2 2026-10-14 14:40:00: All nine tiers are now collector fuels. FuelMapper isolates their sequential chain from ordinary ProjectE fuels; produced black holes remain in the output slot.",
+  "values": [
+    "primordial:blackhole_material_primordial",
+    "primordial:blackhole_material_stellar",
+    "primordial:blackhole_material_intermediate",
+    "primordial:blackhole_material_supermassive",
+    "primordial:blackhole_material_ultramassive",
+    "primordial:blackhole_material_schwarzschild",
+    "primordial:blackhole_material_reissner_nordstrom",
+    "primordial:blackhole_material_kerr",
+    "primordial:blackhole_material_kerr_newman"
+  ]
+}

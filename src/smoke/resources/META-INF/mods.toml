@@ -1,0 +1,27 @@
+# 隔离 Forge 运行探针，仅由 smokeJar 打包，永不随主模组发布。
+# 变更记录 #1 2026-09-16 20:05:25（1.0.0-create-kinetics）：新增真实无 Mek 启动与 Create 网络回归入口。
+modLoader="javafml"
+loaderVersion="[47,)"
+license="All Rights Reserved"
+[[mods]]
+modId="primordial_smoke"
+version="1.0.0"
+displayName="Primordial isolated runtime verification"
+[[dependencies.primordial_smoke]]
+modId="primordial"
+mandatory=true
+versionRange="[1.0.0,)"
+ordering="AFTER"
+side="SERVER"
+[[dependencies.primordial_smoke]]
+modId="forge"
+mandatory=true
+versionRange="[47,)"
+ordering="NONE"
+side="SERVER"
+[[dependencies.primordial_smoke]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.20.1,1.21)"
+ordering="NONE"
+side="SERVER"

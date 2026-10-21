@@ -1,0 +1,18 @@
+{
+  "comment": "Default conversions for EvilCraft; Change #1 2026-10-14 21:10:41: Import the published Forge 1.20.1/7.2.5 defaults without changing prices or conversion quantities. NativeCompatEmcMapper applies these after Expanded Equivalence supplements, before native datapack/admin overrides; missing mods/IDs are skipped. Special machine recipe mapper code is not included.",
+  "values": {
+    "before": {
+      "FLUID|evilcraft:blood": 1,
+      "FLUID|evilcraft:blood_flowing": 1
+    }
+  },
+  "required_mod": "evilcraft",
+  "source": {
+    "name": "ProjectE Integration",
+    "version": "1.20.1-7.2.5",
+    "url": "https://github.com/TagnumElite/ProjectE-Integration",
+    "jar_resource": "data/evilcraft/pe_custom_conversions/evilcraft_default.json",
+    "sha256": "1dd540f10e36d4619c418f5dfb846c87d88defcd2e5306c44a2d34c278be155c",
+    "license": "MIT; META-INF/licenses/ProjectE-Integration-LICENSE.txt"
+  }
+}

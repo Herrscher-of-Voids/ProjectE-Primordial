@@ -1,0 +1,19 @@
+{
+  "comment": "Default conversions for Alex's Caves; Change #1 2026-10-14 21:10:41: Import the published Forge 1.20.1/7.2.5 defaults without changing prices or conversion quantities. NativeCompatEmcMapper applies these after Expanded Equivalence supplements, before native datapack/admin overrides; missing mods/IDs are skipped. Special machine recipe mapper code is not included.",
+  "values": {
+    "before": {
+      "alexscaves:galena": 4,
+      "alexscaves:raw_azure_neodymium": 32,
+      "alexscaves:raw_scarlet_neodymium": 32
+    }
+  },
+  "required_mod": "alexscaves",
+  "source": {
+    "name": "ProjectE Integration",
+    "version": "1.20.1-7.2.5",
+    "url": "https://github.com/TagnumElite/ProjectE-Integration",
+    "jar_resource": "data/alexscaves/pe_custom_conversions/alexscaves_default.json",
+    "sha256": "f2f630389e7c2fb691e54657450bec87c36cb3f0d7d10d7ff072940a48214770",
+    "license": "MIT; META-INF/licenses/ProjectE-Integration-LICENSE.txt"
+  }
+}

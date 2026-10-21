@@ -1,0 +1,40 @@
+{
+  "comment": "default conversions for immersive engineering; Change #1 2026-10-14 21:10:41: Import the published Forge 1.20.1/7.2.5 defaults without changing prices or conversion quantities. NativeCompatEmcMapper applies these after Expanded Equivalence supplements, before native datapack/admin overrides; missing mods/IDs are skipped. Special machine recipe mapper code is not included.",
+  "values": {
+    "before": {
+      "#forge:dusts/nitrate": 8,
+      "#forge:dusts/sulfur": 8,
+      "#forge:dusts/wood": 1,
+      "#forge:fiber_hemp": 4
+    },
+    "conversion": [
+      {
+        "ingredients": {
+          "#minecraft:planks": 8
+        },
+        "output": "immersiveengineering:treated_wood_horizontal"
+      },
+      {
+        "ingredients": {
+          "#minecraft:planks": 8
+        },
+        "output": "immersiveengineering:treated_wood_vertical"
+      },
+      {
+        "ingredients": {
+          "#minecraft:planks": 8
+        },
+        "output": "immersiveengineering:treated_wood_packaged"
+      }
+    ]
+  },
+  "required_mod": "immersiveengineering",
+  "source": {
+    "name": "ProjectE Integration",
+    "version": "1.20.1-7.2.5",
+    "url": "https://github.com/TagnumElite/ProjectE-Integration",
+    "jar_resource": "data/immersiveengineering/pe_custom_conversions/immersiveengineering_default.json",
+    "sha256": "6d49963faec659a48b8165d8ac50dd78464a444fa7205c49d96eda5e8fed9083",
+    "license": "MIT; META-INF/licenses/ProjectE-Integration-LICENSE.txt"
+  }
+}

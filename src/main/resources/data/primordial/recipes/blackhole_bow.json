@@ -1,0 +1,41 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "ABC",
+    "DPE",
+    "FGH"
+  ],
+  "key": {
+    "A": {
+      "item": "primordial:blackhole_material_stellar"
+    },
+    "B": {
+      "item": "primordial:blackhole_material_intermediate"
+    },
+    "C": {
+      "item": "primordial:blackhole_material_supermassive"
+    },
+    "D": {
+      "item": "primordial:blackhole_material_ultramassive"
+    },
+    "E": {
+      "item": "primordial:blackhole_material_schwarzschild"
+    },
+    "F": {
+      "item": "primordial:blackhole_material_kerr"
+    },
+    "G": {
+      "item": "primordial:blackhole_material_reissner_nordstrom"
+    },
+    "H": {
+      "item": "primordial:blackhole_material_kerr_newman"
+    },
+    "P": {
+      "item": "minecraft:bow"
+    }
+  },
+  "result": {
+    "item": "primordial:blackhole_bow"
+  }
+}

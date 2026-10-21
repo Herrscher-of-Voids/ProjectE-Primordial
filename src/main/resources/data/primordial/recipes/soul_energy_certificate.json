@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [{"type": "primordial:knowledge_required"}, {"type": "forge:mod_loaded", "modid": "goety"}],
+  "pattern": ["GPG", "DXD", "GPG"],
+  "key": {
+    "G": {"item": "minecraft:gold_ingot"}, "P": {"item": "minecraft:paper"},
+    "D": {"item": "projecte:dark_matter"}, "X": {"item": "minecraft:soul_sand"}
+  },
+  "result": {"item": "primordial:soul_energy_certificate"}
+}

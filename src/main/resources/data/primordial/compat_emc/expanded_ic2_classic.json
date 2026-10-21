@@ -1,0 +1,20 @@
+{
+  "comment": "Change #1 2026-10-14 21:10:41: Independently recorded item/tag IDs and default numerical prices from Expanded Equivalence 1.19.2. No upstream Java/JavaScript is shipped. Lower-priority supplements; ProjectE Integration 1.20.1, native datapacks and administrator overrides win. Missing IDs are skipped, without guessing replacements.",
+  "required_mod": "ic2",
+  "source": {
+    "name": "Expanded Equivalence",
+    "version": "1.19.2",
+    "commit": "d34ec7f42ad214c62bf98e38b1433d458822e7af",
+    "url": "https://github.com/dragon-forge/ExpandedEquivalence/blob/1.19.2/src/main/resources/data/expequiv/expequiv_mappers/ic2_classic.js",
+    "scope": "numeric base-price observations only"
+  },
+  "values": {
+    "before": {
+      "ic2:sticky_resin": 32,
+      "ic2:coffee_beans": 24,
+      "ic2:uumatter": 910,
+      "ic2:ore_uranium": 4096,
+      "ic2:terrawart": 64
+    }
+  }
+}

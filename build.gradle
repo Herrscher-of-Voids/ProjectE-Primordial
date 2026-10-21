@@ -1,0 +1,206 @@
+plugins {
+    id 'eclipse'
+    id 'net.minecraftforge.gradle' version '6.0.54'
+}
+
+// 变更记录 #2（2026-09-13）：加入 ProjectE 1.20.1-PE1.0.1 编译依赖，供 BigInteger EMC capability 与 IEMCProxy 使用。
+
+/*
+ * 【文件职责】Forge 1.20.1 构建、可选模组 API 编译与 JUnit 行为验证；成品不内嵌可选模组。
+ * 【变更记录 #3】2026-09-14 00:55:10（第 3 次备注 · 1.0.0-stage5）
+ * - 删除：无；现有 ProjectE/Curios 依赖和 Java 17 工具链保留。
+ * - 新增：固定 Mekanism 10.4.16.80、AE2 15.4.10、Titanium 3.8.34 编译/测试依赖，以及 JUnit/Mockito。
+ * - 修改：为 Windows 中文路径的 JDK 17 测试 classpath 生成 URI 转义清单，避免 @argfile 按系统编码错误读取路径。
+ * - 用途：compileOnly 保持生产运行的可选依赖；测试清单位于 Gradle 缓存，仅引用原编译产物，不复制第三方类进成品。
+ */
+
+/*
+ * 【变更记录 #5】2026-09-15 12:08:58（第 5 次备注 · 1.0.0-configurator-fixes）
+ * - 删除：无。
+ * - 新增：IPN 1.10.20 与 Mouse Tweaks 2.25.1 编译依赖，仅用于官方界面忽略注解。
+ * - 修改：两项依赖不传递、不打包，运行时未安装对应模组也不要求提供注解类。
+ * - 用途：三种配置器菜单/屏幕排除背包整理和鼠标批量搬运；继续使用 Forge 1.20.1 和 Java 17。
+ */
+/*
+ * 【变更记录 #6】2026-09-15 13:40:58（第 6 次备注 · 1.0.0-thermal-item-overflow）
+ * - 删除：无。
+ * - 新增：固定 CoFH Core 11.0.2.56（Modrinth kglS53Hd）的 testImplementation 依赖。
+ * - 修改：仅在测试 JVM 反混淆并使用玩家同版库存实现，不添加生产编译或运行依赖。
+ * - 用途：重现热力槽位整数溢出，并验证补充、固定模式和 EMC 结算；成品不打包 CoFH 类。
+ */
+/*
+ * 【变更记录 #7】2026-09-16 19:46:19（第 7 次备注 · 1.0.0-review-ready）
+ * - 删除：仅凭测试清单JAR内容判定是否需要重跑测试的条件。
+ * - 新增：真实测试运行类路径内容指纹和Curios API测试依赖。
+ * - 修改：Windows中文路径仍使用URI清单，类文件变化会重新执行JUnit。
+ * - 用途：验证护符入口及新知识规则，防止旧测试结果被误报为本次验证结果。
+ */
+/*
+ * 【变更记录 #8】2026-09-16 19:59:10（第 8 次备注 · 1.0.0-create-kinetics）
+ * - 删除：无。
+ * - 新增：Create 6.0.8 可选编译依赖及动力网络 Mixin 清单。
+ * - 修改：只在编译和测试时使用 Create，不把第三方类打进成品。
+ * - 用途：按实际动力网络 API 供给转速和应力；未安装 Create 时跳过伪目标 Mixin。
+ */
+/*
+ * 【变更记录 #9】2026-09-16 20:37:07（第 9 次备注 · 1.0.0-create-kinetics）
+ * - 删除：无。
+ * - 新增：Ponder 1.0.91 编译支持、Create 官方 Maven 源和独立 smoke sourceSet/JAR 反混淆任务。
+ * - 修改：测试探针仅进入 primordial-smoke.jar；正式 primordial-1.0.0.jar 不包含探针或第三方类。
+ * - 用途：用实际发布格式 JAR 在 Java 17/Forge 47.4.0 隔离环境验证启动和原生动力行为。
+ */
+// 【变更记录 #10】2026-10-02 14:20:00（第 10 次备注 · 1.2.0 核心交易重构起始）
+// - 删除：无；保留 Forge 1.20.1 与 Java 17 构建基线。
+// - 新增：将项目版本切换为 1.2.0，作为转化桌核心交易、凭证规则和后续 NeoForge 双线工作的开发版本。
+// - 修改：Gradle 生成的 JAR、Manifest Implementation-Version 和 mods.toml 的 ${file.jarVersion} 统一使用 1.2.0。
+// - 用途：为本轮跨模块功能建立独立版本边界；不宣称 1.2.0 功能已全部实现。
+// 【变更记录 #14】2026-10-14 22:24:50（第 14 次备注 · 2.0.0 发布整理）
+// - 删除：开发版本 1.2.0；新增：用户确认的 2.0.0 正式版本标识。
+// - 修改：JAR 文件名、Manifest 与 Forge 动态版本一并由 version 提供。
+// - 用途：让游戏内版本和本次更新日志一致，历史修订记录与模组 ID 保留。
+version = '2.0.0'
+group = 'com.primordial'
+base { archivesName = 'primordial' }
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+minecraft {
+    mappings channel: 'official', version: '1.20.1'
+    copyIdeResources = true
+    runs {
+        configureEach {
+            workingDirectory project.file('run')
+            property 'forge.logging.console.level', 'debug'
+            mods { primordial { source sourceSets.main } }
+        }
+        client { }
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://maven.blamejared.com' }
+    maven { url = 'https://modmaven.dev'; content { includeGroup 'mekanism' } }
+    maven { url = 'https://api.modrinth.com/maven'; content { includeGroup 'maven.modrinth' } }
+    maven { url = 'https://www.cursemaven.com' }
+    maven { url = 'https://maven.ftb.dev/releases' }
+    maven { url = 'https://maven.architectury.dev' }
+    maven { url = 'https://maven.theillusivec4.top/' }
+    maven { url = 'https://maven.createmod.net'; content { includeGroup 'net.createmod.ponder'; includeGroup 'dev.engine-room.flywheel' } }
+}
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.20.1-47.2.0'
+    // ProjectE 1.20.1-PE1.0.1：提供 BigInteger EMC capability 与 IEMCProxy。
+    compileOnly fg.deobf('curse.maven:projecte-226410:4901949')
+    // Curios 5.9.1：提供护符槽位和 ICurioItem 接口，blackhole_charm 在公共初始化阶段注册。
+    compileOnly fg.deobf('top.theillusivec4.curios:curios-forge:5.9.1+1.20.1:api')
+    // FTB Quests 1.20.1：仅编译自定义阶段奖励与可选 Mixin，运行时仍可不安装 FTB Quests。
+    compileOnly fg.deobf('dev.ftb.mods:ftb-quests-forge:2001.4.22')
+    compileOnly fg.deobf('dev.ftb.mods:ftb-library-forge:2001.2.12')
+    testCompileOnly fg.deobf('dev.ftb.mods:ftb-quests-forge:2001.4.22')
+    testCompileOnly fg.deobf('dev.ftb.mods:ftb-library-forge:2001.2.12')
+    testRuntimeOnly fg.deobf('dev.ftb.mods:ftb-quests-forge:2001.4.22')
+    testRuntimeOnly fg.deobf('dev.ftb.mods:ftb-library-forge:2001.2.12')
+// 【变更记录 #12】2026-10-13 03:56:00（第 12 次备注 · 1.2.0-ftb-stage-rewards）
+// - 删除：无；保留 FTB Quests 和 Library 的运行时可选属性。
+// - 新增：把相同版本的 FTB API 加入 testCompileOnly，供测试源码解析自定义 Reward 子类的父类型。
+// - 修改：生产与测试编译均只链接目标实例提供的 FTB API，FTB 仍不打入主 JAR。
+// - 用途：允许测试阶段 ID 校验而不把可选模组变成运行时依赖；无 FTB 实例的隔离规则不变。
+// 【变更记录 #13】2026-10-13 03:58:00（第 13 次备注 · 1.2.0-ftb-stage-rewards）
+// - 删除：无；保留 FTB 仅用于测试 classpath 的边界。
+// - 新增：测试运行时加入对应 FTB Quests/Library API，使 JVM 能加载被测 Reward 子类的父类。
+// - 修改：FTB 依赖仅存在 testCompileOnly/testRuntimeOnly 与生产 compileOnly，不进入模组运行依赖或主 JAR。
+// - 用途：消除测试 JVM 的 NoClassDefFoundError，同时继续验证实际成品不捆绑可选 FTB 模组。
+// 第 5 阶段的可选 API：仅编译/测试使用，成品不打包这些模组，Bootstrap 按安装情况加载。
+// 【变更记录 #11】2026-10-11 23:44:54（第 11 次备注 · 1.2.0-storage-interface-system）
+// - 新增：锁定 Refined Storage 1.12.4（Modrinth version ZITLFjjf）API 编译与测试依赖。
+// - 修改：RS 与 AE2 均保持 compileOnly，运行时按模组安装情况隔离加载，不会把第三方代码打入成品。
+// - 用途：编译 Forge 1.20.1 外部物品存储适配器并验证其 RS API 签名。
+// 【变更记录 #4】2026-09-14 13:50:00（第 4 次备注 · 1.0.0-stage5-feedback）
+// - 删除：无；保留既有 Mekanism/AE2/Titanium 编译依赖。
+// - 新增：JEI 15 Forge/Common API compileOnly 依赖，用于客户端 Ghost Ingredient；新增菜单和化学气体代码仍不打包第三方库。
+// - 修改：增加 BlameJared Maven 仓库，锁定 JEI 15.20.0.105，保证构建可复现。
+// - 用途：JEI 安装时启用拖放功能，未安装 JEI 时主模组仍可加载。
+    compileOnly fg.deobf('mekanism:Mekanism:1.20.1-10.4.16.80')
+    compileOnly fg.deobf('maven.modrinth:ae2:15.4.10')
+    compileOnly fg.deobf('maven.modrinth:KDvYkUg3:ZITLFjjf')
+    compileOnly fg.deobf('maven.modrinth:titanium:1.20.1-3.8.34')
+    compileOnly fg.deobf('maven.modrinth:create:8amzvn9x')
+    testImplementation fg.deobf('maven.modrinth:create:8amzvn9x')
+    compileOnly(fg.deobf('net.createmod.ponder:Ponder-Forge-1.20.1:1.0.91')) { transitive = false }
+    testImplementation(fg.deobf('net.createmod.ponder:Ponder-Forge-1.20.1:1.0.91')) { transitive = false }
+    // JEI 15 Forge API：仅用于客户端 Ghost Ingredient 投放，不会打包 JEI。
+    compileOnly fg.deobf('mezz.jei:jei-1.20.1-forge-api:15.20.0.105')
+    compileOnly fg.deobf('mezz.jei:jei-1.20.1-common-api:15.20.0.105')
+    // 仅引用运行时忽略注解；注解依赖不打包，整理模组未安装时 JVM 会忽略缺失注解。
+    compileOnly('maven.modrinth:inventory-profiles-next:forge-1.20.1-1.10.20') { transitive = false }
+    compileOnly('maven.modrinth:mouse-tweaks:1.20.1-2.25.1-forge') { transitive = false }
+    testImplementation fg.deobf('mekanism:Mekanism:1.20.1-10.4.16.80')
+    testImplementation fg.deobf('maven.modrinth:ae2:15.4.10')
+    testImplementation fg.deobf('maven.modrinth:KDvYkUg3:ZITLFjjf')
+    testImplementation fg.deobf('maven.modrinth:titanium:1.20.1-3.8.34')
+    testImplementation fg.deobf('maven.modrinth:cofh-core:kglS53Hd')
+    // 使用同版 ProjectE API 验证原生账户提交和离线增量；不将第三方实现打包。
+    testImplementation fg.deobf('curse.maven:projecte-226410:4901949')
+    testImplementation fg.deobf('top.theillusivec4.curios:curios-forge:5.9.1+1.20.1:api')
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.3'
+    testImplementation 'org.mockito:mockito-core:5.12.0'
+}
+
+tasks.named('test', Test).configure {
+    useJUnitPlatform()
+    defaultCharacterEncoding = 'UTF-8'
+    jvmArgs '-Dfile.encoding=UTF-8'
+}
+
+// JDK 17 在 Windows 上按系统编码读取 @argfile；中文工程路径需经 URI 转义的清单传递。
+// 清单只引用原测试 classpath，不复制依赖或修改源码；常规路径继续使用 Gradle 默认行为。
+if (System.getProperty('os.name').startsWith('Windows') && projectDir.path.chars().anyMatch { it > 127 }) {
+    def testClasspathManifest = tasks.register('testClasspathManifest', Jar) {
+        dependsOn 'testClasses'
+        destinationDirectory = new File(gradle.gradleUserHomeDir, "primordial/test-classpath/${Integer.toHexString(projectDir.path.hashCode())}")
+        archiveFileName = 'runtime-classpath.jar'
+        inputs.files(sourceSets.test.runtimeClasspath)
+        doFirst {
+            manifest.attributes('Class-Path': sourceSets.test.runtimeClasspath.files.collect { it.toURI().toASCIIString() }.join(' '))
+        }
+    }
+    tasks.named('test', Test).configure {
+        dependsOn testClasspathManifest
+        classpath = files(testClasspathManifest.flatMap { it.archiveFile })
+        // 清单内容只有路径，另行跟踪实际类文件，防止代码变化后 test 被误判为 UP-TO-DATE。
+        inputs.files(sourceSets.test.runtimeClasspath).withPropertyName('actualTestRuntime').withNormalizer(ClasspathNormalizer)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+// 隔离运行探针单独打包，既不进入主 JAR，也不改变用户整合包的运行依赖。
+sourceSets {
+    smoke {
+        compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+    }
+}
+tasks.register('smokeJar', Jar) {
+    dependsOn 'smokeClasses'
+    archiveFileName = 'primordial-smoke.jar'
+    from sourceSets.smoke.output
+}
+reobf { smokeJar {} }
+tasks.named('smokeJar').configure { finalizedBy 'reobfSmokeJar' }
+
+tasks.named('jar', Jar).configure {
+    manifest {
+        attributes([
+                'Specification-Title'   : 'primordial',
+                'Specification-Version' : '1',
+                'Implementation-Title'  : 'Primordial',
+                'Implementation-Version': project.version,
+                'MixinConfigs'          : 'primordial.mixins.json'
+        ])
+    }
+    finalizedBy 'reobfJar'
+}

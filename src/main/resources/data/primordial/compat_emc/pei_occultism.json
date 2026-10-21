@@ -1,0 +1,19 @@
+{
+  "comment": "Default conversions for Occultism; Change #1 2026-10-14 21:10:41: Import the published Forge 1.20.1/7.2.5 defaults without changing prices or conversion quantities. NativeCompatEmcMapper applies these after Expanded Equivalence supplements, before native datapack/admin overrides; missing mods/IDs are skipped. Special machine recipe mapper code is not included.",
+  "values": {
+    "before": {
+      "occultism:tallow": 16,
+      "occultism:afrit_essence": 64,
+      "#forge:ingots/iesnium": 512
+    }
+  },
+  "required_mod": "occultism",
+  "source": {
+    "name": "ProjectE Integration",
+    "version": "1.20.1-7.2.5",
+    "url": "https://github.com/TagnumElite/ProjectE-Integration",
+    "jar_resource": "data/occultism/pe_custom_conversions/occultism_default.json",
+    "sha256": "b2965de7ee9ca3c8948f886e8f2465cb2bb6ff97cbf8080676354262d2d46e8e",
+    "license": "MIT; META-INF/licenses/ProjectE-Integration-LICENSE.txt"
+  }
+}

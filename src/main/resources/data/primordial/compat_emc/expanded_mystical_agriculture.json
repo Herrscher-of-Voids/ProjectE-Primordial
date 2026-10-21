@@ -1,0 +1,23 @@
+{
+  "comment": "Change #1 2026-10-14 21:10:41: Independently recorded item/tag IDs and default numerical prices from Expanded Equivalence 1.19.2. No upstream Java/JavaScript is shipped. Lower-priority supplements; ProjectE Integration 1.20.1, native datapacks and administrator overrides win. Missing IDs are skipped, without guessing replacements.",
+  "required_mod": "mysticalagriculture",
+  "source": {
+    "name": "Expanded Equivalence",
+    "version": "1.19.2",
+    "commit": "d34ec7f42ad214c62bf98e38b1433d458822e7af",
+    "url": "https://github.com/dragon-forge/ExpandedEquivalence/blob/1.19.2/src/main/resources/data/expequiv/expequiv_mappers/mystical_agriculture.js",
+    "scope": "numeric base-price observations only"
+  },
+  "values": {
+    "before": {
+      "mysticalagriculture:soulstone": 4,
+      "mysticalagriculture:soulstone_cobble": 4,
+      "mysticalagriculture:inferium_essence": 8,
+      "mysticalagriculture:prosperity_shard": 64,
+      "mysticalagriculture:fertilized_essence": 96,
+      "mysticalagriculture:experience_droplet": 32,
+      "mysticalagriculture:soulium_dust": 256,
+      "mysticalagriculture:cognizant_dust": 1024
+    }
+  }
+}

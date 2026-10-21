@@ -1,0 +1,35 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "com.primordial.mixin",
+  "plugin": "com.primordial.mixin.PrimordialMixinPlugin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "TransmutationNbtPersistenceMixin",
+    "TransmutationNbtLearningMixin",
+    "TransmutationContainerSaleMixin",
+    "TransmutationCraftingMixin",
+    "TransmutationConsumeSaleMixin",
+    "FtbQuestBootstrapMixin",
+    "CreateKineticBlockEntityMixin",
+    "CreateKineticNetworkMixin",
+    "BlackholeHarvestMixin",
+    "BlackholeArrowMixin",
+    "CollectorFuelOrderMixin",
+    "CollectorCapacityMixin",
+    "CollectorTargetMixin",
+    "Ae2TransmutationHostMixin",
+    "CollectorTooltipMixin",
+    "BeyondDimensionsStorageMixin",
+    "RefinedStorageNetworkNodeMixin"
+  ],
+  "client": [
+    "JeiCountRendererMixin",
+    "JeiCountOverlayMixin",
+    "TransmutationSlotMixin",
+    "TransmutationPageMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

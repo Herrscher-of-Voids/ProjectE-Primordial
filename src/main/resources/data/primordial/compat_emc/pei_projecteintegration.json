@@ -1,0 +1,18 @@
+{
+  "values": {
+    "before": {
+      "#forge:ingots/zinc": 128,
+      "FLUID|minecraft:water": 1
+    }
+  },
+  "comment": "; Change #1 2026-10-14 21:10:41: Import the published Forge 1.20.1/7.2.5 defaults without changing prices or conversion quantities. NativeCompatEmcMapper applies these after Expanded Equivalence supplements, before native datapack/admin overrides; missing mods/IDs are skipped. Special machine recipe mapper code is not included.",
+  "required_mod": "",
+  "source": {
+    "name": "ProjectE Integration",
+    "version": "1.20.1-7.2.5",
+    "url": "https://github.com/TagnumElite/ProjectE-Integration",
+    "jar_resource": "data/projecteintegration/pe_custom_conversions/pei_metals.json",
+    "sha256": "f8ca63eda1e5abd31244e57ceaf06a687b693232409c6e9e955ee8e213254f17",
+    "license": "MIT; META-INF/licenses/ProjectE-Integration-LICENSE.txt"
+  }
+}

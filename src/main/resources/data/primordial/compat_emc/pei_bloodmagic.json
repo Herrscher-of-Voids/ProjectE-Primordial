@@ -1,0 +1,18 @@
+{
+  "comment": "default recipe conversions for Blood Magic; Change #1 2026-10-14 21:10:41: Import the published Forge 1.20.1/7.2.5 defaults without changing prices or conversion quantities. NativeCompatEmcMapper applies these after Expanded Equivalence supplements, before native datapack/admin overrides; missing mods/IDs are skipped. Special machine recipe mapper code is not included.",
+  "values": {
+    "before": {
+      "#bloodmagic:crystals/demon": 512,
+      "bloodmagic:weakbloodshard": 256
+    }
+  },
+  "required_mod": "bloodmagic",
+  "source": {
+    "name": "ProjectE Integration",
+    "version": "1.20.1-7.2.5",
+    "url": "https://github.com/TagnumElite/ProjectE-Integration",
+    "jar_resource": "data/bloodmagic/pe_custom_conversions/bloodmagic_default.json",
+    "sha256": "785e900d2bc1ae87ecd59e5c42c692c5c40de98a058d9eb19f5a7ce4515b976e",
+    "license": "MIT; META-INF/licenses/ProjectE-Integration-LICENSE.txt"
+  }
+}

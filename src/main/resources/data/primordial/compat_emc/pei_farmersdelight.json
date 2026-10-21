@@ -1,0 +1,25 @@
+{
+  "comment": "Set defaults conversions for Farmer's Delight; Change #1 2026-10-14 21:10:41: Import the published Forge 1.20.1/7.2.5 defaults without changing prices or conversion quantities. NativeCompatEmcMapper applies these after Expanded Equivalence supplements, before native datapack/admin overrides; missing mods/IDs are skipped. Special machine recipe mapper code is not included.",
+  "values": {
+    "before": {
+      "#forge:crops/cabbage": 32,
+      "#forge:crops/onion": 32,
+      "#forge:crops/rice": 1,
+      "#forge:crops/tomato": 32,
+      "farmersdelight:brown_mushroom_colony": 32,
+      "farmersdelight:ham": 64,
+      "farmersdelight:red_mushroom_colony": 32,
+      "farmersdelight:rice_panicle": 1,
+      "farmersdelight:straw": 1
+    }
+  },
+  "required_mod": "farmersdelight",
+  "source": {
+    "name": "ProjectE Integration",
+    "version": "1.20.1-7.2.5",
+    "url": "https://github.com/TagnumElite/ProjectE-Integration",
+    "jar_resource": "data/farmersdelight/pe_custom_conversions/farmersdelight_default.json",
+    "sha256": "7ecab8c7f26995087c1faf8f6a274ec30d1a37458695a1a2a042726ef8ac6eaf",
+    "license": "MIT; META-INF/licenses/ProjectE-Integration-LICENSE.txt"
+  }
+}

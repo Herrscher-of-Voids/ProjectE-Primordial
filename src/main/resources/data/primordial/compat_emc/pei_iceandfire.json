@@ -1,0 +1,36 @@
+{
+  "comment": "default conversions for Ice and Fire: Dragons; Change #1 2026-10-14 21:10:41: Import the published Forge 1.20.1/7.2.5 defaults without changing prices or conversion quantities. NativeCompatEmcMapper applies these after Expanded Equivalence supplements, before native datapack/admin overrides; missing mods/IDs are skipped. Special machine recipe mapper code is not included.",
+  "values": {
+    "before": {
+      "#forge:bones/dragon": 156,
+      "#forge:bones/wither": 156,
+      "#forge:gems/amethyst": 2048,
+      "#forge:heart": 262144,
+      "#forge:scales/dragon": 512,
+      "#forge:scales/sea_serpent": 256,
+      "#iceandfire:dragon_skulls": 624,
+      "#iceandfire:mob_skulls": 320,
+      "#iceandfire:myrmex_harvestables": 32,
+      "iceandfire:cyclops_eye": 96,
+      "iceandfire:dread_shard": 144,
+      "iceandfire:fire_dragon_blood": 256,
+      "iceandfire:hippocampus_fin": 512,
+      "iceandfire:hippogryph_talon": 128,
+      "iceandfire:ice_dragon_blood": 256,
+      "iceandfire:lightning_dragon_blood": 256,
+      "iceandfire:pixie_dust": 1,
+      "iceandfire:pixie_wings": 1,
+      "iceandfire:shiny_scales": 512,
+      "iceandfire:siren_tear": 768
+    }
+  },
+  "required_mod": "iceandfire",
+  "source": {
+    "name": "ProjectE Integration",
+    "version": "1.20.1-7.2.5",
+    "url": "https://github.com/TagnumElite/ProjectE-Integration",
+    "jar_resource": "data/iceandfire/pe_custom_conversions/iceandfire_default.json",
+    "sha256": "998a6537df793d73f81d3e8907dcada9c84e419e422e8265c8a64ff65475803c",
+    "license": "MIT; META-INF/licenses/ProjectE-Integration-LICENSE.txt"
+  }
+}

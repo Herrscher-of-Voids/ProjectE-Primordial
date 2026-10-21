@@ -1,0 +1,88 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="All Rights Reserved"
+
+# 变更记录 #2（2026-09-13）：声明 ProjectE 为强制依赖，确保 EMC capability 在运行时可用。
+# 变更记录 #3 2026-09-16 14:36:38（1.0.0-acceleration-multiple-targets）：
+# 删除：无；新增作者名及时间加速器简介；修改模组列表展示信息，不改变依赖关系。
+# 用途：在 Forge 模组详情页显示作者、资源转换和多目标 EMC 时间加速功能。
+# 变更记录 #4 2026-09-17 00:17:06（1.0.0-mod-icon）：
+# 删除：无；新增 logoFile 和 logoBlur；修改模组列表图标为 256×256 透明像素徽记。
+# 用途：Forge 与支持 Forge 元数据的启动器从 JAR 根目录 logo.png 读取图标，不影响游戏逻辑。
+# 变更记录 #5 2026-10-02 14:20:00（1.2.0 核心交易重构起始）：
+# 删除：无；保留 ${file.jarVersion} 动态版本来源。
+# 新增：将模组开发版本提升到 1.2.0，由构建脚本注入实际 JAR 版本。
+# 修改：无运行时依赖变化；本记录只标记版本边界。
+# 用途：让启动器、模组列表和发布 JAR 与本轮交易系统重构使用同一版本号。
+# 变更记录 #6 2026-10-14 17:05:00（1.2.0 模组简介重写）：
+# 删除：原先把功能逐项罗列、缺少主线的自动生成式简介。
+# 新增：按 EMC 供给、资源转换、回收、装备和网络接口组织的手工简介，补充实际兼容边界。
+# 修改：删去未经必要的实现细节和夸张承诺，保留玩家能直接理解的玩法入口与运行环境。
+# 用途：让启动器和发布页的正文准确说明模组能做什么，以及哪些功能需要额外模组。
+
+# 变更记录 #7 2026-10-14 17:50:26（1.2.0 两项玩家魔法资源）：
+# 删除：无。新增：简介中的铁魔法法力和诡厄巫法灵魂自动补充入口。
+# 修改：第 6 条时间 17:05:00 为误填，原正文约于 16:52 修改；保留历史记录。
+# 用途：简介随已实现功能更新，不改变强制依赖。
+
+# 变更记录 #8 2026-10-14 22:24:50（2.0.0 发布整理）：
+# 删除：无。新增：记录用户确认的 2.0.0 版本边界。
+# 修改：继续从构建 Manifest 读取版本，JAR 名称和模组列表同步为 2.0.0。
+# 用途：统一发布日志与游戏版本，不改变 Minecraft 1.20.1 Forge 依赖。
+
+[[mods]]
+modId="primordial"
+version="${file.jarVersion}"
+displayName="原初 Primordial"
+authors="空之律者-西琳大人"
+logoFile="logo.png"
+logoBlur=false
+description='''原初把 ProjectE 的 EMC 接到机器、资源和装备上。你在转化桌里积累的 EMC，可以直接拿来供给生产线，也可以在生产结束后回收回来。
+
+配置器用于给机器安排供料任务。选定方块、方向和槽位后，它可以输送物品、流体、Mekanism 气体或 Forge 能源；同一台配置器可以管理多个目标，并按设定的 tick 间隔补充。需要维持背包某个槽位，或给支持的装备充能时，也可以使用同一套配置。
+
+EMC 也可以换成植物魔法的魔力、气动工艺的压力、自然灵气、新生魔艺的魔源，以及机械动力的转速和应力。配置器的玩家背包页还可以开启铁魔法法力、诡厄巫法灵魂能量的自动补充。兑换比例可在服务器配置中调整。
+
+黑洞方块和黑洞护符负责回收。方块可以接收有价物品、流体、Mekanism 气体和 Forge 能源；护符放进 Curios 槽位后，会吸收周围掉落物并把价值记回佩戴者的 EMC。黑洞装备还提供无耐久的高阶工具、护甲和弓，功能等级由装备界面用 EMC 解锁。
+
+时间加速器可以同时绑定多个目标，为每个目标设置 2 至 1024 倍的加速倍率。高倍率会显示性能提示，实际工作量仍受服务器预算限制；它适合加速关键机器，不会替服务器凭空增加处理能力。
+
+转化接口可以直接接入 AE2、Refined Storage 和 Beyond Dimensions 网络，不需要存储总线或外部存储方块。接口读取的是绑定玩家的转化桌账户，购买时正常扣除 EMC，模拟请求不会收费。
+
+知识规则仍由 ProjectE 控制。默认只有已经学会的物品才能被配置器和网络接口购买；流体、气体等独立资源通过回收学习或知识凭证解锁。JEI 支持相关配方的拖放，管理员可以调整价格和兑换比例。
+
+机器适配器按模组是否安装启用，已覆盖 Mekanism、Applied Energistics 2、Industrial Foregoing、Immersive Engineering、Ender IO 和 GregTech Modern；其它设备只要公开标准 Forge 能力，也可以使用通用接口。具体行为取决于目标模组版本及其公开的能力。
+
+运行环境：Minecraft 1.20.1 · Forge 47.x
+必需前置：ProjectE、Curios API
+其余联动模组按需安装。
+
+作者：空之律者-西琳大人'''
+
+[[dependencies.primordial]]
+    modId="forge"
+    mandatory=true
+    versionRange="[47,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.primordial]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.20.1,1.21)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.primordial]]
+    modId="projecte"
+    mandatory=true
+    versionRange="[1.0.1,)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.primordial]]
+    modId="curios"
+    mandatory=true
+    versionRange="[5.9.1,)"
+    ordering="AFTER"
+    side="BOTH"

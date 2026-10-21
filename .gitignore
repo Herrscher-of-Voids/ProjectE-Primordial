@@ -1,0 +1,23 @@
+# Gradle and build outputs
+.gradle/
+build/
+
+# Local IDE state
+.idea/
+*.iml
+
+# Runtime logs and local run data
+logs/
+run/
+*.log
+
+# Generated Python files
+**/__pycache__/
+*.py[cod]
+
+# Local planning and machine-specific material
+/design-discussion/
+/rule/
+/迁移讲解视频/
+/pelican-ride.html
+/build_mod.bat

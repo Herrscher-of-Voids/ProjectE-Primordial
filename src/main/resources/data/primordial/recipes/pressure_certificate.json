@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "primordial:knowledge_required"
+    }
+  ],
+  "pattern": [
+    "GPG",
+    "DXD",
+    "GPG"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "D": {
+      "item": "projecte:dark_matter"
+    },
+    "X": {
+      "item": "minecraft:piston"
+    }
+  },
+  "result": {
+    "item": "primordial:pressure_certificate",
+    "count": 1
+  }
+}

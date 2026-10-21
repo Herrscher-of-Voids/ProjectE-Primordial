@@ -1,0 +1,20 @@
+{
+  "comment": "Default conversions for Botania; Change #1 2026-10-14 21:10:41: Import the published Forge 1.20.1/7.2.5 defaults without changing prices or conversion quantities. NativeCompatEmcMapper applies these after Expanded Equivalence supplements, before native datapack/admin overrides; missing mods/IDs are skipped. Special machine recipe mapper code is not included.",
+  "values": {
+    "before": {
+      "botania:ender_air_bottle": 1024,
+      "botania:life_essence": 256,
+      "botania:living_root": 1,
+      "botania:pebble": 1
+    }
+  },
+  "required_mod": "botania",
+  "source": {
+    "name": "ProjectE Integration",
+    "version": "1.20.1-7.2.5",
+    "url": "https://github.com/TagnumElite/ProjectE-Integration",
+    "jar_resource": "data/botania/pe_custom_conversions/botania_default.json",
+    "sha256": "d1decbc003c28b95ce84cb1093002ea4bd2b6907e7d7616fa3fb7ae249d182d2",
+    "license": "MIT; META-INF/licenses/ProjectE-Integration-LICENSE.txt"
+  }
+}

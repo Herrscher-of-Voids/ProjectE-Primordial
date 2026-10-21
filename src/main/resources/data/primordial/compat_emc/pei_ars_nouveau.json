@@ -1,0 +1,43 @@
+{
+  "comment": "Default conversions for Ars Nouveau; Change #1 2026-10-14 21:10:41: Import the published Forge 1.20.1/7.2.5 defaults without changing prices or conversion quantities. NativeCompatEmcMapper applies these after Expanded Equivalence supplements, before native datapack/admin overrides; missing mods/IDs are skipped. Special machine recipe mapper code is not included.",
+  "values": {
+    "before": {
+      "ars_nouveau:experience_gem": 16,
+      "ars_nouveau:whirlisprig_shards": 16,
+      "ars_nouveau:wilden_horn": 96,
+      "ars_nouveau:wilden_spike": 64,
+      "ars_nouveau:wilden_tribute": 96,
+      "ars_nouveau:wilden_wing": 72,
+      "ars_nouveau:wixie_shards": 32
+    },
+    "conversion": [
+      {
+        "ingredients": [
+          "ars_nouveau:magebloom_crop"
+        ],
+        "output": "ars_nouveau:magebloom"
+      },
+      {
+        "ingredients": [
+          "ars_nouveau:wilden_horn"
+        ],
+        "output": "ars_nouveau:drygmy_shard"
+      },
+      {
+        "ingredients": [
+          "minecraft:gold_nugget"
+        ],
+        "output": "ars_nouveau:starbuncle_shards"
+      }
+    ]
+  },
+  "required_mod": "ars_nouveau",
+  "source": {
+    "name": "ProjectE Integration",
+    "version": "1.20.1-7.2.5",
+    "url": "https://github.com/TagnumElite/ProjectE-Integration",
+    "jar_resource": "data/ars_nouveau/pe_custom_conversions/ars_nouveau_default.json",
+    "sha256": "ac78c7852981253d24a9bbd7d8b974b952f437945baf9eb376cb7deb268f27a5",
+    "license": "MIT; META-INF/licenses/ProjectE-Integration-LICENSE.txt"
+  }
+}

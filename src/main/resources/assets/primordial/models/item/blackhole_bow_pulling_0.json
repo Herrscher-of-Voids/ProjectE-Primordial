@@ -1,0 +1,6 @@
+{
+  "parent": "primordial:item/blackhole_bow",
+  "textures": {
+    "layer0": "primordial:item/blackhole_bow_pulling_0"
+  }
+}

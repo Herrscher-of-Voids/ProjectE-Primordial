@@ -1,0 +1,33 @@
+{
+  "comment": "Sets default conversions for Industrial Foregoing; Change #1 2026-10-14 21:10:41: Import the published Forge 1.20.1/7.2.5 defaults without changing prices or conversion quantities. NativeCompatEmcMapper applies these after Expanded Equivalence supplements, before native datapack/admin overrides; missing mods/IDs are skipped. Special machine recipe mapper code is not included.",
+  "values": {
+    "before": {
+      "FLUID|industrialforegoing:sewage": 1,
+      "industrialforegoing:tinydryrubber": 1
+    },
+    "conversion": [
+      {
+        "count": 1600,
+        "ingredients": [
+          "#minecraft:logs"
+        ],
+        "output": "FLUID|industrialforegoing:latex"
+      },
+      {
+        "ingredients": {
+          "FLUID|industrialforegoing:sewage": 1000
+        },
+        "output": "industrialforegoing:fertilizer"
+      }
+    ]
+  },
+  "required_mod": "industrialforegoing",
+  "source": {
+    "name": "ProjectE Integration",
+    "version": "1.20.1-7.2.5",
+    "url": "https://github.com/TagnumElite/ProjectE-Integration",
+    "jar_resource": "data/industrialforegoing/pe_custom_conversions/industrialforegoing_default.json",
+    "sha256": "1309242e10c5c6d5b7929d8a56439be3b2f7290cebe93f8e7286d58aa5e0e972",
+    "license": "MIT; META-INF/licenses/ProjectE-Integration-LICENSE.txt"
+  }
+}

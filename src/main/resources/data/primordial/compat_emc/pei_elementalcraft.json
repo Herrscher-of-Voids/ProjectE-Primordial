@@ -1,0 +1,87 @@
+{
+  "comment": "Default conversions for ElementalCraft; Change #1 2026-10-14 21:10:41: Import the published Forge 1.20.1/7.2.5 defaults without changing prices or conversion quantities. NativeCompatEmcMapper applies these after Expanded Equivalence supplements, before native datapack/admin overrides; missing mods/IDs are skipped. Special machine recipe mapper code is not included.",
+  "values": {
+    "before": {
+      "elementalcraft:air_shard": 8,
+      "elementalcraft:earth_shard": 8,
+      "elementalcraft:fire_shard": 8,
+      "elementalcraft:inert_crystal": 8,
+      "elementalcraft:water_shard": 8
+    },
+    "conversion": [
+      {
+        "ingredients": [
+          "minecraft:diamond",
+          "elementalcraft:aircrystal",
+          "elementalcraft:air_shard"
+        ],
+        "output": "elementalcraft:crude_air_gem"
+      },
+      {
+        "ingredients": [
+          "minecraft:diamond",
+          "elementalcraft:aircrystal",
+          "elementalcraft:air_shard"
+        ],
+        "output": "elementalcraft:fine_air_gem"
+      },
+      {
+        "ingredients": [
+          "minecraft:diamond",
+          "elementalcraft:aircrystal",
+          "elementalcraft:air_shard"
+        ],
+        "output": "elementalcraft:crude_earth_gem"
+      },
+      {
+        "ingredients": [
+          "minecraft:diamond",
+          "elementalcraft:aircrystal",
+          "elementalcraft:air_shard"
+        ],
+        "output": "elementalcraft:fine_earth_gem"
+      },
+      {
+        "ingredients": [
+          "minecraft:diamond",
+          "elementalcraft:aircrystal",
+          "elementalcraft:air_shard"
+        ],
+        "output": "elementalcraft:crude_fire_gem"
+      },
+      {
+        "ingredients": [
+          "minecraft:diamond",
+          "elementalcraft:aircrystal",
+          "elementalcraft:air_shard"
+        ],
+        "output": "elementalcraft:fine_fire_gem"
+      },
+      {
+        "ingredients": [
+          "minecraft:diamond",
+          "elementalcraft:aircrystal",
+          "elementalcraft:air_shard"
+        ],
+        "output": "elementalcraft:crude_water_gem"
+      },
+      {
+        "ingredients": [
+          "minecraft:diamond",
+          "elementalcraft:aircrystal",
+          "elementalcraft:air_shard"
+        ],
+        "output": "elementalcraft:fine_water_gem"
+      }
+    ]
+  },
+  "required_mod": "elementalcraft",
+  "source": {
+    "name": "ProjectE Integration",
+    "version": "1.20.1-7.2.5",
+    "url": "https://github.com/TagnumElite/ProjectE-Integration",
+    "jar_resource": "data/elementalcraft/pe_custom_conversions/elementalcraft_default.json",
+    "sha256": "d6a20a27f5f999a4512bcbf25d6821eeee71ea6b9f6da806fa4fb07bdde02118",
+    "license": "MIT; META-INF/licenses/ProjectE-Integration-LICENSE.txt"
+  }
+}
