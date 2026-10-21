@@ -1,0 +1,6 @@
+{
+  "key.categories.primordial": "ProjectE:Primordial",
+  "key.primordial.toggle_hud": "Toggle Balance HUD",
+  "hud.primordial.balance": "EMC: %s",
+  "config.primordial.emc_display_mode": "EMC Display Mode (Compact/Engineering/Scientific)"
+}

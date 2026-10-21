@@ -18,6 +18,7 @@ repositories {
 }
 
 dependencies {
+    compileOnly "curse.maven:projecte-226410:${project.projecte_file_id}"
     runtimeOnly "curse.maven:projecte-226410:${project.projecte_file_id}"
     runtimeOnly "top.theillusivec4.curios:curios-neoforge:${project.curios_version}"
 }

@@ -1,0 +1,6 @@
+{
+  "key.categories.primordial": "ProjectE：原初",
+  "key.primordial.toggle_hud": "切换余额 HUD",
+  "hud.primordial.balance": "EMC：%s",
+  "config.primordial.emc_display_mode": "EMC 显示模式（紧凑/工程/科学）"
+}

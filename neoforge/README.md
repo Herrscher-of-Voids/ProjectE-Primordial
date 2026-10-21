@@ -1,6 +1,10 @@
-# NeoForge 1.21.1 migration scaffold
+# ProjectE:Primordial for NeoForge 1.21.1
 
-This isolated Gradle project is the loader/build scaffold for the NeoForge branch. It currently contains only a minimal mod entrypoint; the Forge gameplay systems have not been ported yet, so this is not a playable release.
+This isolated Gradle project builds the NeoForge 1.21.1 version alongside the Forge 1.20.1 source tree.
+
+The first migrated gameplay slice is the EMC balance HUD: on player login, the server reads the player's ProjectE EMC balance and sends it through a versioned NeoForge payload. The server checks balances every 10 ticks and sends an update only when a player's value changes. The client renders the balance above the hotbar, toggles it with `K`, and supports the compact, engineering, and scientific display modes in its client config.
+
+This slice does not migrate offline balance/knowledge queues, EMC transactions, or the other gameplay systems. It is an in-progress development build, not a playable release.
 
 From the repository root, use JDK 21:
 

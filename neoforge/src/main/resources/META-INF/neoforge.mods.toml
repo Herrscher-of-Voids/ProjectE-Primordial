@@ -5,9 +5,9 @@ license="All Rights Reserved"
 [[mods]]
 modId="primordial"
 version="2.0.0-neo-dev"
-displayName="Primordial NeoForge Migration Scaffold"
+displayName="ProjectE:Primordial"
 authors="空之律者-西琳大人"
-description='''NeoForge 1.21.1 migration scaffold. Gameplay systems have not been ported yet.'''
+description='''NeoForge 1.21.1 migration in progress. The EMC balance HUD and login sync are the first ported gameplay slice.'''
 
 [[dependencies.primordial]]
 modId="neoforge"
