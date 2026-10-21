@@ -6,6 +6,7 @@
 """
 from pathlib import Path
 import argparse, colorsys, json
+import os
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -19,6 +20,14 @@ MATERIALS=[
  ('kerr','克尔黑洞','Kerr Black Hole',0.98,'minecraft:ender_eye'),
  ('reissner_nordstrom','赖斯纳–诺德斯特洛姆黑洞','Reissner–Nordström Black Hole',0.55,'minecraft:lightning_rod'),
  ('kerr_newman','克尔–纽曼黑洞','Kerr–Newman Black Hole',0.88,'minecraft:amethyst_shard')]
+
+def preview_font(size):
+ font_path=os.environ.get('PRIMORDIAL_PREVIEW_FONT')
+ if not font_path and os.environ.get('WINDIR'):
+  font_path=str(Path(os.environ['WINDIR'])/'Fonts'/'msyh.ttc')
+ if not font_path or not Path(font_path).is_file():
+  raise FileNotFoundError('Set PRIMORDIAL_PREVIEW_FONT to a CJK-capable font file.')
+ return ImageFont.truetype(font_path,size)
 
 def save_json(path,data):
  path.parent.mkdir(parents=True,exist_ok=True)
@@ -57,7 +66,7 @@ def textures(source):
   for x in range(min(solid),max(solid)+1):sprite.putpixel((x,y-24),(*row[x],255))
  assets=ROOT/'src/main/resources/assets/primordial'
  preview=Image.new('RGB',(960,660),'#151923');draw=ImageDraw.Draw(preview)
- font=ImageFont.truetype('msyh.ttc',16)
+ font=preview_font(16)
  for index,(id,zh,en,hue,_) in enumerate(MATERIALS):
   result=Image.new('RGBA',(64,64))
   for y in range(sprite.height):
@@ -102,7 +111,7 @@ def charm():
  result.save(assets/'blackhole_charm.png')
  preview=Image.new('RGB',(480,480),'#151923')
  enlarged=result.resize((384,384),Image.Resampling.NEAREST);preview.paste(enlarged,(48,24),enlarged)
- draw=ImageDraw.Draw(preview);font=ImageFont.truetype('msyh.ttc',23)
+ draw=ImageDraw.Draw(preview);font=preview_font(23)
  draw.text((240,447),'黑洞护符',font=font,fill='#eeeeee',anchor='mm')
  out=ROOT/'design-discussion/blackhole-charm-preview.png';preview.save(out);print(out)
 
