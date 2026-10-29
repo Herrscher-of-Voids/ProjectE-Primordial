@@ -70,6 +70,13 @@
  * - 修改：服务端校验、报价与统一 EMC 结算共同执行；不信任客户端价格或 NBT。
  * - 用途：完成实体生成、黑洞回收与同账户融合系统，失败不重复收费或产出。
  */
+/**
+ * 【变更记录 #11】2026-10-23 17:01:51（第 11 次备注 · 2.0.0-neoforge-pricing 双版本权限对齐）
+ * - 删除：定价器仅凭创造目录 hasPermissions 展示，导致未开作弊的创造存档主人看不见工具的限制。
+ * - 新增：保留原权限展示，另允许本机单人集成服务器的创造模式主人显示定价器。
+ * - 修改：先核对物理客户端，再反射独立 client helper；专用服务器不解析 Minecraft 客户端类。
+ * - 用途：只修正创造目录入口，不给 LAN 访客继承主人身份，实际打开和保存继续由服务端 PriceEditorAccess 核验。
+ */
 package com.primordial.registry;
 
 import com.primordial.PrimordialMod;
@@ -80,6 +87,8 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public class ModCreativeTabs {
     public static final DeferredRegister<CreativeModeTab> TABS =
@@ -91,7 +100,7 @@ public class ModCreativeTabs {
                     .icon(() -> new ItemStack(ModItems.CONFIGURATOR.get()))
                     .displayItems((params, output) -> {
                         output.accept(ModItems.CONFIGURATOR.get());
-                        if (params.hasPermissions()) output.accept(ModItems.PRICE_EDITOR.get());
+                        if (params.hasPermissions() || localCreativeOwner()) output.accept(ModItems.PRICE_EDITOR.get());
                         output.accept(ModItems.BLACKHOLE.get());
                         output.accept(ModItems.TRANSMUTATION_INTERFACE.get());
                         output.accept(ModItems.ENTITY_GENERATOR.get());
@@ -104,4 +113,15 @@ public class ModCreativeTabs {
                         ModItems.CERTIFICATES.values().forEach(entry -> output.accept(entry.get()));
                     })
                     .build());
+
+    /** 创造目录参数还受客户端“管理员物品”显示设置影响，不能用作存档主人或服务端权限判据。 */
+    private static boolean localCreativeOwner() {
+        if (FMLEnvironment.dist != Dist.CLIENT) return false;
+        try {
+            return Boolean.TRUE.equals(Class.forName("com.primordial.client.CreativePriceEditorVisibility")
+                    .getMethod("isLocalCreativeOwner").invoke(null));
+        } catch (ReflectiveOperationException | RuntimeException | LinkageError failure) {
+            return false;
+        }
+    }
 }

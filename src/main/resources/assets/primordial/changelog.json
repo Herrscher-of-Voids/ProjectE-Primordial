@@ -2,6 +2,26 @@
   "_comment": "Primordial 的逐修订变更记录；原参考规范的 hk3gtl 资源命名空间在本项目使用 primordial。历史 entries 只追加，不覆盖。",
   "entries": [
     {
+      "revision": "2.0.0-forge-price-editor-refresh",
+      "date": "2026-10-29",
+      "time": "23:24:30",
+      "reason": "为 1.20.1 定价器绘制独立贴图，并整理尚未同步到 Forge 分支的定价器权限修正。",
+      "changes": [
+        {
+          "file": "src/assetgen/GeneratePriceEditorTexture.java, src/main/resources/assets/primordial/textures/item/price_editor.png, src/main/resources/assets/primordial/models/item/price_editor.json",
+          "description": "新增可重复生成的 32×32 透明像素价格牌与定价笔图标；模型改为引用独立 price_editor 贴图，EMC 加速器原贴图保持不变。",
+          "purpose": "使定价工具在背包中具有独立外观，不再借用时间加速器的表盘。"
+        },
+        {
+          "file": "src/main/java/com/primordial/service/PriceEditorAccess.java, registry/ModCreativeTabs.java, client/CreativePriceEditorVisibility.java, src/main/resources/assets/primordial/lang/{en_us,zh_cn}.json, src/test/java/com/primordial/machine/{PriceEditorAccessTest,PriceEditorSaveTest}.java",
+          "description": "汇总既有的双版本权限修正：OP 2 级可在任意游戏模式定价；单人创造模式存档主人可使用；LAN 访客不继承主人身份，专服非 OP 无法越权。创造栏、提示与服务端门禁保持一致。",
+          "purpose": "公开 Forge 源码时包含完整依赖类和权限回归测试，不依赖本地尚未上传的客户端 helper。"
+        }
+      ],
+      "scope": "Minecraft 1.20.1 Forge；独立贴图及既有定价器权限修正，不包含 NeoForge 迁移代码或本地对话记录。",
+      "validation": "原工作区与基于 forge/1.20.1 的隔离工作区均 build 通过，各 387 项测试零失败、零错误、零跳过；正式 JAR 验证独立贴图和模型引用，加速器贴图不变。未启动客户端。"
+    },
+    {
       "revision": "1.2.0-ftb-stage-rewards-runtime-check",
       "date": "2026-10-13",
       "time": "04:21:10",

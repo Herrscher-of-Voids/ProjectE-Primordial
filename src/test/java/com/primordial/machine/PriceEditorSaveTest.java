@@ -69,6 +69,13 @@
  * - 修改：既有真实 ProjectE、流体、气体、审计和失败回滚断言保持不变。
  * - 用途：确保定价器完整回归不因权限规则改变而使用隐式 mock 默认值。
  */
+/**
+ * 【变更记录 #11】2026-10-23 16:57:02（第 11 次备注 · 2.0.0-neoforge-pricing 双版本权限对齐）
+ * - 删除：无；保留原真实界面、网络、原生价表和失败事务验证。
+ * - 新增：生存 OP 经真实提交链路保存物品与流体价格，并在撤销 OP 后失去菜单与写权限。
+ * - 修改：统一门禁按用户确认规则允许生存管理员。
+ * - 用途：验证放宽的是游戏模式限制，服务端逐包身份和目标校验继续生效。
+ */
 package com.primordial.machine;
 
 import com.primordial.compat.ProjectEItemPrices;
@@ -486,6 +493,23 @@ class PriceEditorSaveTest {
             assertTrue(ValueManager.reload());
             assertTrue(EmcService.gasPrice(gas.id).isZero());
         }
+    }
+
+    @Test void survivalAdministratorCanSaveButLosesAccessImmediatelyAfterDeop() throws Exception {
+        when(player.level()).thenReturn(mock(net.minecraft.server.level.ServerLevel.class));
+        when(player.isCreative()).thenReturn(false);
+        assertTrue(serverMenu.stillValid(player));
+        select(new ItemStack(Items.DIAMOND));
+        submit("17");
+        assertEquals(17, IEMCProxy.INSTANCE.getValue(Items.DIAMOND));
+        select(new FluidStack(Fluids.WATER, 1));
+        submit("3/2");
+        assertEquals(EmcAmount.parse("3/2"), ValueManager.fluidSnapshot().get("minecraft:water"));
+        when(player.hasPermissions(2)).thenReturn(false);
+        assertFalse(serverMenu.stillValid(player));
+        deliverRequest(new C2SSetMediaPricePacket(19, PriceEditorMenu.KIND_FLUID, "minecraft:water", "9"));
+        assertEquals(Status.PERMISSION_DENIED, clientMenu.priceState().status());
+        assertEquals(EmcAmount.parse("3/2"), ValueManager.fluidSnapshot().get("minecraft:water"));
     }
 
     @Test void permissionAndTargetFailuresAreReportedWithoutWriting() throws Exception {
