@@ -64,6 +64,13 @@ base {
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
+tasks.named('processResources') {
+    inputs.property 'mod_version', project.version.toString()
+    filesMatching('META-INF/neoforge.mods.toml') {
+        expand(mod_version: project.version.toString())
+    }
+}
+
 sourceSets {
     main {
         java {

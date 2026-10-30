@@ -7,7 +7,7 @@ license="All Rights Reserved"
 
 [[mods]]
 modId="primordial"
-version="2.0.0-neo-dev"
+version="${mod_version}"
 displayName="ProjectE:Primordial"
 authors="空之律者-西琳大人"
 description='''ProjectE:Primordial for NeoForge 1.21.1. EMC settlement, blackhole recovery, resource knowledge and certificates are ported; the full migration is in progress.'''
