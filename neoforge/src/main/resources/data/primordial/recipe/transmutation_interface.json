@@ -1,0 +1,28 @@
+{
+  "_comment": "变更记录 #1 2026-10-14 22:24:50 · 2.0.0：补充转化接口的工作台配方，4 个红物质、2 个末影之眼、2 个黑曜石围绕 1 个转化桌，产出 1 个接口；仅依赖原版与必需前置 ProjectE，不要求安装 AE2、RS 或超越维度。由原版 RecipeManager 加载，JEI 可直接显示。",
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RER",
+    "OTO",
+    "RER"
+  ],
+  "key": {
+    "R": {
+      "item": "projecte:red_matter"
+    },
+    "E": {
+      "item": "minecraft:ender_eye"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    },
+    "T": {
+      "item": "projecte:transmutation_table"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "primordial:transmutation_interface"
+  }
+}

@@ -1,3 +1,6 @@
+# 【文件职责】NeoForge 生产模组元数据与必需依赖、Mixin 接线。
+# 【变更记录 #1】2026-10-23 13:32:48（第 1 次备注 · 2.0.0-neoforge-knowledge）
+# 删除：仅首个 HUD 切片的旧进度说明；新增：凭证映射的公共 Mixin；修改：描述已迁移玩法；用途：重算前保留原生凭证知识，不含私有本机路径。
 modLoader="javafml"
 loaderVersion="[1,)"
 license="All Rights Reserved"
@@ -7,7 +10,10 @@ modId="primordial"
 version="2.0.0-neo-dev"
 displayName="ProjectE:Primordial"
 authors="空之律者-西琳大人"
-description='''NeoForge 1.21.1 migration in progress. The EMC balance HUD and login sync are the first ported gameplay slice.'''
+description='''ProjectE:Primordial for NeoForge 1.21.1. EMC settlement, blackhole recovery, resource knowledge and certificates are ported; the full migration is in progress.'''
+
+[[mixins]]
+config="primordial-neoforge.mixins.json"
 
 [[dependencies.primordial]]
 modId="neoforge"
@@ -34,5 +40,33 @@ side="BOTH"
 modId="curios"
 type="required"
 versionRange="[9.5.1,)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.primordial]]
+modId="ftbquests"
+type="optional"
+versionRange="[2101.1.37,2101.1.38)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.primordial]]
+modId="ae2"
+type="optional"
+versionRange="[19.2.18,)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.primordial]]
+modId="refinedstorage"
+type="optional"
+versionRange="[2.0.9,2.1)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.primordial]]
+modId="beyonddimensions"
+type="optional"
+versionRange="[0.8.2,0.9)"
 ordering="AFTER"
 side="BOTH"

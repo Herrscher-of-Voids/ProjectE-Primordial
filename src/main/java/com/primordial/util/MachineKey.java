@@ -16,7 +16,9 @@ public final class MachineKey {
 
     public static ResourceKey<Level> parseDim(String key) {
         String dim = key.split("\\|")[0];
-        return ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dim));
+        ResourceLocation id = ResourceLocation.tryParse(dim);
+        if (id == null) throw new IllegalArgumentException("Invalid dimension: " + dim);
+        return ResourceKey.create(Registries.DIMENSION, id);
     }
 
     public static BlockPos parsePos(String key) {

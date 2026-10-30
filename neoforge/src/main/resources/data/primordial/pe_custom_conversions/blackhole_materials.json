@@ -1,0 +1,154 @@
+{
+  "comment": "Black-hole materials retain the Forge EMC ladder and adjacent collector conversion chain. Values apply after the recipe conversion graph.",
+  "values": {
+    "after": [
+      {
+        "type": "projecte:item",
+        "id": "primordial:blackhole_material_primordial",
+        "emc_value": 3733899
+      },
+      {
+        "type": "projecte:item",
+        "id": "primordial:blackhole_material_stellar",
+        "emc_value": 7467798
+      },
+      {
+        "type": "projecte:item",
+        "id": "primordial:blackhole_material_intermediate",
+        "emc_value": 14935596
+      },
+      {
+        "type": "projecte:item",
+        "id": "primordial:blackhole_material_supermassive",
+        "emc_value": 29871192
+      },
+      {
+        "type": "projecte:item",
+        "id": "primordial:blackhole_material_ultramassive",
+        "emc_value": 59742384
+      },
+      {
+        "type": "projecte:item",
+        "id": "primordial:blackhole_material_schwarzschild",
+        "emc_value": 119484768
+      },
+      {
+        "type": "projecte:item",
+        "id": "primordial:blackhole_material_reissner_nordstrom",
+        "emc_value": 238969536
+      },
+      {
+        "type": "projecte:item",
+        "id": "primordial:blackhole_material_kerr",
+        "emc_value": 477939072
+      },
+      {
+        "type": "projecte:item",
+        "id": "primordial:blackhole_material_kerr_newman",
+        "emc_value": 955878144
+      }
+    ]
+  },
+  "groups": {
+    "blackhole_collector_upgrade": {
+      "conversions": [
+        {
+          "output": {
+            "type": "projecte:item",
+            "id": "primordial:blackhole_material_stellar"
+          },
+          "ingredients": [
+            {
+              "type": "projecte:item",
+              "id": "primordial:blackhole_material_primordial"
+            }
+          ]
+        },
+        {
+          "output": {
+            "type": "projecte:item",
+            "id": "primordial:blackhole_material_intermediate"
+          },
+          "ingredients": [
+            {
+              "type": "projecte:item",
+              "id": "primordial:blackhole_material_stellar"
+            }
+          ]
+        },
+        {
+          "output": {
+            "type": "projecte:item",
+            "id": "primordial:blackhole_material_supermassive"
+          },
+          "ingredients": [
+            {
+              "type": "projecte:item",
+              "id": "primordial:blackhole_material_intermediate"
+            }
+          ]
+        },
+        {
+          "output": {
+            "type": "projecte:item",
+            "id": "primordial:blackhole_material_ultramassive"
+          },
+          "ingredients": [
+            {
+              "type": "projecte:item",
+              "id": "primordial:blackhole_material_supermassive"
+            }
+          ]
+        },
+        {
+          "output": {
+            "type": "projecte:item",
+            "id": "primordial:blackhole_material_schwarzschild"
+          },
+          "ingredients": [
+            {
+              "type": "projecte:item",
+              "id": "primordial:blackhole_material_ultramassive"
+            }
+          ]
+        },
+        {
+          "output": {
+            "type": "projecte:item",
+            "id": "primordial:blackhole_material_reissner_nordstrom"
+          },
+          "ingredients": [
+            {
+              "type": "projecte:item",
+              "id": "primordial:blackhole_material_schwarzschild"
+            }
+          ]
+        },
+        {
+          "output": {
+            "type": "projecte:item",
+            "id": "primordial:blackhole_material_kerr"
+          },
+          "ingredients": [
+            {
+              "type": "projecte:item",
+              "id": "primordial:blackhole_material_reissner_nordstrom"
+            }
+          ]
+        },
+        {
+          "output": {
+            "type": "projecte:item",
+            "id": "primordial:blackhole_material_kerr_newman"
+          },
+          "ingredients": [
+            {
+              "type": "projecte:item",
+              "id": "primordial:blackhole_material_kerr"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

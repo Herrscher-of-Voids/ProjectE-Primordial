@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "primordial:blackhole_material_primordial",
+    "primordial:blackhole_material_stellar",
+    "primordial:blackhole_material_intermediate",
+    "primordial:blackhole_material_supermassive",
+    "primordial:blackhole_material_ultramassive",
+    "primordial:blackhole_material_schwarzschild",
+    "primordial:blackhole_material_reissner_nordstrom",
+    "primordial:blackhole_material_kerr",
+    "primordial:blackhole_material_kerr_newman"
+  ]
+}

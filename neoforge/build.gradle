@@ -1,3 +1,55 @@
+/*
+ * 【文件职责】独立 NeoForge 1.21.1 构建、生产运行与隔离 GameTest 运行；不编译 Forge 根工程源码。
+ * 【变更记录 #1】2026-10-22 11:35:04（第 1 次备注 · 2.0.0-neo-dev 黑洞系统迁移）
+ * - 删除：在所有开发运行中把 gametest 源集并入生产 mod 的配置。
+ * - 新增：生产与测试两种 mod 源集组合，以及各运行显式的 loadedMods 选择。
+ * - 修改：client/server 只加载 main，gameTestServer 加载 main 与 gametest；测试仍不进入主 JAR。
+ * - 用途：防止测试方块和自动订阅器进入普通开发客户端/服务端，保持正式内容与测试夹具隔离。
+ * 【变更记录 #2】2026-10-22 21:05:30（第 2 次备注 · 2.0.0-neo-dev 精确 EMC 入账）
+ * - 删除：无。
+ * - 新增：从根源码精确选入平台无关的 EmcAmount.java，其余 Forge 类保持排除。
+ * - 修改：NeoForge 与 Forge 共用同一金额算法源码；平台持久化和 ProjectE 账户适配继续分开。
+ * - 用途：避免复制分数算法造成双版本漂移，不引入 Forge 依赖或根资源。
+ * 【变更记录 #3】2026-10-22 21:17:30（第 3 次备注 · 2.0.0-neo-dev EMC 重启验收）
+ * - 删除：无。
+ * - 新增：仅 gameTestServer 的 creditPersistencePhase 参数传递。
+ * - 修改：write/read/verify 在三个独立测试 JVM 中检查正常保存和付款后重启；默认 off 不生成该测试。
+ * - 用途：验证真实磁盘生命周期，参数不进入生产代码或普通 client/server。
+ * 【变更记录 #4】2026-10-22 21:44:20（第 4 次备注 · 2.0.0-neo-dev 黑洞资源回收）
+ * - 删除：无。
+ * - 新增：精确选入平台无关 PriceMode 枚举。
+ * - 修改：两版本共用交易模式语义，其余 Forge 源码仍排除。
+ * - 用途：保持流体卖入模式一致。
+ * 【变更记录 #5】2026-10-22 22:20:00（第 5 次备注 · 2.0.0-neo-dev 可选化学品回收）
+ * - 删除：无。
+ * - 新增：固定 Mekanism API 编译依赖、withMekanism 可选运行依赖和化学品重启测试参数。
+ * - 修改：安装与未安装 Mekanism 的开发世界分开；API 不打入正式 JAR，测试参数只进 GameTest。
+ * - 用途：同时验证可选依赖的存在与缺席，防止开发依赖掩盖普通服务端类加载问题。
+ * 【变更记录 #6】2026-10-23 11:42:39（第 6 次备注 · 2.0.0-neo-dev 公共交易结算）
+ * - 删除：无。
+ * - 新增：仅 GameTest 服务端透传 transactionPersistencePhase，用三个独立 JVM 核验离线借项与找零。
+ * - 修改：默认 off 不注册阶段测试，沿用两套隔离测试目录及正式 JAR 排除测试源集。
+ * - 用途：正常停服后验证消费不重复，生产客户端不携带测试账户、命令或入口。
+ * 【变更记录 #7】2026-10-23 13:39:01（第 7 次备注 · 2.0.0-neoforge-knowledge）
+ * - 删除：无。
+ * - 新增：仅 GameTest 的 knowledgePersistencePhase 三阶段启动参数。
+ * - 修改：默认 off，按真实 .dat/ProjectE 玩家附件验证知识及显式遗忘的跨进程保存。
+ * - 用途：生产客户端没有测试夹具或测试参数；可选模组存在与缺席仍分开运行目录。
+ * 【变更记录 #8】2026-10-23 16:19:59（第 8 次备注 · 2.0.0-neoforge-stages）
+ * - 删除：无；不向生产 JAR 打入任务模组。
+ * - 新增：固定 FTB Quests、Library、Teams、Architectury 的仅编译依赖和默认关闭的 withFtbQuests 运行开关。
+ * - 修改：四种可选模组组合分开运行目录，阶段 write/read/verify 参数只传入 GameTest。
+ * - 用途：兼容奖励按真实目标版编译，同时验证无 FTB 时安全加载和原生 FTB 奖励流程。
+ * 【变更记录 #9】2026-10-23 17:05:23（第 9 次备注 · 2.0.0-neoforge-pricing）
+ * - 删除：无；新增：JEI 19 固定 API 与默认关闭的运行开关。
+ * - 修改：带 JEI 的开发目录独立，正式 JAR 不包含 JEI 或测试夹具。
+ * - 用途：验证幽灵取样以及没有 JEI/Mekanism 时的安全加载。
+ * 【变更记录 #10】2026-10-23 17:39:44（第 10 次备注 · 2.0.0-neoforge-pricing）
+ * - 删除：无。
+ * - 新增：仅 GameTest 的 pricePersistencePhase 三进程参数和独立定价持久化命名空间。
+ * - 修改：正常回归仍运行全部系统，write/read/verify 仅执行真实价格重启测试。
+ * - 用途：避免其他测试在阶段之间覆盖价表，验证原生物品与精确介质价格的磁盘生命周期。
+ */
 plugins {
     id 'java-library'
     id 'net.neoforged.moddev' version '2.0.148'
@@ -12,30 +64,204 @@ base {
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
+sourceSets {
+    main {
+        java {
+            srcDir '../src/main/java'
+            include 'com/primordial/neoforge/**'
+            include 'com/primordial/api/MediaKnowledgeApi.java'
+            exclude { details -> details.file == project.file('../src/main/java/com/primordial/api/MediaKnowledgeApi.java') }
+            include 'com/primordial/service/EmcAmount.java'
+            include 'com/primordial/data/ConfigLimits.java'
+            include 'com/primordial/data/MachineTarget.java'
+            include 'com/primordial/data/SampleMode.java'
+            include 'com/primordial/util/RelativeMachineSides.java'
+            include 'com/primordial/util/MachineKey.java'
+            include 'com/primordial/screen/PrimordialGuiStyle.java'
+            include 'com/primordial/client/EmcCountText.java'
+            include 'com/primordial/value/PriceMode.java'
+            include 'com/primordial/item/CharmNbtFields.java'
+        }
+    }
+    gametest {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+configurations {
+    gametestImplementation.extendsFrom implementation
+    gametestCompileOnly.extendsFrom compileOnly
+    gametestRuntimeOnly.extendsFrom runtimeOnly
+}
+
 repositories {
+    mavenCentral()
     maven { name = 'CurseMaven'; url = 'https://www.cursemaven.com' }
     maven { name = 'Curios'; url = 'https://maven.theillusivec4.top/' }
+    maven { name = 'ModMaven'; url = 'https://modmaven.dev/' }
+    maven { name = 'FTB'; url = 'https://maven.ftb.dev/releases' }
+    maven { name = 'Architectury'; url = 'https://maven.architectury.dev/' }
+    maven { name = 'BlameJared'; url = 'https://maven.blamejared.com' }
+    maven { name = 'Modrinth'; url = 'https://api.modrinth.com/maven' }
+}
+
+def withMekanism = providers.gradleProperty('withMekanism').map { it.toBoolean() }.orElse(false).get()
+def withFtbQuests = providers.gradleProperty('withFtbQuests').map { it.toBoolean() }.orElse(false).get()
+def withJei = providers.gradleProperty('withJei').map { it.toBoolean() }.orElse(false).get()
+def withAe2 = providers.gradleProperty('withAe2').map { it.toBoolean() }.orElse(false).get()
+def withRs2 = providers.gradleProperty('withRs2').map { it.toBoolean() }.orElse(false).get()
+def withBeyondDimensions = providers.gradleProperty('withBeyondDimensions').map { it.toBoolean() }.orElse(false).get()
+def withCreate = providers.gradleProperty('withCreate').map { it.toBoolean() }.orElse(false).get()
+def withTestPack = providers.gradleProperty('withTestPack').map { it.toBoolean() }.orElse(false).get()
+def botaniaRevivedJar = providers.gradleProperty('botaniaRevivedJar').orNull
+
+def withNativeResources = providers.gradleProperty('withNativeResources').map { it.toBoolean() }.orElse(false).get()
+def resourceModFiles = []
+if (withNativeResources) {
+    def resourceModDirectory = providers.gradleProperty('resourceModsDir').orNull
+    if (!resourceModDirectory) throw new GradleException('withNativeResources requires resourceModsDir pointing to an existing 1.21.1 test mods directory')
+    resourceModFiles = ['NaturesAura-41.10.jar', 'pneumaticcraft-repressurized-8.2.23+mc1.21.1.jar',
+                        'ars_nouveau-1.21.1-5.13.3.jar', 'geckolib-neoforge-1.21.1-4.9.3.jar',
+                        'Patchouli-1.21.1-93-NEOFORGE.jar', 'goety-3.2.1-primordial-metadatafix.jar',
+                        'irons_spellbooks-1.21.1-3.16.3.jar', 'irons_lib-1.21.1-2.2.0.jar',
+                        'player-animation-lib-forge-2.0.4+1.21.1.jar'].collect { name -> new File(resourceModDirectory, name) }
+    resourceModFiles.each { file -> if (!file.isFile()) throw new GradleException("Missing optional resource test dependency: ${file.name}") }
+}
+def environmentSuffix = (withCreate ? '-create' : '') + (withMekanism ? '-mekanism' : '') + (withFtbQuests ? '-ftb' : '') + (withJei ? '-jei' : '') + (withAe2 ? '-ae2' : '') + (withRs2 ? '-rs2' : '') + (withBeyondDimensions ? '-beyond-dimensions' : '') + (withNativeResources ? '-native-resources' : '')
+def gameTestRunSuffix = providers.gradleProperty('gameTestRunSuffix').orElse('').get()
+if (withTestPack) environmentSuffix += '-testpack'
+if (botaniaRevivedJar) environmentSuffix += '-botania-revived'
+
+// Create embeds its public API dependencies; javac also needs those nested jars.
+configurations { createApiBundle }
+def createApiDir = layout.buildDirectory.dir('create-api-libraries')
+tasks.register('extractCreateApiLibraries', Sync) {
+    from { zipTree(configurations.createApiBundle.singleFile) }
+    include 'META-INF/jarjar/*.jar'
+    eachFile { path = name }
+    includeEmptyDirs = false
+    into createApiDir
 }
 
 dependencies {
+    if (withTestPack) {
+        def packDirectory = providers.gradleProperty('resourceModsDir').orNull
+        if (!packDirectory || !file(packDirectory).isDirectory()) throw new GradleException('withTestPack requires resourceModsDir')
+        runtimeOnly fileTree(dir: packDirectory, include: '*.jar', exclude: ['primordial-*.jar', 'ProjectE-*.jar', 'curios-*.jar'])
+    }
+    if (botaniaRevivedJar) {
+        if (!file(botaniaRevivedJar).isFile()) throw new GradleException('Missing botaniaRevivedJar')
+        runtimeOnly files(botaniaRevivedJar)
+        if (!withNativeResources && !withTestPack) {
+            def patchouliDirectory = providers.gradleProperty('resourceModsDir').orNull
+            if (!patchouliDirectory) throw new GradleException('Botania Revived requires resourceModsDir containing Patchouli')
+            runtimeOnly files(new File(patchouliDirectory, 'Patchouli-1.21.1-93-NEOFORGE.jar'))
+        }
+    }
+    createApiBundle "maven.modrinth:create:UjX6dr61"
+    compileOnly "maven.modrinth:create:UjX6dr61"
+    compileOnly files(fileTree(dir: createApiDir, include: '*.jar')).builtBy(tasks.named('extractCreateApiLibraries'))
+    if (withCreate) {
+        def createModDirectory = providers.gradleProperty('resourceModsDir').orNull
+        if (!createModDirectory) throw new GradleException('withCreate requires resourceModsDir pointing to the test mods directory')
+        runtimeOnly fileTree(dir: createModDirectory, include: ['create-*.jar', 'flywheel-*.jar', 'ponder-*.jar'])
+    }
+    if (withNativeResources) runtimeOnly files(resourceModFiles)
+    compileOnly "maven.modrinth:mouse-tweaks:9I21YYxf"
+    compileOnly "mezz.jei:jei-1.21.1-common-api:${project.jei_version}"
+    if (withJei) runtimeOnly "mezz.jei:jei-1.21.1-neoforge:${project.jei_version}"
+    compileOnly "org.appliedenergistics:appliedenergistics2:${project.ae2_version}:api"
+    compileOnly "maven.modrinth:refined-storage:${project.rs2_version_id}"
+    if (withRs2) runtimeOnly "maven.modrinth:refined-storage:${project.rs2_version_id}"
+    if (withBeyondDimensions) {
+        runtimeOnly "curse.maven:beyond-dimensions-1222890:${project.beyond_dimensions_file_id}"
+        runtimeOnly "curse.maven:compixel-1715758:${project.compixel_file_id}"
+    }
+    if (withAe2) {
+        runtimeOnly "curse.maven:applied-energistics-2-223794:${project.ae2_file_id}"
+        runtimeOnly "curse.maven:guideme-1173950:${project.guideme_file_id}"
+    }
     compileOnly "curse.maven:projecte-226410:${project.projecte_file_id}"
     runtimeOnly "curse.maven:projecte-226410:${project.projecte_file_id}"
     runtimeOnly "top.theillusivec4.curios:curios-neoforge:${project.curios_version}"
+    compileOnly "top.theillusivec4.curios:curios-neoforge:${project.curios_version}"
+    compileOnly "mekanism:Mekanism:${project.mekanism_version}:api"
+    if (withMekanism) runtimeOnly "mekanism:Mekanism:${project.mekanism_version}"
+    def questDependencies = [
+            "dev.ftb.mods:ftb-quests-neoforge:${project.ftb_quests_version}",
+            "dev.ftb.mods:ftb-library-neoforge:${project.ftb_library_version}",
+            "dev.ftb.mods:ftb-teams-neoforge:${project.ftb_teams_version}",
+            "dev.architectury:architectury-neoforge:${project.architectury_version}"
+    ]
+    questDependencies.each { dependency ->
+        compileOnly(dependency) { transitive = false }
+        if (withFtbQuests) runtimeOnly(dependency) { transitive = false }
+    }
 }
 
 neoForge {
     version = project.neo_version
 
+    addModdingDependenciesTo sourceSets.gametest
+
+    mods {
+        primordial {
+            sourceSet sourceSets.main
+        }
+        primordialWithGameTests {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.gametest
+        }
+    }
+
     runs {
         client {
             client()
-            gameDirectory = project.file('run/client')
+            loadedMods = [mods.primordial]
+            gameDirectory = project.file("run/client${environmentSuffix}")
         }
 
         server {
             server()
+            loadedMods = [mods.primordial]
             programArgument '--nogui'
-            gameDirectory = project.file('run/server')
+            gameDirectory = project.file("run/server${environmentSuffix}")
+        }
+
+        gameTestServer {
+            type = 'gameTestServer'
+            sourceSet = sourceSets.gametest
+            loadedMods = [mods.primordialWithGameTests]
+            gameDirectory = project.file("run/gametest${environmentSuffix}${gameTestRunSuffix}")
+            systemProperty 'neoforge.enabledGameTestNamespaces', 'primordial'
+            if (providers.gradleProperty('pricePersistencePhase').orElse('off').get() != 'off') {
+                systemProperty 'neoforge.enabledGameTestNamespaces', 'primordial_pricing_persistence'
+            }
+            if (providers.gradleProperty('nbtPersistencePhase').orElse('off').get() != 'off') {
+                systemProperty 'neoforge.enabledGameTestNamespaces', 'primordial_nbt_persistence'
+            }
+            if (providers.gradleProperty('networkPersistencePhase').orElse('off').get() != 'off') {
+                systemProperty 'neoforge.enabledGameTestNamespaces', 'primordial_network_persistence'
+            }
+            systemProperty 'primordial.test.creditPersistencePhase',
+                    providers.gradleProperty('creditPersistencePhase').orElse('off').get()
+            systemProperty 'primordial.test.chemicalPersistencePhase',
+                    providers.gradleProperty('chemicalPersistencePhase').orElse('off').get()
+            systemProperty 'primordial.test.chemicalCapPersistencePhase',
+                    providers.gradleProperty('chemicalCapPersistencePhase').orElse('off').get()
+            systemProperty 'primordial.test.transactionPersistencePhase',
+                    providers.gradleProperty('transactionPersistencePhase').orElse('off').get()
+            systemProperty 'primordial.test.knowledgePersistencePhase',
+                    providers.gradleProperty('knowledgePersistencePhase').orElse('off').get()
+            systemProperty 'primordial.test.stagePersistencePhase',
+                    providers.gradleProperty('stagePersistencePhase').orElse('off').get()
+            systemProperty 'primordial.test.pricePersistencePhase',
+                    providers.gradleProperty('pricePersistencePhase').orElse('off').get()
+            systemProperty 'primordial.test.nbtPersistencePhase',
+                    providers.gradleProperty('nbtPersistencePhase').orElse('off').get()
+            systemProperty 'primordial.test.networkPersistencePhase',
+                    providers.gradleProperty('networkPersistencePhase').orElse('off').get()
         }
 
         configureEach {
@@ -43,11 +269,6 @@ neoForge {
         }
     }
 
-    mods {
-        primordial {
-            sourceSet sourceSets.main
-        }
-    }
 }
 
 tasks.withType(JavaCompile).configureEach {

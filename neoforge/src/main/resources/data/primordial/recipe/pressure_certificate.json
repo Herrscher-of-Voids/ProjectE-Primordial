@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GPG",
+    "DXD",
+    "GPG"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "D": {
+      "item": "projecte:dark_matter"
+    },
+    "X": {
+      "item": "minecraft:piston"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "primordial:pressure_certificate"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "primordial:knowledge_required"
+    }
+  ],
+  "_comment": "凭证条件配方；变更记录 #1 2026-10-23 13:32:48（2.0.0-neoforge-knowledge）：删除：旧 Forge 条件字段；新增：NeoForge 条件；修改：1.21.1 recipe 目录与 result.id；用途：保持材料、数量和可选依赖条件。"
+}

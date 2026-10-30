@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GPG",
+    "DXD",
+    "GPG"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "D": {
+      "item": "projecte:dark_matter"
+    },
+    "X": {
+      "item": "minecraft:amethyst_shard"
+    }
+  },
+  "result": {
+    "id": "primordial:iron_mana_certificate"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "primordial:knowledge_required"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "irons_spellbooks"
+    }
+  ],
+  "_comment": "凭证条件配方；变更记录 #1 2026-10-23 13:32:48（2.0.0-neoforge-knowledge）：删除：旧 Forge 条件字段；新增：NeoForge 条件；修改：1.21.1 recipe 目录与 result.id；用途：保持材料、数量和可选依赖条件。"
+}

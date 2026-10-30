@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DED",
+    "EKE",
+    "DED"
+  ],
+  "key": {
+    "D": {
+      "item": "minecraft:diamond_block"
+    },
+    "E": {
+      "item": "minecraft:ender_pearl"
+    },
+    "K": {
+      "item": "primordial:blackhole_charm"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "primordial:emc_accelerator"
+  }
+}

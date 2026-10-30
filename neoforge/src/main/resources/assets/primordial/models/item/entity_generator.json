@@ -1,0 +1,4 @@
+{
+  "parent": "primordial:block/entity_generator",
+  "_comment": "变更记录 #1 2026-10-14 16:01:56 · 1.2.0-entity-emc-fusion：实体生成器资源，使用原版刷怪笼贴图暂作识别；配方与掉落保持方块身份，无实体库存。"
+}

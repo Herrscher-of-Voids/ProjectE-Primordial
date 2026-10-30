@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ABA",
+    "CDC",
+    "AEA"
+  ],
+  "key": {
+    "A": { "item": "projecte:dark_matter" },
+    "B": { "item": "minecraft:nether_star" },
+    "C": { "item": "minecraft:netherite_ingot" },
+    "D": { "item": "primordial:blackhole" },
+    "E": { "item": "projecte:red_matter" }
+  },
+  "result": { "id": "primordial:blackhole_charm", "count": 1 }
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "primordial:item/blackhole_material_kerr_newman"
+  }
+}

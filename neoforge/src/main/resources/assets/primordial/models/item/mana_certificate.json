@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "primordial:item/mana_certificate"
+  },
+  "_comment": "凭证物品模型；变更记录 #1 2026-10-23 13:32:48（2.0.0-neoforge-knowledge）：删除：无；新增：目标版模型；修改：沿用 Forge 纹理；用途：仅显示，不提供资源能力。"
+}

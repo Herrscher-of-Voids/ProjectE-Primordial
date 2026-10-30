@@ -8,10 +8,27 @@
 
 | 分支 | 目标版本 | 状态 |
 | --- | --- | --- |
-| `forge/1.20.1` | Minecraft 1.20.1 + Forge | 当前源码维护线 |
-| `neoforge/1.21.1` | Minecraft 1.21.1 + NeoForge | 迁移目标线；当前尚未完成移植，不代表可游玩或可发布版本 |
+| `forge/1.20.1` | Minecraft 1.20.1 + Forge | 原版源码维护线 |
+| `neoforge/1.21.1` | Minecraft 1.21.1 + NeoForge | 既有功能移植及实测修复已通过后台回归，客户端验收仍在进行 |
 
-NeoForge 1.21.1 正在按系统逐步移植；各功能会分别验证，当前不代表可游玩或可发布版本。
+### NeoForge 1.21.1 当前进度（2026-10-31）
+
+已迁移 EMC 账本与 HUD、黑洞回收、资源知识和阶段、定价器、转化桌物品/流体/化学品/合成页、AE2/RS 2/Beyond Dimensions 网络、机器配置器与自动任务、独立资源和玩家补充、护符、实体生成器、加速器、黑洞材料/装备/武器、奇点与生存配方。完整范围、固定依赖及验证限制见 [NeoForge 迁移说明](neoforge/README.md)。
+
+最近六项实测修复：补齐 33 项能力名称和说明及其他翻译（中英共 513 键）；修复黑洞/碎块及绊线回调的同步区块加载路径；修复 JEI“＋”转移和返回合成页；同步最新 1.20.1 定价器贴图；删除开发进度提示；恢复配置器邻接方块图标、六面布局并修复空面板、重叠与默认值。配置器网络协议升级为 **2**，联机时客户端和服务端须同时更新。
+
+最终基础 GameTest **259/259**；实际 43 包开发类路径加隔离 Botania Revived **302/302**；正式构建与模型/贴图/语言/Mixin 检查通过。此前 AE2/RS 2/BD 与机器配置 write/read/verify 三个独立正常停服 JVM 各 **1/1**。这些是后台验证，实际界面与长时间 TPS/FPS 仍待复测，不代表 100% 发布验收。
+
+中文 Prism 测试实例已更新并备份旧包。本轮未启动客户端或操作桌面。星辉魔法（Astral Sorcery）、奥瑞科技（Oritech）和新增功能暂缓；两者保留禁用预留选项，不代表已兼容。Oritech 的 EMC/碰撞能匹配仍后置。Botania Revived 是隔离测试中的非官方移植，未自动加入实例；BD/PNC 旧 Botania API 联动被跳过，不代表第三方功能已复刻。
+
+使用 JDK 21 在仓库根目录构建和运行基础测试：
+
+```powershell
+.\gradlew.bat -p neoforge build
+.\gradlew.bat -p neoforge runGameTestServer
+```
+
+产物位于 `neoforge/build/libs/`。可选模组组合、跨进程验证及测试实例清单见 [迁移说明](neoforge/README.md) 和 [测试包记录](neoforge/testpack/README.md)。Forge 1.20.1 构建要求见下文。
 
 ## 主要内容
 
@@ -43,7 +60,7 @@ NeoForge 1.21.1 正在按系统逐步移植；各功能会分别验证，当前�
 .\gradlew.bat test
 ```
 
-构建产物位于 `build/libs/`。当前 Gradle 工程配置面向 Forge 1.20.1；NeoForge 分支在迁移完成前不能用作 1.21.1 发布包。
+构建产物位于 `build/libs/`。当前根 Gradle 工程配置面向 Forge 1.20.1；NeoForge 1.21.1 的独立构建命令见 `neoforge/README.md`，迁移完成前不能用作发布包。
 
 ## 许可
 

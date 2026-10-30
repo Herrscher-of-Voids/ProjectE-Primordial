@@ -1,0 +1,36 @@
+{
+  "_comment": "【文件职责】ProjectE 1.1.0 原生价表与转化桌扩展的 Mixin 接线。【变更记录 #1】2026-10-23（2.0.0-neoforge-knowledge）：新增：原生价表重映射入口注入，在知识裁剪前更新凭证价格。【变更记录 #2】2026-10-23（2.0.0-neoforge-transmutation-table）：新增：TransmutationContainer 的合成网格、关闭返还与原版合成结果；复用 ProjectE 原生菜单。【变更记录 #3】2026-10-24（2.0.0-neoforge-container-return）：新增：ProjectE 消费槽和 Shift 卖入拦截；只返还白名单原版收纳容器的一层内容，按安全空壳价值结算。",
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.primordial.neoforge.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "ProjectECertificateMappingMixin",
+    "NeoForgeTransmutationCraftingMixin",
+    "NeoForgeTransmutationConsumeSaleMixin",
+    "NeoForgeBeyondDimensionsStorageMixin",
+    "NeoForgeBeyondDimensionsBotaniaPresenceMixin",
+    "NeoForgeBeyondDimensionsRuleMixin",
+    "NeoForgePneumaticBotaniaPresenceMixin",
+    "NeoForgeTransmutationNbtPersistenceMixin",
+    "NeoForgeTransmutationNbtLearningMixin",
+    "NeoForgeCreateKineticBlockEntityMixin",
+    "NeoForgeCreateKineticNetworkMixin",
+    "NeoForgeBlackholeArrowMixin",
+    "NeoForgeBlackholeHarvestMixin",
+    "NeoForgeBlackholeArrowAccess",
+    "NeoForgeCollectorFuelOrderMixin",
+    "NeoForgeCollectorCapacityMixin",
+    "NeoForgeCollectorTargetMixin",
+    "NeoForgeCollectorTooltipMixin"
+  ],
+  "client": [
+    "NeoForgeTransmutationScreenMixin",
+    "NeoForgeTransmutationSlotMixin",
+    "NeoForgeJeiCountRendererMixin",
+    "NeoForgeJeiCountOverlayMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

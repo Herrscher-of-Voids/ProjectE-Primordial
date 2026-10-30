@@ -1,0 +1,2812 @@
+{
+  "updated_at": "2026-10-29T00:20:58+08:00",
+  "source_instance": "<PrismLauncher>/instances/原初 test/minecraft",
+  "target_instance": "<PrismLauncher>/instances/ProjectE-Primordial-1.21.1-Test",
+  "minecraft": "1.21.1",
+  "neoforge": "21.1.264",
+  "language": "zh_cn",
+  "source_jar_count": 46,
+  "installed_jar_count": 43,
+  "source_mods_with_matches": 42,
+  "missing_original_mods": {
+    "bloodmagic": {
+      "name": "Blood Magic",
+      "reason": "原项目未找到1.21.1 NeoForge发行；另有非官方移植，未自动替换",
+      "source_url": "https://www.curseforge.com/minecraft/mc-mods/blood-magic",
+      "alternative_url": "https://www.curseforge.com/minecraft/mc-mods/blood-magic-unofficial-port"
+    },
+    "botania": {
+      "name": "Botania",
+      "reason": "原项目未找到1.21.1 NeoForge发行；Botania Revived为不同维护分支，未自动替换",
+      "source_url": "https://www.curseforge.com/minecraft/mc-mods/botania",
+      "alternative_url": "https://www.curseforge.com/minecraft/mc-mods/botania-revived"
+    },
+    "constructionwand": {
+      "name": "Construction Wand",
+      "reason": "原项目未找到1.21.1 NeoForge发行；重制分支未自动替换",
+      "source_url": "https://www.curseforge.com/minecraft/mc-mods/construction-wand"
+    }
+  },
+  "source_to_target": [
+    {
+      "source_file": "appliedenergistics2-forge-15.4.10.jar",
+      "status": "installed",
+      "target_file": "appliedenergistics2-19.2.18.jar"
+    },
+    {
+      "source_file": "architectury-9.2.14-forge.jar",
+      "status": "installed",
+      "target_file": "architectury-13.0.11-neoforge.jar"
+    },
+    {
+      "source_file": "ars_nouveau-1.20.1-4.12.7-all.jar",
+      "status": "installed",
+      "target_file": "ars_nouveau-1.21.1-5.13.3.jar"
+    },
+    {
+      "source_file": "balm-forge-1.20.1-7.3.37-all.jar",
+      "status": "installed",
+      "target_file": "balm-neoforge-1.21.1-21.0.66.jar"
+    },
+    {
+      "source_file": "beyonddimensions-1.20.1-forge-0.7.30.jar",
+      "status": "installed",
+      "target_file": "beyonddimensions-1.21.1-neoforge-0.8.2.jar"
+    },
+    {
+      "source_file": "bloodmagic-1.20.1-3.3.5-47.jar",
+      "status": "no_matching_upstream_release_found",
+      "name": "Blood Magic",
+      "reason": "原项目未找到1.21.1 NeoForge发行；另有非官方移植，未自动替换",
+      "source_url": "https://www.curseforge.com/minecraft/mc-mods/blood-magic",
+      "alternative_url": "https://www.curseforge.com/minecraft/mc-mods/blood-magic-unofficial-port"
+    },
+    {
+      "source_file": "Botania-1.20.1-450-FORGE.jar",
+      "status": "no_matching_upstream_release_found",
+      "name": "Botania",
+      "reason": "原项目未找到1.21.1 NeoForge发行；Botania Revived为不同维护分支，未自动替换",
+      "source_url": "https://www.curseforge.com/minecraft/mc-mods/botania",
+      "alternative_url": "https://www.curseforge.com/minecraft/mc-mods/botania-revived"
+    },
+    {
+      "source_file": "BrandonsCore-1.20.1-3.2.1.302-universal.jar",
+      "status": "installed",
+      "target_file": "BrandonsCore-1.21.1-3.2.1.309.jar"
+    },
+    {
+      "source_file": "CodeChickenLib-1.20.1-4.4.0.528-universal.jar",
+      "status": "installed",
+      "target_file": "CodeChickenLib-1.21.1-4.6.1.529.jar"
+    },
+    {
+      "source_file": "configured-forge-1.20.1-2.2.3.jar",
+      "status": "installed",
+      "target_file": "configured-neoforge-1.21.1-2.6.3.jar"
+    },
+    {
+      "source_file": "constructionwand-1.20.1-2.11.jar",
+      "status": "no_matching_upstream_release_found",
+      "name": "Construction Wand",
+      "reason": "原项目未找到1.21.1 NeoForge发行；重制分支未自动替换",
+      "source_url": "https://www.curseforge.com/minecraft/mc-mods/construction-wand"
+    },
+    {
+      "source_file": "craftingtweaks-forge-1.20.1-18.2.6.jar",
+      "status": "installed",
+      "target_file": "craftingtweaks-neoforge-1.21.1-21.1.11.jar"
+    },
+    {
+      "source_file": "create-1.20.1-6.0.8.jar",
+      "status": "installed",
+      "target_file": "create-1.21.1-6.0.10.jar"
+    },
+    {
+      "source_file": "curios-forge-5.14.1+1.20.1.jar",
+      "status": "installed",
+      "target_file": "curios-neoforge-9.5.1+1.21.1.jar"
+    },
+    {
+      "source_file": "Draconic-Evolution-1.20.1-3.1.2.621-universal.jar",
+      "status": "installed",
+      "target_file": "Draconic-Evolution-1.21.1-3.1.4.633.jar"
+    },
+    {
+      "source_file": "ftb-essentials-forge-2001.2.3.jar",
+      "status": "installed",
+      "target_file": "ftb-essentials-neoforge-2101.1.10.jar"
+    },
+    {
+      "source_file": "ftb-library-forge-2001.2.12.jar",
+      "status": "installed",
+      "target_file": "ftb-library-neoforge-2101.1.37.jar"
+    },
+    {
+      "source_file": "ftb-quests-forge-2001.4.22.jar",
+      "status": "installed",
+      "target_file": "ftb-quests-neoforge-2101.1.37.jar"
+    },
+    {
+      "source_file": "ftb-teams-forge-2001.3.1.jar",
+      "status": "installed",
+      "target_file": "ftb-teams-neoforge-2101.1.11.jar"
+    },
+    {
+      "source_file": "ftb-ultimine-forge-2001.1.7.jar",
+      "status": "installed",
+      "target_file": "ftb-ultimine-neoforge-2101.1.15.jar"
+    },
+    {
+      "source_file": "geckolib-forge-1.20.1-4.8.4.jar",
+      "status": "installed",
+      "target_file": "geckolib-neoforge-1.21.1-4.9.3.jar"
+    },
+    {
+      "source_file": "goety-2.5.59.2.jar",
+      "status": "installed_with_metadata_fix",
+      "target_file": "goety-3.2.1-primordial-metadatafix.jar"
+    },
+    {
+      "source_file": "guideme-20.1.15.jar",
+      "status": "installed",
+      "target_file": "guideme-21.1.20.jar"
+    },
+    {
+      "source_file": "I18nUpdateMod-3.7.0-all.jar",
+      "status": "installed",
+      "target_file": "I18nUpdateMod-3.7.0-all.jar"
+    },
+    {
+      "source_file": "invtweaks-1.20.1-1.2.2.jar",
+      "status": "installed",
+      "target_file": "invtweaks-1.21.1-1.2.0.jar"
+    },
+    {
+      "source_file": "irons_lib-1.20.1-2.2.0.jar",
+      "status": "installed",
+      "target_file": "irons_lib-1.21.1-2.2.0.jar"
+    },
+    {
+      "source_file": "irons_spellbooks-1.20.1-3.16.3.jar",
+      "status": "installed",
+      "target_file": "irons_spellbooks-1.21.1-3.16.3.jar"
+    },
+    {
+      "source_file": "Jade-1.20.1-Forge-11.13.2.jar",
+      "status": "installed",
+      "target_file": "Jade-1.21.1-NeoForge-15.10.6.jar"
+    },
+    {
+      "source_file": "jecharacters-1.20.1-forge-4.6.2.jar",
+      "status": "installed",
+      "target_file": "jecharacters-1.21.1-neoforge-4.5.30.jar"
+    },
+    {
+      "source_file": "jei-1.20.1-forge-15.20.0.129.jar",
+      "status": "installed",
+      "target_file": "jei-1.21.1-neoforge-19.69.0.457.jar"
+    },
+    {
+      "source_file": "Mekanism-1.20.1-10.4.16.80.jar",
+      "status": "installed",
+      "target_file": "Mekanism-1.21.1-10.7.19.85.jar"
+    },
+    {
+      "source_file": "MekanismGenerators-1.20.1-10.4.16.80.jar",
+      "status": "installed",
+      "target_file": "MekanismGenerators-1.21.1-10.7.19.85.jar"
+    },
+    {
+      "source_file": "MouseTweaks-forge-mc1.20.1-2.25.1.jar",
+      "status": "installed",
+      "target_file": "MouseTweaks-neoforge-mc1.21-2.26.1.jar"
+    },
+    {
+      "source_file": "NaturesAura-39.4.jar",
+      "status": "installed",
+      "target_file": "NaturesAura-41.10.jar"
+    },
+    {
+      "source_file": "notenoughcrashes-4.4.9+1.20.1-forge.jar",
+      "status": "installed",
+      "target_file": "notenoughcrashes-neoforge-4.4.9+1.21.1.jar"
+    },
+    {
+      "source_file": "Patchouli-1.20.1-84.1-FORGE.jar",
+      "status": "installed",
+      "target_file": "Patchouli-1.21.1-93-NEOFORGE.jar"
+    },
+    {
+      "source_file": "pipez-forge-1.20.1-1.2.26.jar",
+      "status": "installed",
+      "target_file": "pipez-neoforge-1.21.1-1.2.31.jar"
+    },
+    {
+      "source_file": "platformbuilder-1.0.2.jar",
+      "status": "owner_confirmed_no_1.21.1_version",
+      "name": "Platform Builder",
+      "reason": "用户自制模组，用户确认没有1.21.1版本",
+      "source_url": null
+    },
+    {
+      "source_file": "player-animation-lib-forge-1.0.2-rc1+1.20.jar",
+      "status": "installed",
+      "target_file": "player-animation-lib-forge-2.0.4+1.21.1.jar"
+    },
+    {
+      "source_file": "pneumaticcraft-repressurized-6.0.22+mc1.20.1.jar",
+      "status": "installed",
+      "target_file": "pneumaticcraft-repressurized-8.2.23+mc1.21.1.jar"
+    },
+    {
+      "source_file": "primordial-2.0.0.jar",
+      "status": "installed",
+      "target_file": "primordial-2.0.0-neo-dev.jar"
+    },
+    {
+      "source_file": "ProjectE-1.20.1-PE1.0.1.jar",
+      "status": "installed",
+      "target_file": "ProjectE-1.21.1-PE1.1.0.jar"
+    },
+    {
+      "source_file": "refinedstorage-1.12.4.jar",
+      "status": "installed",
+      "target_file": "refinedstorage-neoforge-2.0.9.jar"
+    },
+    {
+      "source_file": "sophisticatedbackpacks-1.20.1-3.24.17.1481.jar",
+      "status": "installed",
+      "target_file": "sophisticatedbackpacks-1.21.1-3.26.14.2222.jar"
+    },
+    {
+      "source_file": "sophisticatedcore-1.20.1-1.2.117.1347.jar",
+      "status": "installed",
+      "target_file": "sophisticatedcore-1.21.1-1.5.17.2426.jar"
+    },
+    {
+      "source_file": "Spear_of_Void-1.3.0fix4.jar",
+      "status": "installed_from_existing_instance",
+      "target_file": "Spear_of_Void-neoforge-1.21.1-1.3.0fix4.jar",
+      "source_path": "<PrismLauncher>/instances/FTB StoneBlock 4/.minecraft/mods/Spear_of_Void-neoforge-1.21.1-1.3.0fix4.jar"
+    }
+  ],
+  "extra_required_dependencies": [
+    {
+      "file": "compixel-neoforge-1.21.1-0.1.15-with-kotlin.jar",
+      "required_by": "Beyond Dimensions",
+      "reason": "Kotlin bundled variant; no separate KotlinForForge needed"
+    }
+  ],
+  "local_patches": [
+    {
+      "upstream_file": "goety-3.2.1.jar",
+      "installed_file": "goety-3.2.1-primordial-metadatafix.jar",
+      "upstream_sha256": "71026c15919792ac9e7a89cedbbfc408386e62f138857c914818ba338c5cc153",
+      "installed_sha256": "8a57fe3660b75691769a80188a9b34f69bc4c57e22df2731cad6d6850d8394bb",
+      "changed_entries": [
+        "META-INF/neoforge.mods.toml"
+      ],
+      "substitutions": {
+        "${loader_version_range}": "[1,)",
+        "${neo_version_range}": "[21.1,)",
+        "${minecraft_version_range}": "[1.21.1,1.22)"
+      },
+      "basis": "https://github.com/Vivideru/Goety-3/blob/main/gradle.properties",
+      "scope": "Only loading metadata; no class, asset, mixin, or gameplay code changed",
+      "runtime_tested": false
+    }
+  ],
+  "deferred": [
+    "Oritech EMC/碰撞能匹配：整个模组复刻完整之后处理"
+  ],
+  "backup_path": "<PrismLauncher>/instances/ProjectE-Primordial-1.21.1-Test/migration-backups/20261029-001705",
+  "validation": {
+    "zip_integrity": "passed",
+    "copy_sha256": "passed",
+    "required_dependency_and_version_ranges": "passed against actual installed43 JARs:171 constraints; includes Spear of Void; no substitutions during final audit",
+    "runtime": "43-JAR Prism client not launched; game client acceptance still requires scheduled desktop availability",
+    "jei_minecraft_range_override_source": "https://github.com/neoforged/FancyModLoader/blob/6a1f95233d936968e4eae09748d310aeb8de342d/loader/src/main/java/net/neoforged/fml/loading/VersionSupportMatrix.java",
+    "spear_of_void": "zip passed; SHA256 source/target matches; required mc[1.21.1,1.21.2), neoforge[21.1,), javafml[4,) match runtime; no added mandatory library",
+    "primordial_ae2_integration": "185/185 with AE2;179/179 without AE2;production build passed;items/fluids native-grid coverage;tests/APIs excluded",
+    "primordial_rs2_integration": "191/191 with RS2 2.0.9 + AE2 + Mekanism + FTB Quests + JEI;186/186 without RS2 with same other mods;production build passed;6 native powered RS2 tests include exact virtual cache, item/fluid transactions and lifecycle;tests/optional API implementations excluded",
+    "primordial_rs2_regression_note": "First no-RS2 run had one pre-existing blackhole disk-recovery assertion fail after Windows AccessDenied during NeoForge SavedData atomic rename;failure log retained;unchanged rerun passed186/186;no unrelated production/test code changed",
+    "primordial_beyond_dimensions_integration": "192/192 with BD 0.8.2 + Compixel + AE2 + RS 2 + Mekanism + FTB Quests + JEI;production build passed;authorization, stock priority, EMC item/fluid trades, simulation, virtual NBT exclusion, same-tick revocation/rebinding and removal",
+    "primordial_without_beyond_dimensions": "192/192 with AE2 + RS 2 + Mekanism + FTB Quests + JEI and no BD;optional API absence passed",
+    "primordial_beyond_dimensions_limitations": "Catalogue refresh every 20 ticks matches Forge 1.20.1; current test instance has no KubeJS; custom BD ExtractRule path is not adapted",
+    "player_inventory_replenishment": "169/169 NeoForge server GameTests passed; persistent item filters, learned-item authorization, exact bound-slot delivery, EMC payment, pause and unknown-item rejection; production build passed",
+    "player_inventory_configurator": "201/201 GameTests passed with AE2, RS 2, Beyond Dimensions, Mekanism, FTB Quests and JEI; production build passed; 36-slot menu, owner/menu-bound rule editing, malformed/stale request rejection, FE transaction rollback and copy-on-write charging covered",
+    "player_inventory_configurator_initial_run": "First optional-matrix run hit Windows AccessDeniedException renaming a pre-existing price-test file; unchanged rerun passed 201/201 and production build",
+    "production_jar": "477083 bytes; SHA256=356A8347C80C3B720B9E6CF72D69BD47F2A058EF80E1DD26CC3C721825AB210C; contains machine target access and paged snapshots; GameTests excluded",
+    "machine_target_access": "206/206 GameTests passed with AE2, RS 2, Beyond Dimensions, Mekanism, FTB Quests and JEI; production build passed; relative-face rotation, structural target keys, selected item slots, safe fluid tank binding, internal FE, stale/invalid providers and lazy paged read-only enumeration covered",
+    "machine_target_access_scope": "Access/enumeration backend only; machine menu, owner/distance/dimension checks, config persistence, target-edit payloads and task scheduler remain unported; no persistent block-entity instance UUID"
+  },
+  "installed_files": [
+    {
+      "File": "appliedenergistics2-19.2.18.jar",
+      "Bytes": 8236552,
+      "SHA256": "DF15A07F86CA1CA93AA66373F9D5D84DD3D4586631FCEB38F4FBC85DAD591E39",
+      "provenance": {
+        "publisher": "CurseForge",
+        "file_id": 8992605,
+        "source_url": "https://www.curseforge.com/minecraft/mc-mods/applied-energistics-2/files/8992605",
+        "download_url": "https://edge.forgecdn.net/files/8992/605/appliedenergistics2-19.2.18.jar",
+        "upstream_sha256": "df15a07f86ca1ca93aa66373f9d5d84dd3d4586631fceb38f4fbc85dad591e39"
+      }
+    },
+    {
+      "File": "architectury-13.0.11-neoforge.jar",
+      "Bytes": 584734,
+      "SHA256": "9CC92F2C09533FC5482C60F993BD891C655A0E32B637037CDCB7C2B23ADEDEEB",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "architectury-api",
+        "version_id": "1IiqEQGl",
+        "version": "13.0.11+neoforge",
+        "release_type": "release",
+        "source_url": "https://modrinth.com/mod/architectury-api/version/1IiqEQGl",
+        "download_url": "https://cdn.modrinth.com/data/lhGA9TYQ/versions/1IiqEQGl/architectury-13.0.11-neoforge.jar",
+        "upstream_sha512": "d9f7c3bb8162577dfb461ffdf04bd6a3563c7586934a0e2a744c14421beffb8286f0d88d4c758317003f20f99fe8072a39b9d675af061e036970d36db36027f0"
+      }
+    },
+    {
+      "File": "ars_nouveau-1.21.1-5.13.3.jar",
+      "Bytes": 19841105,
+      "SHA256": "45C1B6022D8E63464177C1F822BDA22C3D6FB66970857FD7677E4E3CCFFD259F",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "ars-nouveau",
+        "version_id": "yWDnir1o",
+        "version": "5.13.3",
+        "release_type": "release",
+        "source_url": "https://modrinth.com/mod/ars-nouveau/version/yWDnir1o",
+        "download_url": "https://cdn.modrinth.com/data/TKB6INcv/versions/yWDnir1o/ars_nouveau-1.21.1-5.13.3.jar",
+        "upstream_sha512": "30f188cfc932bd58c95740488732df7e92d98e7345e271b1a223e41a43fc3dd52284d0ff07fc3e8a95e914082f899394eff3a0f37c174d317e6e37fb68b083df"
+      }
+    },
+    {
+      "File": "balm-neoforge-1.21.1-21.0.66.jar",
+      "Bytes": 783793,
+      "SHA256": "6BE660E1F6D169553BF44F66D4F78BB9E96A1D66CE108D9608819E3CE6BFBA34",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "balm",
+        "version_id": "CquiaiDj",
+        "version": "21.0.66+neoforge-1.21.1",
+        "release_type": "release",
+        "source_url": "https://modrinth.com/mod/balm/version/CquiaiDj",
+        "download_url": "https://cdn.modrinth.com/data/MBAkmtvl/versions/CquiaiDj/balm-neoforge-1.21.1-21.0.66.jar",
+        "upstream_sha512": "0262d51c0e931d10c3dccefb3b5426a1622edecab243d4b15dce07a23309641370184776739765067d292d808242d088c6fbf249762689824eff9ba42c2d1e63"
+      }
+    },
+    {
+      "File": "beyonddimensions-1.21.1-neoforge-0.8.2.jar",
+      "Bytes": 2500330,
+      "SHA256": "C8F869C4BBFF417C61FCCCC0A360ADAF1F134DD7504D74582B42E6C08E5E0A91",
+      "provenance": {
+        "publisher": "CurseForge",
+        "file_id": 9308721,
+        "source_url": "https://www.curseforge.com/minecraft/mc-mods/beyond-dimensions/files/9308721",
+        "download_url": "https://edge.forgecdn.net/files/9308/721/beyonddimensions-1.21.1-neoforge-0.8.2.jar",
+        "upstream_sha256": "c8f869c4bbff417c61fcccc0a360adaf1f134dd7504d74582b42e6c08e5e0a91"
+      }
+    },
+    {
+      "File": "BrandonsCore-1.21.1-3.2.1.309.jar",
+      "Bytes": 1385131,
+      "SHA256": "076B44DE51C606E6CDD89694AC0A879FC028D4F0103880EF44F47DBCC69F1D23",
+      "provenance": {
+        "publisher": "CurseForge",
+        "file_id": 7130990,
+        "source_url": "https://www.curseforge.com/minecraft/mc-mods/brandons-core/files/7130990",
+        "download_url": "https://edge.forgecdn.net/files/7130/990/BrandonsCore-1.21.1-3.2.1.309.jar",
+        "upstream_sha256": "076b44de51c606e6cdd89694ac0a879fc028d4f0103880ef44f47dbcc69f1d23"
+      }
+    },
+    {
+      "File": "CodeChickenLib-1.21.1-4.6.1.529.jar",
+      "Bytes": 1538382,
+      "SHA256": "8C453D5C49092860E9D7A692EB858EA54C15D0F9598DAAE524F9590F8EDF276F",
+      "provenance": {
+        "publisher": "CurseForge",
+        "file_id": 8491811,
+        "source_url": "https://www.curseforge.com/minecraft/mc-mods/codechicken-lib-1-8/files/8491811",
+        "download_url": "https://edge.forgecdn.net/files/8491/811/CodeChickenLib-1.21.1-4.6.1.529.jar",
+        "upstream_sha256": "8c453d5c49092860e9d7a692eb858ea54c15d0f9598daae524f9590f8edf276f"
+      }
+    },
+    {
+      "File": "compixel-neoforge-1.21.1-0.1.15-with-kotlin.jar",
+      "Bytes": 42917809,
+      "SHA256": "94669F1D0D3D9C584E55C8598640B4190EE900041F3A4F37B992CC2748CDC359",
+      "provenance": {
+        "publisher": "CurseForge",
+        "file_id": 9297730,
+        "source_url": "https://www.curseforge.com/minecraft/mc-mods/compixel/files/9297730",
+        "download_url": "https://edge.forgecdn.net/files/9297/730/compixel-neoforge-1.21.1-0.1.15-with-kotlin.jar",
+        "upstream_sha256": "94669f1d0d3d9c584e55c8598640b4190ee900041f3a4f37b992cc2748cdc359"
+      }
+    },
+    {
+      "File": "configured-neoforge-1.21.1-2.6.3.jar",
+      "Bytes": 428793,
+      "SHA256": "421FFD2604B5487CBDB284D1EB5D1CB8A7D28F3FF84D5B4BDA25E0A579282A15",
+      "provenance": {
+        "publisher": "CurseForge",
+        "file_id": 7276577,
+        "source_url": "https://www.curseforge.com/minecraft/mc-mods/configured/files/7276577",
+        "download_url": "https://edge.forgecdn.net/files/7276/577/configured-neoforge-1.21.1-2.6.3.jar",
+        "upstream_sha256": "421ffd2604b5487cbdb284d1eb5d1cb8a7d28f3ff84d5b4bda25e0a579282a15"
+      }
+    },
+    {
+      "File": "craftingtweaks-neoforge-1.21.1-21.1.11.jar",
+      "Bytes": 256086,
+      "SHA256": "0964FEFC4A07120A53232B2D934FAC4BAF15FDAA99B69ADD30A18A642BC1CF98",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "crafting-tweaks",
+        "version_id": "IhkQpEve",
+        "version": "21.1.11+neoforge-1.21.1",
+        "release_type": "release",
+        "source_url": "https://modrinth.com/mod/crafting-tweaks/version/IhkQpEve",
+        "download_url": "https://cdn.modrinth.com/data/DMu0oBKf/versions/IhkQpEve/craftingtweaks-neoforge-1.21.1-21.1.11.jar",
+        "upstream_sha512": "e1869211c2e037bdaadbe9b9f592d4ccfb7ab94d7ba6803629d6525945edc05db973db6bd7568f2af4550ae4616ae6cbb832e1684412ba439d37f523b564d9a7"
+      }
+    },
+    {
+      "File": "create-1.21.1-6.0.10.jar",
+      "Bytes": 19123767,
+      "SHA256": "EF87FE5709F1BA1F5B8BB20A2925B5AFB4669E178FD6D8BF10C167759EEFE37A",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "create",
+        "version_id": "UjX6dr61",
+        "version": "6.0.10+mc1.21.1",
+        "release_type": "release",
+        "source_url": "https://modrinth.com/mod/create/version/UjX6dr61",
+        "download_url": "https://cdn.modrinth.com/data/LNytGWDc/versions/UjX6dr61/create-1.21.1-6.0.10.jar",
+        "upstream_sha512": "11cc8fc049d2f67f6548c7abfada6b82a3adb5c7ca410a742de04bbca76e03862c518721b88d806f6e6d768a4d68531fdb903a85859b25d1484d550cc7bafd4b"
+      }
+    },
+    {
+      "File": "curios-neoforge-9.5.1+1.21.1.jar",
+      "Bytes": 410690,
+      "SHA256": "A45DF2125C26219974ABA7507FFC9AFE7B83ACC941A386AF3FAACB1CC0056FDE",
+      "provenance": {
+        "publisher": "existing instance",
+        "retained": true
+      }
+    },
+    {
+      "File": "Draconic-Evolution-1.21.1-3.1.4.633.jar",
+      "Bytes": 6046229,
+      "SHA256": "E89F3A23A5478E35099905D7C08F9F6A2FF70289E964904E91F06A7CEEED39B5",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "draconic-evolution",
+        "version_id": "84xwXpNh",
+        "version": "3.1.4.633",
+        "release_type": "beta",
+        "source_url": "https://modrinth.com/mod/draconic-evolution/version/84xwXpNh",
+        "download_url": "https://cdn.modrinth.com/data/nBqivi8H/versions/84xwXpNh/Draconic-Evolution-1.21.1-3.1.4.633.jar",
+        "upstream_sha512": "9740f5750a916db8927d8051430b49eba9ebc37e5545aef09b83872a561a721e7eb8fed82e6ed2aad15ba016d6f8ea2ce566a5cafacc4a2879239119cdbaff31"
+      }
+    },
+    {
+      "File": "ftb-essentials-neoforge-2101.1.10.jar",
+      "Bytes": 217288,
+      "SHA256": "A61DE1B883EC9D6D652276F453E8E60B18BD315FEF8C62F21D6545260D526587",
+      "provenance": {
+        "publisher": "CurseForge",
+        "file_id": 8442866,
+        "source_url": "https://www.curseforge.com/minecraft/mc-mods/ftb-essentials-forge/files/8442866",
+        "download_url": "https://edge.forgecdn.net/files/8442/866/ftb-essentials-neoforge-2101.1.10.jar",
+        "upstream_sha256": "a61de1b883ec9d6d652276f453e8e60b18bd315fef8c62f21d6545260d526587"
+      }
+    },
+    {
+      "File": "ftb-library-neoforge-2101.1.37.jar",
+      "Bytes": 1439881,
+      "SHA256": "624C2D2D1CBADB946D967E17757BD5B2D129D4D3ED71F2DA0C70607D04476AC2",
+      "provenance": {
+        "publisher": "CurseForge",
+        "file_id": 9008089,
+        "source_url": "https://www.curseforge.com/minecraft/mc-mods/ftb-library-forge/files/9008089",
+        "download_url": "https://edge.forgecdn.net/files/9008/89/ftb-library-neoforge-2101.1.37.jar",
+        "upstream_sha256": "624c2d2d1cbadb946d967e17757bd5b2d129d4d3ed71f2da0c70607d04476ac2"
+      }
+    },
+    {
+      "File": "ftb-quests-neoforge-2101.1.37.jar",
+      "Bytes": 1635351,
+      "SHA256": "6B42457D680108D0AF5B8DEB21E3FE7B92138209F0683C62441DC360D4FC01D5",
+      "provenance": {
+        "publisher": "CurseForge",
+        "file_id": 9298629,
+        "source_url": "https://www.curseforge.com/minecraft/mc-mods/ftb-quests-forge/files/9298629",
+        "download_url": "https://edge.forgecdn.net/files/9298/629/ftb-quests-neoforge-2101.1.37.jar",
+        "upstream_sha256": "6b42457d680108d0af5b8deb21e3fe7b92138209f0683c62441dc360d4fc01d5"
+      }
+    },
+    {
+      "File": "ftb-teams-neoforge-2101.1.11.jar",
+      "Bytes": 308236,
+      "SHA256": "E6BCD670493624E6906DF872A9C6AF4A33FE6405CAC57A32C59CD4CD5838C655",
+      "provenance": {
+        "publisher": "CurseForge",
+        "file_id": 8724782,
+        "source_url": "https://www.curseforge.com/minecraft/mc-mods/ftb-teams-forge/files/8724782",
+        "download_url": "https://edge.forgecdn.net/files/8724/782/ftb-teams-neoforge-2101.1.11.jar",
+        "upstream_sha256": "e6bcd670493624e6906df872a9c6af4a33fe6405cac57a32c59cd4cd5838c655"
+      }
+    },
+    {
+      "File": "ftb-ultimine-neoforge-2101.1.15.jar",
+      "Bytes": 177109,
+      "SHA256": "1393A85CEB6E4794450D5F06043E3A033278E31B86DE8E03950D8B87604B2213",
+      "provenance": {
+        "publisher": "CurseForge",
+        "file_id": 8231400,
+        "source_url": "https://www.curseforge.com/minecraft/mc-mods/ftb-ultimine-forge/files/8231400",
+        "download_url": "https://edge.forgecdn.net/files/8231/400/ftb-ultimine-neoforge-2101.1.15.jar",
+        "upstream_sha256": "1393a85ceb6e4794450d5f06043e3a033278e31b86de8e03950d8b87604b2213"
+      }
+    },
+    {
+      "File": "geckolib-neoforge-1.21.1-4.9.3.jar",
+      "Bytes": 634531,
+      "SHA256": "20A1995E4074F387FF549E2C57EA79DD7D41EE83C6AFB9DD6A6E840E592D1C47",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "geckolib",
+        "version_id": "Grwn5rUB",
+        "version": "4.9.3",
+        "release_type": "release",
+        "source_url": "https://modrinth.com/mod/geckolib/version/Grwn5rUB",
+        "download_url": "https://cdn.modrinth.com/data/8BmcQJ2H/versions/Grwn5rUB/geckolib-neoforge-1.21.1-4.9.3.jar",
+        "upstream_sha512": "8dfa5f8c57224a5e34e5098367ea9819ca6dc9c11357cd3062c16da3455c8bd1a483098af7383debc4b9ce8e4d7ab3fdc799b415644eb829da83eb72a7335dfd"
+      }
+    },
+    {
+      "File": "goety-3.2.1-primordial-metadatafix.jar",
+      "Bytes": 94230039,
+      "SHA256": "8A57FE3660B75691769A80188A9B34F69BC4C57E22DF2731CAD6D6850D8394BB",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "goety",
+        "version_id": "bbO9Fg71",
+        "version": "3.2.1",
+        "release_type": "release",
+        "source_url": "https://modrinth.com/mod/goety/version/bbO9Fg71",
+        "download_url": "https://cdn.modrinth.com/data/4ZVIxU8x/versions/bbO9Fg71/goety-3.2.1.jar",
+        "upstream_sha512": "92a078f26b0f05159bb35e24b7e163c42aa16048228e2801ddb9b20b5c6e34784ecd98d91d665328d66fe05f0bc9a9cff830cedfc1bdcf526a8af3e7eb121b53",
+        "local_patch": {
+          "upstream_file": "goety-3.2.1.jar",
+          "installed_file": "goety-3.2.1-primordial-metadatafix.jar",
+          "upstream_sha256": "71026c15919792ac9e7a89cedbbfc408386e62f138857c914818ba338c5cc153",
+          "installed_sha256": "8a57fe3660b75691769a80188a9b34f69bc4c57e22df2731cad6d6850d8394bb",
+          "changed_entries": [
+            "META-INF/neoforge.mods.toml"
+          ],
+          "substitutions": {
+            "${loader_version_range}": "[1,)",
+            "${neo_version_range}": "[21.1,)",
+            "${minecraft_version_range}": "[1.21.1,1.22)"
+          },
+          "basis": "https://github.com/Vivideru/Goety-3/blob/main/gradle.properties",
+          "scope": "Only loading metadata; no class, asset, mixin, or gameplay code changed",
+          "runtime_tested": false
+        }
+      }
+    },
+    {
+      "File": "guideme-21.1.20.jar",
+      "Bytes": 9325132,
+      "SHA256": "94139E34B8B4E025F1C3E56CC1C677D86B2B2F0BBA2DCA1C44003042993D16ED",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "guideme",
+        "version_id": "mUlgxNj8",
+        "version": "21.1.20",
+        "release_type": "release",
+        "source_url": "https://modrinth.com/mod/guideme/version/mUlgxNj8",
+        "download_url": "https://cdn.modrinth.com/data/Ck4E7v7R/versions/mUlgxNj8/guideme-21.1.20.jar",
+        "upstream_sha512": "5e87550a56f97a23996b4c2e06a067a985f9dbbb3a79dd07a302fab275ff24637ed875e50eeafce030dd828799d323e50d86cc2509d53011069c895886a1cbdb"
+      }
+    },
+    {
+      "File": "I18nUpdateMod-3.7.0-all.jar",
+      "Bytes": 49726,
+      "SHA256": "66FC7F6DEBCA5BFE6D7C6AA392F6E23A712DC018AE71CBB6E0B214FF6A28142D",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "i18nupdatemod",
+        "version_id": "4ihDUjWs",
+        "version": "3.7.0",
+        "release_type": "release",
+        "source_url": "https://modrinth.com/mod/i18nupdatemod/version/4ihDUjWs",
+        "download_url": "https://cdn.modrinth.com/data/PWERr14M/versions/4ihDUjWs/I18nUpdateMod-3.7.0-all.jar",
+        "upstream_sha512": "ebfe770ef3e84e8ba83a9aecf5d29262720cc5c19b71a6f3727895407c52e1b14aa42685978bd37892141deef7fa807f9a8a2f523b90dd906ff1f24485237a3b"
+      }
+    },
+    {
+      "File": "invtweaks-1.21.1-1.2.0.jar",
+      "Bytes": 74866,
+      "SHA256": "1FF13A1F6A33FD881B178033C4F97088108469DC6807E5FB7D1B44A64D88D26E",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "inventory-tweaks-refoxed",
+        "version_id": "tcTciTmQ",
+        "version": "1.21.1-1.2.0",
+        "release_type": "release",
+        "source_url": "https://modrinth.com/mod/inventory-tweaks-refoxed/version/tcTciTmQ",
+        "download_url": "https://cdn.modrinth.com/data/uqnMI1kq/versions/tcTciTmQ/invtweaks-1.21.1-1.2.0.jar",
+        "upstream_sha512": "a419544da8d943ccf17ed62f359fdbff04752735d370b18de3833a74277039e0313c8032e06462125b6b9b4e15b4eec057b680d302b465191ce51c13254bdeb2"
+      }
+    },
+    {
+      "File": "irons_lib-1.21.1-2.2.0.jar",
+      "Bytes": 462255,
+      "SHA256": "9E086A4D449147BAAD6468B11FD34924A905D9CB6818C962676AA0C4589DCC3C",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "irons-lib",
+        "version_id": "lUwUKYPl",
+        "version": "1.21.1-2.2.0",
+        "release_type": "release",
+        "source_url": "https://modrinth.com/mod/irons-lib/version/lUwUKYPl",
+        "download_url": "https://cdn.modrinth.com/data/9nfaJPtX/versions/lUwUKYPl/irons_lib-1.21.1-2.2.0.jar",
+        "upstream_sha512": "2a7c61843b57a93d80f963469c4c4cad027a0bf11bc39112112444a41da2283704547037254cd732f12d781a3b8a3f17f3d0d45c965f3ebc5fe8d63adbe6a1ab"
+      }
+    },
+    {
+      "File": "irons_spellbooks-1.21.1-3.16.3.jar",
+      "Bytes": 13890045,
+      "SHA256": "55A290DB9B966E0C5D2F5C051D50775F3DB6375CDB52730C4DA528BCF5D5DAA0",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "irons-spells-n-spellbooks",
+        "version_id": "slKLosTb",
+        "version": "1.21.1-3.16.3",
+        "release_type": "release",
+        "source_url": "https://modrinth.com/mod/irons-spells-n-spellbooks/version/slKLosTb",
+        "download_url": "https://cdn.modrinth.com/data/s4OWxYQQ/versions/slKLosTb/irons_spellbooks-1.21.1-3.16.3.jar",
+        "upstream_sha512": "fd782f98c6c59b193c4832f33775291d2a7e639e1e23dd47510bfb494d99d182bec1253566b9394f96c733a0d0108be34bd729614b82dc29e55e096fdeb96f5b"
+      }
+    },
+    {
+      "File": "Jade-1.21.1-NeoForge-15.10.6.jar",
+      "Bytes": 726853,
+      "SHA256": "276F1F65A20D04F536989C4F311949D770B52C440C23C2B904A08860F3C93810",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "jade",
+        "version_id": "eYz2YBGT",
+        "version": "15.10.6+neoforge",
+        "release_type": "release",
+        "source_url": "https://modrinth.com/mod/jade/version/eYz2YBGT",
+        "download_url": "https://cdn.modrinth.com/data/nvQzSEkH/versions/eYz2YBGT/Jade-1.21.1-NeoForge-15.10.6.jar",
+        "upstream_sha512": "dad9755dce8d85d914fc4df2baa0211f13e5839a71c1925fdd01f69081a95e30a2934e6273f8b01f0169adebe7a9dae57a8d904de0c4cb36dc17369bb474f0f2"
+      }
+    },
+    {
+      "File": "jecharacters-1.21.1-neoforge-4.5.30.jar",
+      "Bytes": 255428,
+      "SHA256": "1B8E41C97FE4BC3B569475C2ADB1351A38547E25BFDA322A6AB80E44EFD992E1",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "justenoughcharacters",
+        "version_id": "iNnJuUnx",
+        "version": "4.5.30",
+        "release_type": "release",
+        "source_url": "https://modrinth.com/mod/justenoughcharacters/version/iNnJuUnx",
+        "download_url": "https://cdn.modrinth.com/data/I7k4B65h/versions/iNnJuUnx/jecharacters-1.21.1-neoforge-4.5.30.jar",
+        "upstream_sha512": "e30efe9687d36db5815d5aed7bbe8a143f15e8113310668985d0f26f279096606555e2c58765be56d8af2daa5a324c6db38696ea5933c78f6e29280aab6db3cc"
+      }
+    },
+    {
+      "File": "jei-1.21.1-neoforge-19.69.0.457.jar",
+      "Bytes": 7350892,
+      "SHA256": "5F09D199DBA1265E131EF1672597EA07857220E4CC2FF1DC754E8BD0E6378925",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "jei",
+        "version_id": "rsnYBmN3",
+        "version": "19.69.0.457",
+        "release_type": "beta",
+        "source_url": "https://modrinth.com/mod/jei/version/rsnYBmN3",
+        "download_url": "https://cdn.modrinth.com/data/u6dRKJwZ/versions/rsnYBmN3/jei-1.21.1-neoforge-19.69.0.457.jar",
+        "upstream_sha512": "1d8d51f845e68066f48efd4f88dd51d7c1616d314524dc15ffa286ab9930c9cca01cfd25914ab1e0e4e8a2e9d135f5c42ee2c6e77d6ed372c836c4d342c6631f"
+      }
+    },
+    {
+      "File": "Mekanism-1.21.1-10.7.19.85.jar",
+      "Bytes": 11976009,
+      "SHA256": "004DBC9F3106F4D192AEAA1EE1190DD16EC9CA8059ED3D093B80034F4C574F43",
+      "provenance": {
+        "publisher": "existing instance",
+        "retained": true
+      }
+    },
+    {
+      "File": "MekanismGenerators-1.21.1-10.7.19.85.jar",
+      "Bytes": 1114598,
+      "SHA256": "0E5783B111E756F27B48C62B2F0E02FFF750C77F7985FF809BFADC5F444BA4AC",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "mekanism-generators",
+        "version_id": "a6gl7srE",
+        "version": "10.7.19.85",
+        "release_type": "release",
+        "source_url": "https://modrinth.com/mod/mekanism-generators/version/a6gl7srE",
+        "download_url": "https://cdn.modrinth.com/data/OFVYKsAk/versions/a6gl7srE/MekanismGenerators-1.21.1-10.7.19.85.jar",
+        "upstream_sha512": "6c3d5b7ea2f67f43c3d169c97de2855a7085f38019cf426e015ccc8ca9bc4f66e96b1cdf4a9afdc92bef7b2e236f16c81415ed5e48736805d5961d29525316d6"
+      }
+    },
+    {
+      "File": "MouseTweaks-neoforge-mc1.21-2.26.1.jar",
+      "Bytes": 73938,
+      "SHA256": "68E6F4201C5DE97B77929A7215C9552495696CA6A3BF3AE4EACC34E135F6CC8B",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "mouse-tweaks",
+        "version_id": "9I21YYxf",
+        "version": "1.21-2.26.1-neoforge",
+        "release_type": "release",
+        "source_url": "https://modrinth.com/mod/mouse-tweaks/version/9I21YYxf",
+        "download_url": "https://cdn.modrinth.com/data/aC3cM3Vq/versions/9I21YYxf/MouseTweaks-neoforge-mc1.21-2.26.1.jar",
+        "upstream_sha512": "f95c0cc881211ee0442434976775e07aae40b4a2ba4e3a85455bc57ca9d3c991e239cd98374a8abd442dc9c378dcd9001e2caa1bf69991d424b5652dd7f3483b"
+      }
+    },
+    {
+      "File": "NaturesAura-41.10.jar",
+      "Bytes": 1553371,
+      "SHA256": "5401704E76FB59719D48CD3AA76F088220AE90D8E3B1F4859365AD260355700C",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "natures-aura",
+        "version_id": "kJ1hHmK0",
+        "version": "41.10",
+        "release_type": "release",
+        "source_url": "https://modrinth.com/mod/natures-aura/version/kJ1hHmK0",
+        "download_url": "https://cdn.modrinth.com/data/4cJkN3aF/versions/kJ1hHmK0/NaturesAura-41.10.jar",
+        "upstream_sha512": "2971065208401b8c138978e556a7081f4e9f97c97618afa77e6d6e7e740324d731bdc35b94914fc531e4f27911c423d52062870017861cebb2deff3bc80f0e15"
+      }
+    },
+    {
+      "File": "notenoughcrashes-neoforge-4.4.9+1.21.1.jar",
+      "Bytes": 598916,
+      "SHA256": "5E26339287E4CD21E1BE00D52088E3B5F0CAB176EAC967ACD7404115C6ECD22F",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "notenoughcrashes",
+        "version_id": "alR8L7vF",
+        "version": "4.4.9+1.21.1-neoforge",
+        "release_type": "release",
+        "source_url": "https://modrinth.com/mod/notenoughcrashes/version/alR8L7vF",
+        "download_url": "https://cdn.modrinth.com/data/yM94ont6/versions/alR8L7vF/notenoughcrashes-neoforge-4.4.9%2B1.21.1.jar",
+        "upstream_sha512": "912c31c6e806e457a501742d668b82b70f03d5cdbb722f09da27ba19f3408f236b1704ccf9ed4a2bee82cc272ba78671bfe1fd8b46baefef1ac4ee56d703f04f"
+      }
+    },
+    {
+      "File": "Patchouli-1.21.1-93-NEOFORGE.jar",
+      "Bytes": 646777,
+      "SHA256": "959AF52ED6640C316C3A8469203420BE4AEEA11AD6603890BA83BF48F5D9F993",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "patchouli",
+        "version_id": "BIogJv2D",
+        "version": "1.21.1-93-neoforge",
+        "release_type": "release",
+        "source_url": "https://modrinth.com/mod/patchouli/version/BIogJv2D",
+        "download_url": "https://cdn.modrinth.com/data/nU0bVIaL/versions/BIogJv2D/Patchouli-1.21.1-93-NEOFORGE.jar",
+        "upstream_sha512": "0b5c172db9a6eeecb5ca44b359a83548c3a60be7ff313959acdfc1e5b8039736c18e57e947d435b52d06da31159d2d02ea36e5742668dbc826308a4c99e4039f"
+      }
+    },
+    {
+      "File": "pipez-neoforge-1.21.1-1.2.31.jar",
+      "Bytes": 456599,
+      "SHA256": "9B37E922443EA3452DAEACBFBA4BCF69DE07692183C4EE09F1D1E82C9FC5CC5F",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "pipez",
+        "version_id": "BPGKb8pi",
+        "version": "neoforge-1.21.1-1.2.31",
+        "release_type": "beta",
+        "source_url": "https://modrinth.com/mod/pipez/version/BPGKb8pi",
+        "download_url": "https://cdn.modrinth.com/data/iRmWy6ga/versions/BPGKb8pi/pipez-neoforge-1.21.1-1.2.31.jar",
+        "upstream_sha512": "7291230b62104b73b04564d6d39ba18d11134a5713ee79242c7ae8885d07c4efb5f5d0ab75b8ff9aba3119ed8163d0c5488ad603a2db21b92dc35715b723ce5e"
+      }
+    },
+    {
+      "File": "player-animation-lib-forge-2.0.4+1.21.1.jar",
+      "Bytes": 203149,
+      "SHA256": "DBE5DE45F5CD60C0E5E47AF14E6D564534A98456E973CF670CB881F6938EEE92",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "playeranimator",
+        "version_id": "HJZB6bmA",
+        "version": "2.0.4+1.21.1-forge",
+        "release_type": "beta",
+        "source_url": "https://modrinth.com/mod/playeranimator/version/HJZB6bmA",
+        "download_url": "https://cdn.modrinth.com/data/gedNE4y2/versions/HJZB6bmA/player-animation-lib-forge-2.0.4%2B1.21.1.jar",
+        "upstream_sha512": "fc00450fb6c95ec1779021bdc726122dacb5915c6baddaacc981cd221b01b8db35f2a0dfde5d6fa6766d877266dc82f58854f571ea53cc5c4d468b80e1548a5f"
+      }
+    },
+    {
+      "File": "pneumaticcraft-repressurized-8.2.23+mc1.21.1.jar",
+      "Bytes": 11884697,
+      "SHA256": "647CE20D52CF139F3B693B9B4C4753966A95A6DAFC82D9E538AE4AE5B0249F9C",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "pneumaticcraft-repressurized",
+        "version_id": "TNzeuLH3",
+        "version": "8.2.23",
+        "release_type": "release",
+        "source_url": "https://modrinth.com/mod/pneumaticcraft-repressurized/version/TNzeuLH3",
+        "download_url": "https://cdn.modrinth.com/data/ncAcdgk7/versions/TNzeuLH3/pneumaticcraft-repressurized-8.2.23%2Bmc1.21.1.jar",
+        "upstream_sha512": "1863243c4e76ecdef60c541e332808df48f50e01d7f75f5b1bd52e38f086925aa715a199775cf885746e3869cfc78ee5ac463fd33a1ac55cccab5394d19e2bfa"
+      }
+    },
+    {
+      "File": "primordial-2.0.0-neo-dev.jar",
+      "Bytes": 477083,
+      "SHA256": "356A8347C80C3B720B9E6CF72D69BD47F2A058EF80E1DD26CC3C721825AB210C",
+      "provenance": {
+        "publisher": "local project build",
+        "source_path": "<repository>/neoforge/build/libs/primordial-2.0.0-neo-dev.jar",
+        "built_for": "Player inventory configurator plus NeoForge relative machine target access and 27-entry read-only port pages; 206/206 optional integration GameTests and production build passed",
+        "deployed_at": "2026-10-29T00:20:58+08:00"
+      }
+    },
+    {
+      "File": "ProjectE-1.21.1-PE1.1.0.jar",
+      "Bytes": 2426228,
+      "SHA256": "FEC9389D8B70FCF87331A0BCC41B78ADA79C1E6326EF02A7BB6DB9A1D5A4C48B",
+      "provenance": {
+        "publisher": "existing instance",
+        "retained": true
+      }
+    },
+    {
+      "File": "refinedstorage-neoforge-2.0.9.jar",
+      "Bytes": 4360871,
+      "SHA256": "E9C758DDDCDFA9C02A7370CA3F4F972A285A1E38CA434BD1FC15CB223FFA06AB",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "refined-storage",
+        "version_id": "lHHiI26k",
+        "version": "2.0.9",
+        "release_type": "release",
+        "source_url": "https://modrinth.com/mod/refined-storage/version/lHHiI26k",
+        "download_url": "https://cdn.modrinth.com/data/KDvYkUg3/versions/lHHiI26k/refinedstorage-neoforge-2.0.9.jar",
+        "upstream_sha512": "b98a938b8af859f1952bfb35fb6db712835a7dead88fa15258ac0f4f06b26b08ebfa49fd9a35b2c81f7a745b3cd4370ced98c242d0fe7473ba019d92da8f6c57"
+      }
+    },
+    {
+      "File": "sophisticatedbackpacks-1.21.1-3.26.14.2222.jar",
+      "Bytes": 1257036,
+      "SHA256": "0AB711D5C89CD13149571F96D30C45DB1F7B65802D0F44A39975A060B71B2690",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "sophisticated-backpacks",
+        "version_id": "eg9lPtG4",
+        "version": "1.21.1-3.26.14.2222",
+        "release_type": "release",
+        "source_url": "https://modrinth.com/mod/sophisticated-backpacks/version/eg9lPtG4",
+        "download_url": "https://cdn.modrinth.com/data/TyCTlI4b/versions/eg9lPtG4/sophisticatedbackpacks-1.21.1-3.26.14.2222.jar",
+        "upstream_sha512": "a2d4f486efd6eb0806c2c358c4217300b56cfca25893ca6e9c4c85d2e163f17f44f05e602d62ec8f17c426a15e40c310436ab90ba9ceeab14fac7710bf521191"
+      }
+    },
+    {
+      "File": "sophisticatedcore-1.21.1-1.5.17.2426.jar",
+      "Bytes": 1819706,
+      "SHA256": "6B1507CE51FE2A9D9175DC5FEB7E39170634838D37F740D09A1D8D27E0510B06",
+      "provenance": {
+        "publisher": "Modrinth",
+        "project": "sophisticated-core",
+        "version_id": "gtPF4VTh",
+        "version": "1.21.1-1.5.17.2426",
+        "release_type": "release",
+        "source_url": "https://modrinth.com/mod/sophisticated-core/version/gtPF4VTh",
+        "download_url": "https://cdn.modrinth.com/data/nmoqTijg/versions/gtPF4VTh/sophisticatedcore-1.21.1-1.5.17.2426.jar",
+        "upstream_sha512": "e4b24ceb806443a5f6611ef4b10e193d300d0aba507a64c64c52f9ebd1cdb95052e6eebc4c2bd2c1118e475b25f45dba0de37e25a9d194c691ccaa052e220d3a"
+      }
+    },
+    {
+      "File": "Spear_of_Void-neoforge-1.21.1-1.3.0fix4.jar",
+      "Bytes": 2796352,
+      "SHA256": "77489DFE1207632317EEE52865E32941D1D4737A33AADCBCE1861E94983FEA0C",
+      "provenance": {
+        "publisher": "local existing instance",
+        "source_path": "<PrismLauncher>/instances/FTB StoneBlock 4/.minecraft/mods/Spear_of_Void-neoforge-1.21.1-1.3.0fix4.jar",
+        "modid": "sov",
+        "version": "1.3.0fix4",
+        "author": "空之律者-西琳大人"
+      }
+    }
+  ],
+  "static_dependency_audit": {
+    "top_level_count": 43,
+    "installed_files": [
+      "appliedenergistics2-19.2.18.jar",
+      "architectury-13.0.11-neoforge.jar",
+      "ars_nouveau-1.21.1-5.13.3.jar",
+      "balm-neoforge-1.21.1-21.0.66.jar",
+      "beyonddimensions-1.21.1-neoforge-0.8.2.jar",
+      "BrandonsCore-1.21.1-3.2.1.309.jar",
+      "CodeChickenLib-1.21.1-4.6.1.529.jar",
+      "compixel-neoforge-1.21.1-0.1.15-with-kotlin.jar",
+      "configured-neoforge-1.21.1-2.6.3.jar",
+      "craftingtweaks-neoforge-1.21.1-21.1.11.jar",
+      "create-1.21.1-6.0.10.jar",
+      "curios-neoforge-9.5.1+1.21.1.jar",
+      "Draconic-Evolution-1.21.1-3.1.4.633.jar",
+      "ftb-essentials-neoforge-2101.1.10.jar",
+      "ftb-library-neoforge-2101.1.37.jar",
+      "ftb-quests-neoforge-2101.1.37.jar",
+      "ftb-teams-neoforge-2101.1.11.jar",
+      "ftb-ultimine-neoforge-2101.1.15.jar",
+      "geckolib-neoforge-1.21.1-4.9.3.jar",
+      "goety-3.2.1-primordial-metadatafix.jar",
+      "guideme-21.1.20.jar",
+      "I18nUpdateMod-3.7.0-all.jar",
+      "invtweaks-1.21.1-1.2.0.jar",
+      "irons_lib-1.21.1-2.2.0.jar",
+      "irons_spellbooks-1.21.1-3.16.3.jar",
+      "Jade-1.21.1-NeoForge-15.10.6.jar",
+      "jecharacters-1.21.1-neoforge-4.5.30.jar",
+      "jei-1.21.1-neoforge-19.69.0.457.jar",
+      "Mekanism-1.21.1-10.7.19.85.jar",
+      "MekanismGenerators-1.21.1-10.7.19.85.jar",
+      "MouseTweaks-neoforge-mc1.21-2.26.1.jar",
+      "NaturesAura-41.10.jar",
+      "notenoughcrashes-neoforge-4.4.9+1.21.1.jar",
+      "Patchouli-1.21.1-93-NEOFORGE.jar",
+      "pipez-neoforge-1.21.1-1.2.31.jar",
+      "player-animation-lib-forge-2.0.4+1.21.1.jar",
+      "pneumaticcraft-repressurized-8.2.23+mc1.21.1.jar",
+      "primordial-2.0.0-neo-dev.jar",
+      "ProjectE-1.21.1-PE1.1.0.jar",
+      "refinedstorage-neoforge-2.0.9.jar",
+      "sophisticatedbackpacks-1.21.1-3.26.14.2222.jar",
+      "sophisticatedcore-1.21.1-1.5.17.2426.jar",
+      "Spear_of_Void-neoforge-1.21.1-1.3.0fix4.jar"
+    ],
+    "mod_count_with_runtime_and_nested": 51,
+    "mods": {
+      "minecraft": {
+        "version": "1.21.1",
+        "file": "runtime"
+      },
+      "neoforge": {
+        "version": "21.1.264",
+        "file": "runtime"
+      },
+      "ae2": {
+        "file": "appliedenergistics2-19.2.18.jar",
+        "version": "19.2.18"
+      },
+      "architectury": {
+        "file": "architectury-13.0.11-neoforge.jar",
+        "version": "13.0.11"
+      },
+      "ars_nouveau": {
+        "file": "ars_nouveau-1.21.1-5.13.3.jar",
+        "version": "5.13.3"
+      },
+      "nuggets": {
+        "file": "ars_nouveau-1.21.1-5.13.3.jar!META-INF/jarjar/nuggets-neoforge-1.21.1-1.1.0.48.jar",
+        "version": "1.1.0.48"
+      },
+      "infiniverse": {
+        "file": "ars_nouveau-1.21.1-5.13.3.jar!META-INF/jarjar/infiniverse-568341-5486311.jar",
+        "version": "2.0.1.0"
+      },
+      "lambdynlights_api": {
+        "file": "ars_nouveau-1.21.1-5.13.3.jar!META-INF/jarjar/lambdynamiclights-api-4.5.1+1.21.1-mojmap.jar",
+        "version": "4.5.1+1.21.1"
+      },
+      "balm": {
+        "file": "balm-neoforge-1.21.1-21.0.66.jar",
+        "version": "21.0.66"
+      },
+      "kuma_api": {
+        "file": "balm-neoforge-1.21.1-21.0.66.jar!META-INF/jarjar/kuma-api-neoforge-21.0.8+1.21.jar",
+        "version": "21.0.8"
+      },
+      "beyonddimensions": {
+        "file": "beyonddimensions-1.21.1-neoforge-0.8.2.jar",
+        "version": "0.8.2"
+      },
+      "brandonscore": {
+        "file": "BrandonsCore-1.21.1-3.2.1.309.jar",
+        "version": "3.2.1.309"
+      },
+      "codechickenlib": {
+        "file": "CodeChickenLib-1.21.1-4.6.1.529.jar",
+        "version": "4.6.1.529"
+      },
+      "compixel": {
+        "file": "compixel-neoforge-1.21.1-0.1.15-with-kotlin.jar",
+        "version": "0.1.15"
+      },
+      "configured": {
+        "file": "configured-neoforge-1.21.1-2.6.3.jar",
+        "version": "2.6.3"
+      },
+      "craftingtweaks": {
+        "file": "craftingtweaks-neoforge-1.21.1-21.1.11.jar",
+        "version": "21.1.11"
+      },
+      "create": {
+        "file": "create-1.21.1-6.0.10.jar",
+        "version": "6.0.10"
+      },
+      "flywheel": {
+        "file": "create-1.21.1-6.0.10.jar!META-INF/jarjar/flywheel-neoforge-1.21.1-1.0.6.jar",
+        "version": "1.0.6"
+      },
+      "ponder": {
+        "file": "create-1.21.1-6.0.10.jar!META-INF/jarjar/ponder-neoforge-1.0.82+mc1.21.1.jar",
+        "version": "1.0.82+mc1.21.1"
+      },
+      "curios": {
+        "file": "curios-neoforge-9.5.1+1.21.1.jar",
+        "version": "9.5.1+1.21.1"
+      },
+      "draconicevolution": {
+        "file": "Draconic-Evolution-1.21.1-3.1.4.633.jar",
+        "version": "3.1.4.633"
+      },
+      "ftbessentials": {
+        "file": "ftb-essentials-neoforge-2101.1.10.jar",
+        "version": "2101.1.10"
+      },
+      "ftblibrary": {
+        "file": "ftb-library-neoforge-2101.1.37.jar",
+        "version": "2101.1.37"
+      },
+      "ftbquests": {
+        "file": "ftb-quests-neoforge-2101.1.37.jar",
+        "version": "2101.1.37"
+      },
+      "ftbteams": {
+        "file": "ftb-teams-neoforge-2101.1.11.jar",
+        "version": "2101.1.11"
+      },
+      "ftbultimine": {
+        "file": "ftb-ultimine-neoforge-2101.1.15.jar",
+        "version": "2101.1.15"
+      },
+      "geckolib": {
+        "file": "geckolib-neoforge-1.21.1-4.9.3.jar",
+        "version": "4.9.3"
+      },
+      "goety": {
+        "file": "goety-3.2.1-primordial-metadatafix.jar",
+        "version": "3.2.1"
+      },
+      "guideme": {
+        "file": "guideme-21.1.20.jar",
+        "version": "21.1.20"
+      },
+      "invtweaks": {
+        "file": "invtweaks-1.21.1-1.2.0.jar",
+        "version": "1.21.1-1.2.0"
+      },
+      "irons_lib": {
+        "file": "irons_lib-1.21.1-2.2.0.jar",
+        "version": "1.21.1-2.2.0"
+      },
+      "irons_spellbooks": {
+        "file": "irons_spellbooks-1.21.1-3.16.3.jar",
+        "version": "1.21.1-3.16.3"
+      },
+      "jade": {
+        "file": "Jade-1.21.1-NeoForge-15.10.6.jar",
+        "version": "15.10.6+neoforge"
+      },
+      "jecharacters": {
+        "file": "jecharacters-1.21.1-neoforge-4.5.30.jar",
+        "version": "4.5.30"
+      },
+      "jei": {
+        "file": "jei-1.21.1-neoforge-19.69.0.457.jar",
+        "version": "19.69.0.457"
+      },
+      "mezz_config": {
+        "file": "jei-1.21.1-neoforge-19.69.0.457.jar!META-INF/jarjar/mezz_config-1.21.1-neoforge-0.6.6.jar",
+        "version": "0.6.6"
+      },
+      "mekanism": {
+        "file": "Mekanism-1.21.1-10.7.19.85.jar",
+        "version": "10.7.19"
+      },
+      "mekanismgenerators": {
+        "file": "MekanismGenerators-1.21.1-10.7.19.85.jar",
+        "version": "10.7.19"
+      },
+      "mousetweaks": {
+        "file": "MouseTweaks-neoforge-mc1.21-2.26.1.jar",
+        "version": "2.26.1"
+      },
+      "naturesaura": {
+        "file": "NaturesAura-41.10.jar",
+        "version": "41.10"
+      },
+      "notenoughcrashes": {
+        "file": "notenoughcrashes-neoforge-4.4.9+1.21.1.jar",
+        "version": "4.4.9+1.21.1"
+      },
+      "patchouli": {
+        "file": "Patchouli-1.21.1-93-NEOFORGE.jar",
+        "version": "1.21.1-93-NEOFORGE"
+      },
+      "pipez": {
+        "file": "pipez-neoforge-1.21.1-1.2.31.jar",
+        "version": "1.21.1-1.2.31"
+      },
+      "playeranimator": {
+        "file": "player-animation-lib-forge-2.0.4+1.21.1.jar",
+        "version": "2.0.4+1.21.1"
+      },
+      "pneumaticcraft": {
+        "file": "pneumaticcraft-repressurized-8.2.23+mc1.21.1.jar",
+        "version": "8.2.23"
+      },
+      "primordial": {
+        "file": "primordial-2.0.0-neo-dev.jar",
+        "version": "2.0.0-neo-dev"
+      },
+      "projecte": {
+        "file": "ProjectE-1.21.1-PE1.1.0.jar",
+        "version": "1.1.0"
+      },
+      "refinedstorage": {
+        "file": "refinedstorage-neoforge-2.0.9.jar",
+        "version": "2.0.9"
+      },
+      "sophisticatedbackpacks": {
+        "file": "sophisticatedbackpacks-1.21.1-3.26.14.2222.jar",
+        "version": "3.26.14"
+      },
+      "sophisticatedcore": {
+        "file": "sophisticatedcore-1.21.1-1.5.17.2426.jar",
+        "version": "1.5.17"
+      },
+      "sov": {
+        "file": "Spear_of_Void-neoforge-1.21.1-1.3.0fix4.jar",
+        "version": "1.3.0fix4"
+      }
+    },
+    "requirements": [
+      {
+        "file": "architectury-13.0.11-neoforge.jar",
+        "owner": "architectury",
+        "mod": "minecraft",
+        "range": "[1.21,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "architectury-13.0.11-neoforge.jar",
+        "owner": "architectury",
+        "mod": "neoforge",
+        "range": "[21.0.110-beta,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ars_nouveau-1.21.1-5.13.3.jar",
+        "owner": "ars_nouveau",
+        "mod": "neoforge",
+        "range": "[21.0.86-beta,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ars_nouveau-1.21.1-5.13.3.jar",
+        "owner": "ars_nouveau",
+        "mod": "curios",
+        "range": "[1.19-5.0.7.1,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ars_nouveau-1.21.1-5.13.3.jar",
+        "owner": "ars_nouveau",
+        "mod": "geckolib",
+        "range": "[4.2.1,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ars_nouveau-1.21.1-5.13.3.jar!META-INF/jarjar/nuggets-neoforge-1.21.1-1.1.0.48.jar",
+        "owner": "nuggets",
+        "mod": "neoforge",
+        "range": "[21.1.205,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ars_nouveau-1.21.1-5.13.3.jar!META-INF/jarjar/nuggets-neoforge-1.21.1-1.1.0.48.jar",
+        "owner": "nuggets",
+        "mod": "minecraft",
+        "range": "[1.21, 1.22)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ars_nouveau-1.21.1-5.13.3.jar!META-INF/jarjar/infiniverse-568341-5486311.jar",
+        "owner": "infiniverse",
+        "mod": "neoforge",
+        "range": "[21.0.40-beta,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ars_nouveau-1.21.1-5.13.3.jar!META-INF/jarjar/infiniverse-568341-5486311.jar",
+        "owner": "infiniverse",
+        "mod": "minecraft",
+        "range": "[1.21, 1.22)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ars_nouveau-1.21.1-5.13.3.jar!META-INF/jarjar/lambdynamiclights-api-4.5.1+1.21.1-mojmap.jar",
+        "owner": "lambdynlights_api",
+        "mod": "minecraft",
+        "range": "[1.21,1.21.1]",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "balm-neoforge-1.21.1-21.0.66.jar",
+        "owner": "balm",
+        "mod": "neoforge",
+        "range": "[21.0.82-beta,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "balm-neoforge-1.21.1-21.0.66.jar",
+        "owner": "balm",
+        "mod": "minecraft",
+        "range": "[1.21.1,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "balm-neoforge-1.21.1-21.0.66.jar!META-INF/jarjar/kuma-api-neoforge-21.0.8+1.21.jar",
+        "owner": "kuma_api",
+        "mod": "neoforge",
+        "range": "[21-beta,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "balm-neoforge-1.21.1-21.0.66.jar!META-INF/jarjar/kuma-api-neoforge-21.0.8+1.21.jar",
+        "owner": "kuma_api",
+        "mod": "minecraft",
+        "range": "[1.21,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "beyonddimensions-1.21.1-neoforge-0.8.2.jar",
+        "owner": "beyonddimensions",
+        "mod": "neoforge",
+        "range": "[21.1.194,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "beyonddimensions-1.21.1-neoforge-0.8.2.jar",
+        "owner": "beyonddimensions",
+        "mod": "minecraft",
+        "range": "[1.21.1]",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "beyonddimensions-1.21.1-neoforge-0.8.2.jar",
+        "owner": "beyonddimensions",
+        "mod": "compixel",
+        "range": "[0.1.12,0.2)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "beyonddimensions-1.21.1-neoforge-0.8.2.jar",
+        "owner": "beyonddimensions",
+        "mod": "kotlinforforge",
+        "range": "(,)",
+        "kind": "optional",
+        "side": "BOTH"
+      },
+      {
+        "file": "beyonddimensions-1.21.1-neoforge-0.8.2.jar",
+        "owner": "beyonddimensions",
+        "mod": "create",
+        "range": "[6.0.0,)",
+        "kind": "optional",
+        "side": "BOTH"
+      },
+      {
+        "file": "BrandonsCore-1.21.1-3.2.1.309.jar",
+        "owner": "brandonscore",
+        "mod": "neoforge",
+        "range": "[21.1.72,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "BrandonsCore-1.21.1-3.2.1.309.jar",
+        "owner": "brandonscore",
+        "mod": "minecraft",
+        "range": "[1.21.1]",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "BrandonsCore-1.21.1-3.2.1.309.jar",
+        "owner": "brandonscore",
+        "mod": "codechickenlib",
+        "range": "[4.6.1,5.0.0)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "BrandonsCore-1.21.1-3.2.1.309.jar",
+        "owner": "brandonscore",
+        "mod": "projectintelligence",
+        "range": "[1.1.0.+,)",
+        "kind": "optional",
+        "side": "BOTH"
+      },
+      {
+        "file": "CodeChickenLib-1.21.1-4.6.1.529.jar",
+        "owner": "codechickenlib",
+        "mod": "neoforge",
+        "range": "[21.1.72,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "CodeChickenLib-1.21.1-4.6.1.529.jar",
+        "owner": "codechickenlib",
+        "mod": "minecraft",
+        "range": "[1.21.1]",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "compixel-neoforge-1.21.1-0.1.15-with-kotlin.jar",
+        "owner": "compixel",
+        "mod": "neoforge",
+        "range": "[21.1.1,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "compixel-neoforge-1.21.1-0.1.15-with-kotlin.jar",
+        "owner": "compixel",
+        "mod": "minecraft",
+        "range": "[1.21.1]",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "configured-neoforge-1.21.1-2.6.3.jar",
+        "owner": "configured",
+        "mod": "neoforge",
+        "range": "[21.1.211,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "configured-neoforge-1.21.1-2.6.3.jar",
+        "owner": "configured",
+        "mod": "minecraft",
+        "range": "[1.21.1,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "configured-neoforge-1.21.1-2.6.3.jar",
+        "owner": "configured",
+        "mod": "framework",
+        "range": "[0.13.5,)",
+        "kind": "optional",
+        "side": "BOTH"
+      },
+      {
+        "file": "configured-neoforge-1.21.1-2.6.3.jar",
+        "owner": "configured",
+        "mod": "jei",
+        "range": "[19.25.0.322,)",
+        "kind": "optional",
+        "side": "BOTH"
+      },
+      {
+        "file": "craftingtweaks-neoforge-1.21.1-21.1.11.jar",
+        "owner": "craftingtweaks",
+        "mod": "neoforge",
+        "range": "[21-beta,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "craftingtweaks-neoforge-1.21.1-21.1.11.jar",
+        "owner": "craftingtweaks",
+        "mod": "minecraft",
+        "range": "[1.21,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "craftingtweaks-neoforge-1.21.1-21.1.11.jar",
+        "owner": "craftingtweaks",
+        "mod": "balm",
+        "range": "[21.0.48,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "create-1.21.1-6.0.10.jar",
+        "owner": "create",
+        "mod": "neoforge",
+        "range": "[21.1.219,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "create-1.21.1-6.0.10.jar",
+        "owner": "create",
+        "mod": "minecraft",
+        "range": "[1.21.1]",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "create-1.21.1-6.0.10.jar",
+        "owner": "create",
+        "mod": "flywheel",
+        "range": "[1.0.0,2.0)",
+        "kind": "required",
+        "side": "CLIENT"
+      },
+      {
+        "file": "create-1.21.1-6.0.10.jar",
+        "owner": "create",
+        "mod": "ponder",
+        "range": "[1.0.82,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "create-1.21.1-6.0.10.jar",
+        "owner": "create",
+        "mod": "sodium",
+        "range": "[0.6.9,)",
+        "kind": "optional",
+        "side": "CLIENT"
+      },
+      {
+        "file": "create-1.21.1-6.0.10.jar",
+        "owner": "create",
+        "mod": "lithium",
+        "range": "[0.14.7,)",
+        "kind": "optional",
+        "side": "BOTH"
+      },
+      {
+        "file": "create-1.21.1-6.0.10.jar",
+        "owner": "create",
+        "mod": "journeymap",
+        "range": "[1.21.1-6.0.0-beta.46,)",
+        "kind": "optional",
+        "side": "CLIENT"
+      },
+      {
+        "file": "create-1.21.1-6.0.10.jar",
+        "owner": "create",
+        "mod": "xaeroworldmap",
+        "range": "[1.40.2,)",
+        "kind": "optional",
+        "side": "CLIENT"
+      },
+      {
+        "file": "create-1.21.1-6.0.10.jar!META-INF/jarjar/flywheel-neoforge-1.21.1-1.0.6.jar",
+        "owner": "flywheel",
+        "mod": "minecraft",
+        "range": "[1.21.1,1.21.2)",
+        "kind": "required",
+        "side": "CLIENT"
+      },
+      {
+        "file": "create-1.21.1-6.0.10.jar!META-INF/jarjar/flywheel-neoforge-1.21.1-1.0.6.jar",
+        "owner": "flywheel",
+        "mod": "neoforge",
+        "range": "[21.1.66,)",
+        "kind": "required",
+        "side": "CLIENT"
+      },
+      {
+        "file": "create-1.21.1-6.0.10.jar!META-INF/jarjar/flywheel-neoforge-1.21.1-1.0.6.jar",
+        "owner": "flywheel",
+        "mod": "embeddium",
+        "range": "[0.3.25,)",
+        "kind": "optional",
+        "side": "CLIENT"
+      },
+      {
+        "file": "create-1.21.1-6.0.10.jar!META-INF/jarjar/flywheel-neoforge-1.21.1-1.0.6.jar",
+        "owner": "flywheel",
+        "mod": "sodium",
+        "range": "[0.6.0-beta.2,)",
+        "kind": "optional",
+        "side": "CLIENT"
+      },
+      {
+        "file": "create-1.21.1-6.0.10.jar!META-INF/jarjar/ponder-neoforge-1.0.82+mc1.21.1.jar",
+        "owner": "ponder",
+        "mod": "neoforge",
+        "range": "[21.1.206,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "create-1.21.1-6.0.10.jar!META-INF/jarjar/ponder-neoforge-1.0.82+mc1.21.1.jar",
+        "owner": "ponder",
+        "mod": "minecraft",
+        "range": "[1.21.1]",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "create-1.21.1-6.0.10.jar!META-INF/jarjar/ponder-neoforge-1.0.82+mc1.21.1.jar",
+        "owner": "ponder",
+        "mod": "flywheel",
+        "range": "[1.0.0,2.0)",
+        "kind": "required",
+        "side": "CLIENT"
+      },
+      {
+        "file": "curios-neoforge-9.5.1+1.21.1.jar",
+        "owner": "curios",
+        "mod": "neoforge",
+        "range": "[21.1.60,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "curios-neoforge-9.5.1+1.21.1.jar",
+        "owner": "curios",
+        "mod": "minecraft",
+        "range": "[1.21, 1.22)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "Draconic-Evolution-1.21.1-3.1.4.633.jar",
+        "owner": "draconicevolution",
+        "mod": "neoforge",
+        "range": "[21.1.72,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "Draconic-Evolution-1.21.1-3.1.4.633.jar",
+        "owner": "draconicevolution",
+        "mod": "minecraft",
+        "range": "[1.21.1]",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "Draconic-Evolution-1.21.1-3.1.4.633.jar",
+        "owner": "draconicevolution",
+        "mod": "computercraft",
+        "range": "[1.113.1,)",
+        "kind": "optional",
+        "side": "BOTH"
+      },
+      {
+        "file": "Draconic-Evolution-1.21.1-3.1.4.633.jar",
+        "owner": "draconicevolution",
+        "mod": "codechickenlib",
+        "range": "[4.6.1,5.0.0)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "Draconic-Evolution-1.21.1-3.1.4.633.jar",
+        "owner": "draconicevolution",
+        "mod": "brandonscore",
+        "range": "[3.2.1.+,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ftb-essentials-neoforge-2101.1.10.jar",
+        "owner": "ftbessentials",
+        "mod": "neoforge",
+        "range": "[21.1.0,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ftb-essentials-neoforge-2101.1.10.jar",
+        "owner": "ftbessentials",
+        "mod": "minecraft",
+        "range": "[1.21.1,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ftb-essentials-neoforge-2101.1.10.jar",
+        "owner": "ftbessentials",
+        "mod": "ftblibrary",
+        "range": "[2101.1.4,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ftb-essentials-neoforge-2101.1.10.jar",
+        "owner": "ftbessentials",
+        "mod": "ftbranks",
+        "range": "[2100.1.0,)",
+        "kind": "optional",
+        "side": "BOTH"
+      },
+      {
+        "file": "ftb-essentials-neoforge-2101.1.10.jar",
+        "owner": "ftbessentials",
+        "mod": "luckperms",
+        "range": "[5.4.83,)",
+        "kind": "optional",
+        "side": "SERVER"
+      },
+      {
+        "file": "ftb-library-neoforge-2101.1.37.jar",
+        "owner": "ftblibrary",
+        "mod": "neoforge",
+        "range": "[21.1.0,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ftb-library-neoforge-2101.1.37.jar",
+        "owner": "ftblibrary",
+        "mod": "minecraft",
+        "range": "[1.21.1,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ftb-library-neoforge-2101.1.37.jar",
+        "owner": "ftblibrary",
+        "mod": "architectury",
+        "range": "[13.0.6,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ftb-quests-neoforge-2101.1.37.jar",
+        "owner": "ftbquests",
+        "mod": "neoforge",
+        "range": "[21.1.0,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ftb-quests-neoforge-2101.1.37.jar",
+        "owner": "ftbquests",
+        "mod": "minecraft",
+        "range": "[1.21.1,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ftb-quests-neoforge-2101.1.37.jar",
+        "owner": "ftbquests",
+        "mod": "architectury",
+        "range": "[13.0.8,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ftb-quests-neoforge-2101.1.37.jar",
+        "owner": "ftbquests",
+        "mod": "ftblibrary",
+        "range": "[2101.1.36,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ftb-quests-neoforge-2101.1.37.jar",
+        "owner": "ftbquests",
+        "mod": "ftbteams",
+        "range": "[2101.1.9,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ftb-quests-neoforge-2101.1.37.jar",
+        "owner": "ftbquests",
+        "mod": "ftbxmodcompat",
+        "range": "[21.1.7,)",
+        "kind": "optional",
+        "side": "BOTH"
+      },
+      {
+        "file": "ftb-teams-neoforge-2101.1.11.jar",
+        "owner": "ftbteams",
+        "mod": "neoforge",
+        "range": "[21.1.0,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ftb-teams-neoforge-2101.1.11.jar",
+        "owner": "ftbteams",
+        "mod": "minecraft",
+        "range": "[1.21.1,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ftb-teams-neoforge-2101.1.11.jar",
+        "owner": "ftbteams",
+        "mod": "architectury",
+        "range": "[13.0.8,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ftb-teams-neoforge-2101.1.11.jar",
+        "owner": "ftbteams",
+        "mod": "ftblibrary",
+        "range": "[2101.1.30,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ftb-ultimine-neoforge-2101.1.15.jar",
+        "owner": "ftbultimine",
+        "mod": "neoforge",
+        "range": "[21.1.0,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ftb-ultimine-neoforge-2101.1.15.jar",
+        "owner": "ftbultimine",
+        "mod": "minecraft",
+        "range": "[1.21.1,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ftb-ultimine-neoforge-2101.1.15.jar",
+        "owner": "ftbultimine",
+        "mod": "architectury",
+        "range": "[13.0.6,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ftb-ultimine-neoforge-2101.1.15.jar",
+        "owner": "ftbultimine",
+        "mod": "ftblibrary",
+        "range": "[2101.1.28,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ftb-ultimine-neoforge-2101.1.15.jar",
+        "owner": "ftbultimine",
+        "mod": "ftbezcrystals",
+        "range": "[21.1.1,)",
+        "kind": "optional",
+        "side": "BOTH"
+      },
+      {
+        "file": "geckolib-neoforge-1.21.1-4.9.3.jar",
+        "owner": "geckolib",
+        "mod": "neoforge",
+        "range": "[21.1.150,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "geckolib-neoforge-1.21.1-4.9.3.jar",
+        "owner": "geckolib",
+        "mod": "minecraft",
+        "range": "[1.21,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "goety-3.2.1-primordial-metadatafix.jar",
+        "owner": "goety",
+        "mod": "neoforge",
+        "range": "[21.1,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "goety-3.2.1-primordial-metadatafix.jar",
+        "owner": "goety",
+        "mod": "curios",
+        "range": "[9.5.1,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "goety-3.2.1-primordial-metadatafix.jar",
+        "owner": "goety",
+        "mod": "minecraft",
+        "range": "[1.21.1,1.22)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "goety-3.2.1-primordial-metadatafix.jar",
+        "owner": "goety",
+        "mod": "apotheosis",
+        "range": "[8.5.4,)",
+        "kind": "optional",
+        "side": "BOTH"
+      },
+      {
+        "file": "invtweaks-1.21.1-1.2.0.jar",
+        "owner": "invtweaks",
+        "mod": "neoforge",
+        "range": "[21.1.0,)",
+        "kind": "required",
+        "side": "CLIENT"
+      },
+      {
+        "file": "invtweaks-1.21.1-1.2.0.jar",
+        "owner": "invtweaks",
+        "mod": "minecraft",
+        "range": "[1.21.1, 1.22)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "irons_lib-1.21.1-2.2.0.jar",
+        "owner": "irons_lib",
+        "mod": "neoforge",
+        "range": "[21.1.221,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "irons_lib-1.21.1-2.2.0.jar",
+        "owner": "irons_lib",
+        "mod": "minecraft",
+        "range": "[1.21.1]",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "irons_lib-1.21.1-2.2.0.jar",
+        "owner": "irons_lib",
+        "mod": "geckolib",
+        "range": "4.7.5.1",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "irons_spellbooks-1.21.1-3.16.3.jar",
+        "owner": "irons_spellbooks",
+        "mod": "neoforge",
+        "range": "[21.0.0-beta,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "irons_spellbooks-1.21.1-3.16.3.jar",
+        "owner": "irons_spellbooks",
+        "mod": "minecraft",
+        "range": "[1.21.1,1.21.2)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "irons_spellbooks-1.21.1-3.16.3.jar",
+        "owner": "irons_spellbooks",
+        "mod": "geckolib",
+        "range": "[4.7.5.1,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "irons_spellbooks-1.21.1-3.16.3.jar",
+        "owner": "irons_spellbooks",
+        "mod": "playeranimator",
+        "range": "[2.0.1+1.21.1,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "irons_spellbooks-1.21.1-3.16.3.jar",
+        "owner": "irons_spellbooks",
+        "mod": "curios",
+        "range": "[9.0.5+1.21.0,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "irons_spellbooks-1.21.1-3.16.3.jar",
+        "owner": "irons_spellbooks",
+        "mod": "irons_lib",
+        "range": "[1.21.1-2,1.21.1-3)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "Jade-1.21.1-NeoForge-15.10.6.jar",
+        "owner": "jade",
+        "mod": "neoforge",
+        "range": "[21.0.143, )",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "jei-1.21.1-neoforge-19.69.0.457.jar",
+        "owner": "jei",
+        "mod": "mezz_config",
+        "range": "[0.6.3,1.0.0)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "jei-1.21.1-neoforge-19.69.0.457.jar",
+        "owner": "jei",
+        "mod": "mezz_config_gui",
+        "range": "[0.5.5,)",
+        "kind": "optional",
+        "side": "CLIENT"
+      },
+      {
+        "file": "jei-1.21.1-neoforge-19.69.0.457.jar",
+        "owner": "jei",
+        "mod": "neoforge",
+        "range": "[21.1.238,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "jei-1.21.1-neoforge-19.69.0.457.jar",
+        "owner": "jei",
+        "mod": "minecraft",
+        "range": "[1.21, 1.21.1)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "jei-1.21.1-neoforge-19.69.0.457.jar!META-INF/jarjar/mezz_config-1.21.1-neoforge-0.6.6.jar",
+        "owner": "mezz_config",
+        "mod": "neoforge",
+        "range": "[21.0.118-beta,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "jei-1.21.1-neoforge-19.69.0.457.jar!META-INF/jarjar/mezz_config-1.21.1-neoforge-0.6.6.jar",
+        "owner": "mezz_config",
+        "mod": "minecraft",
+        "range": "[1.21.1]",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "Mekanism-1.21.1-10.7.19.85.jar",
+        "owner": "mekanism",
+        "mod": "minecraft",
+        "range": "[1.21.1]",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "Mekanism-1.21.1-10.7.19.85.jar",
+        "owner": "mekanism",
+        "mod": "neoforge",
+        "range": "[21.1.194,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "Mekanism-1.21.1-10.7.19.85.jar",
+        "owner": "mekanism",
+        "mod": "jei",
+        "range": "[19.19.0.219,)",
+        "kind": "optional",
+        "side": "BOTH"
+      },
+      {
+        "file": "MekanismGenerators-1.21.1-10.7.19.85.jar",
+        "owner": "mekanismgenerators",
+        "mod": "mekanism",
+        "range": "[10.7.19]",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "NaturesAura-41.10.jar",
+        "owner": "naturesaura",
+        "mod": "neoforge",
+        "range": "[21.1.0,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "NaturesAura-41.10.jar",
+        "owner": "naturesaura",
+        "mod": "minecraft",
+        "range": "[1.21.1]",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "NaturesAura-41.10.jar",
+        "owner": "naturesaura",
+        "mod": "patchouli",
+        "range": "[1.21-87-NEOFORGE,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "notenoughcrashes-neoforge-4.4.9+1.21.1.jar",
+        "owner": "notenoughcrashes",
+        "mod": "neoforge",
+        "range": "[20.6.1,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "notenoughcrashes-neoforge-4.4.9+1.21.1.jar",
+        "owner": "notenoughcrashes",
+        "mod": "minecraft",
+        "range": "[1.17.1,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "pipez-neoforge-1.21.1-1.2.31.jar",
+        "owner": "pipez",
+        "mod": "neoforge",
+        "range": "[21.0.8-beta,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "pipez-neoforge-1.21.1-1.2.31.jar",
+        "owner": "pipez",
+        "mod": "minecraft",
+        "range": "[1.21,1.21.1]",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "pipez-neoforge-1.21.1-1.2.31.jar",
+        "owner": "pipez",
+        "mod": "mekanism",
+        "range": "[1.21.1-10.7.3.59,)",
+        "kind": "optional",
+        "side": "BOTH"
+      },
+      {
+        "file": "pipez-neoforge-1.21.1-1.2.31.jar",
+        "owner": "pipez",
+        "mod": "jei",
+        "range": "*",
+        "kind": "optional",
+        "side": "BOTH"
+      },
+      {
+        "file": "pipez-neoforge-1.21.1-1.2.31.jar",
+        "owner": "pipez",
+        "mod": "theoneprobe",
+        "range": "*",
+        "kind": "optional",
+        "side": "BOTH"
+      },
+      {
+        "file": "pipez-neoforge-1.21.1-1.2.31.jar",
+        "owner": "pipez",
+        "mod": "jade",
+        "range": "*",
+        "kind": "optional",
+        "side": "BOTH"
+      },
+      {
+        "file": "player-animation-lib-forge-2.0.4+1.21.1.jar",
+        "owner": "playeranimator",
+        "mod": "minecraft",
+        "range": "[1.21,1.21.2)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "pneumaticcraft-repressurized-8.2.23+mc1.21.1.jar",
+        "owner": "pneumaticcraft",
+        "mod": "neoforge",
+        "range": "[21.1.181,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "pneumaticcraft-repressurized-8.2.23+mc1.21.1.jar",
+        "owner": "pneumaticcraft",
+        "mod": "minecraft",
+        "range": "[1.21.1,1.22)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "pneumaticcraft-repressurized-8.2.23+mc1.21.1.jar",
+        "owner": "pneumaticcraft",
+        "mod": "patchouli",
+        "range": "[1.21-87,)",
+        "kind": "optional",
+        "side": "BOTH"
+      },
+      {
+        "file": "pneumaticcraft-repressurized-8.2.23+mc1.21.1.jar",
+        "owner": "pneumaticcraft",
+        "mod": "jei",
+        "range": "[19.9.0,)",
+        "kind": "optional",
+        "side": "BOTH"
+      },
+      {
+        "file": "pneumaticcraft-repressurized-8.2.23+mc1.21.1.jar",
+        "owner": "pneumaticcraft",
+        "mod": "emi",
+        "range": "[1.1.13,)",
+        "kind": "optional",
+        "side": "BOTH"
+      },
+      {
+        "file": "primordial-2.0.0-neo-dev.jar",
+        "owner": "primordial",
+        "mod": "neoforge",
+        "range": "[21.1.264,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "primordial-2.0.0-neo-dev.jar",
+        "owner": "primordial",
+        "mod": "minecraft",
+        "range": "[1.21.1,1.21.2)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "primordial-2.0.0-neo-dev.jar",
+        "owner": "primordial",
+        "mod": "projecte",
+        "range": "[1.1.0,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "primordial-2.0.0-neo-dev.jar",
+        "owner": "primordial",
+        "mod": "curios",
+        "range": "[9.5.1,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "primordial-2.0.0-neo-dev.jar",
+        "owner": "primordial",
+        "mod": "ae2",
+        "range": "[19.2.18,)",
+        "kind": "optional",
+        "side": "BOTH"
+      },
+      {
+        "file": "ProjectE-1.21.1-PE1.1.0.jar",
+        "owner": "projecte",
+        "mod": "minecraft",
+        "range": "[1.21.1]",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "ProjectE-1.21.1-PE1.1.0.jar",
+        "owner": "projecte",
+        "mod": "neoforge",
+        "range": "[21.1.119,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "refinedstorage-neoforge-2.0.9.jar",
+        "owner": "refinedstorage",
+        "mod": "neoforge",
+        "range": "[21.1.181,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "sophisticatedbackpacks-1.21.1-3.26.14.2222.jar",
+        "owner": "sophisticatedbackpacks",
+        "mod": "sophisticatedcore",
+        "range": "[1.5.15,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "sophisticatedbackpacks-1.21.1-3.26.14.2222.jar",
+        "owner": "sophisticatedbackpacks",
+        "mod": "neoforge",
+        "range": "[21.1.229,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "sophisticatedbackpacks-1.21.1-3.26.14.2222.jar",
+        "owner": "sophisticatedbackpacks",
+        "mod": "minecraft",
+        "range": "[1.21.1,1.21.2)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "sophisticatedcore-1.21.1-1.5.17.2426.jar",
+        "owner": "sophisticatedcore",
+        "mod": "jei",
+        "range": "[19.32.0.359,)",
+        "kind": "optional",
+        "side": "CLIENT"
+      },
+      {
+        "file": "sophisticatedcore-1.21.1-1.5.17.2426.jar",
+        "owner": "sophisticatedcore",
+        "mod": "neoforge",
+        "range": "[21.1.229,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "sophisticatedcore-1.21.1-1.5.17.2426.jar",
+        "owner": "sophisticatedcore",
+        "mod": "minecraft",
+        "range": "[1.21.1,1.21.2)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "Spear_of_Void-neoforge-1.21.1-1.3.0fix4.jar",
+        "owner": "sov",
+        "mod": "neoforge",
+        "range": "[21.1,)",
+        "kind": "required",
+        "side": "BOTH"
+      },
+      {
+        "file": "Spear_of_Void-neoforge-1.21.1-1.3.0fix4.jar",
+        "owner": "sov",
+        "mod": "minecraft",
+        "range": "[1.21.1,1.21.2)",
+        "kind": "required",
+        "side": "BOTH"
+      }
+    ],
+    "loaders": [
+      {
+        "file": "appliedenergistics2-19.2.18.jar",
+        "name": "javafml",
+        "range": "[1,)"
+      },
+      {
+        "file": "architectury-13.0.11-neoforge.jar",
+        "name": "javafml",
+        "range": "[1,)"
+      },
+      {
+        "file": "ars_nouveau-1.21.1-5.13.3.jar",
+        "name": "javafml",
+        "range": "[4,)"
+      },
+      {
+        "file": "ars_nouveau-1.21.1-5.13.3.jar!META-INF/jarjar/nuggets-neoforge-1.21.1-1.1.0.48.jar",
+        "name": "javafml",
+        "range": "[4,)"
+      },
+      {
+        "file": "ars_nouveau-1.21.1-5.13.3.jar!META-INF/jarjar/infiniverse-568341-5486311.jar",
+        "name": "javafml",
+        "range": "[1,)"
+      },
+      {
+        "file": "ars_nouveau-1.21.1-5.13.3.jar!META-INF/jarjar/lambdynamiclights-api-4.5.1+1.21.1-mojmap.jar",
+        "name": "javafml",
+        "range": "[2,)"
+      },
+      {
+        "file": "balm-neoforge-1.21.1-21.0.66.jar",
+        "name": "javafml",
+        "range": "[1,)"
+      },
+      {
+        "file": "balm-neoforge-1.21.1-21.0.66.jar!META-INF/jarjar/kuma-api-neoforge-21.0.8+1.21.jar",
+        "name": "javafml",
+        "range": "[1,)"
+      },
+      {
+        "file": "beyonddimensions-1.21.1-neoforge-0.8.2.jar",
+        "name": "javafml",
+        "range": "[1,)"
+      },
+      {
+        "file": "BrandonsCore-1.21.1-3.2.1.309.jar",
+        "name": "javafml",
+        "range": "[2,)"
+      },
+      {
+        "file": "CodeChickenLib-1.21.1-4.6.1.529.jar",
+        "name": "javafml",
+        "range": "[2,)"
+      },
+      {
+        "file": "compixel-neoforge-1.21.1-0.1.15-with-kotlin.jar",
+        "name": "javafml",
+        "range": "[1,)"
+      },
+      {
+        "file": "configured-neoforge-1.21.1-2.6.3.jar",
+        "name": "javafml",
+        "range": "[2,)"
+      },
+      {
+        "file": "craftingtweaks-neoforge-1.21.1-21.1.11.jar",
+        "name": "javafml",
+        "range": "[1,)"
+      },
+      {
+        "file": "create-1.21.1-6.0.10.jar",
+        "name": "javafml",
+        "range": "[0,)"
+      },
+      {
+        "file": "create-1.21.1-6.0.10.jar!META-INF/jarjar/flywheel-neoforge-1.21.1-1.0.6.jar",
+        "name": "javafml",
+        "range": "[0,)"
+      },
+      {
+        "file": "create-1.21.1-6.0.10.jar!META-INF/jarjar/ponder-neoforge-1.0.82+mc1.21.1.jar",
+        "name": "javafml",
+        "range": "[0,)"
+      },
+      {
+        "file": "curios-neoforge-9.5.1+1.21.1.jar",
+        "name": "javafml",
+        "range": "[1,)"
+      },
+      {
+        "file": "Draconic-Evolution-1.21.1-3.1.4.633.jar",
+        "name": "javafml",
+        "range": "[2,)"
+      },
+      {
+        "file": "ftb-essentials-neoforge-2101.1.10.jar",
+        "name": "javafml",
+        "range": "[4,)"
+      },
+      {
+        "file": "ftb-library-neoforge-2101.1.37.jar",
+        "name": "javafml",
+        "range": "[4,)"
+      },
+      {
+        "file": "ftb-quests-neoforge-2101.1.37.jar",
+        "name": "javafml",
+        "range": "[4,)"
+      },
+      {
+        "file": "ftb-teams-neoforge-2101.1.11.jar",
+        "name": "javafml",
+        "range": "[4,)"
+      },
+      {
+        "file": "ftb-ultimine-neoforge-2101.1.15.jar",
+        "name": "javafml",
+        "range": "[4,)"
+      },
+      {
+        "file": "geckolib-neoforge-1.21.1-4.9.3.jar",
+        "name": "javafml",
+        "range": "[4,)"
+      },
+      {
+        "file": "goety-3.2.1-primordial-metadatafix.jar",
+        "name": "javafml",
+        "range": "[1,)"
+      },
+      {
+        "file": "guideme-21.1.20.jar",
+        "name": "javafml",
+        "range": "*"
+      },
+      {
+        "file": "invtweaks-1.21.1-1.2.0.jar",
+        "name": "javafml",
+        "range": "[4,)"
+      },
+      {
+        "file": "irons_lib-1.21.1-2.2.0.jar",
+        "name": "javafml",
+        "range": "[1,)"
+      },
+      {
+        "file": "irons_spellbooks-1.21.1-3.16.3.jar",
+        "name": "javafml",
+        "range": "[4,)"
+      },
+      {
+        "file": "Jade-1.21.1-NeoForge-15.10.6.jar",
+        "name": "javafml",
+        "range": "[1,)"
+      },
+      {
+        "file": "jecharacters-1.21.1-neoforge-4.5.30.jar",
+        "name": "javafml",
+        "range": "[4,)"
+      },
+      {
+        "file": "jei-1.21.1-neoforge-19.69.0.457.jar",
+        "name": "javafml",
+        "range": "[4,)"
+      },
+      {
+        "file": "jei-1.21.1-neoforge-19.69.0.457.jar!META-INF/jarjar/mezz_config-1.21.1-neoforge-0.6.6.jar",
+        "name": "javafml",
+        "range": "[4,)"
+      },
+      {
+        "file": "Mekanism-1.21.1-10.7.19.85.jar",
+        "name": "javafml",
+        "range": "[4,)"
+      },
+      {
+        "file": "MekanismGenerators-1.21.1-10.7.19.85.jar",
+        "name": "javafml",
+        "range": "[4,)"
+      },
+      {
+        "file": "MouseTweaks-neoforge-mc1.21-2.26.1.jar",
+        "name": "javafml",
+        "range": "[4,)"
+      },
+      {
+        "file": "NaturesAura-41.10.jar",
+        "name": "javafml",
+        "range": "[4,)"
+      },
+      {
+        "file": "notenoughcrashes-neoforge-4.4.9+1.21.1.jar",
+        "name": "javafml",
+        "range": "[3,)"
+      },
+      {
+        "file": "Patchouli-1.21.1-93-NEOFORGE.jar",
+        "name": "javafml",
+        "range": "[4,)"
+      },
+      {
+        "file": "pipez-neoforge-1.21.1-1.2.31.jar",
+        "name": "javafml",
+        "range": "*"
+      },
+      {
+        "file": "player-animation-lib-forge-2.0.4+1.21.1.jar",
+        "name": "javafml",
+        "range": "*"
+      },
+      {
+        "file": "pneumaticcraft-repressurized-8.2.23+mc1.21.1.jar",
+        "name": "javafml",
+        "range": "[4,)"
+      },
+      {
+        "file": "primordial-2.0.0-neo-dev.jar",
+        "name": "javafml",
+        "range": "[1,)"
+      },
+      {
+        "file": "ProjectE-1.21.1-PE1.1.0.jar",
+        "name": "javafml",
+        "range": "[4,)"
+      },
+      {
+        "file": "refinedstorage-neoforge-2.0.9.jar",
+        "name": "javafml",
+        "range": "[2,)"
+      },
+      {
+        "file": "sophisticatedbackpacks-1.21.1-3.26.14.2222.jar",
+        "name": "javafml",
+        "range": "[4,)"
+      },
+      {
+        "file": "sophisticatedcore-1.21.1-1.5.17.2426.jar",
+        "name": "javafml",
+        "range": "[4,)"
+      },
+      {
+        "file": "Spear_of_Void-neoforge-1.21.1-1.3.0fix4.jar",
+        "name": "javafml",
+        "range": "[4,)"
+      }
+    ],
+    "errors": [],
+    "range_audit": [
+      "OK\tarchitectury-13.0.11-neoforge.jar\trequired\tminecraft\t1.21.1\t[1.21,)\tdirect",
+      "OK\tarchitectury-13.0.11-neoforge.jar\trequired\tneoforge\t21.1.264\t[21.0.110-beta,)\tdirect",
+      "OK\tars_nouveau-1.21.1-5.13.3.jar\trequired\tneoforge\t21.1.264\t[21.0.86-beta,)\tdirect",
+      "OK\tars_nouveau-1.21.1-5.13.3.jar\trequired\tcurios\t9.5.1+1.21.1\t[1.19-5.0.7.1,)\tdirect",
+      "OK\tars_nouveau-1.21.1-5.13.3.jar\trequired\tgeckolib\t4.9.3\t[4.2.1,)\tdirect",
+      "OK\tars_nouveau-1.21.1-5.13.3.jar!META-INF/jarjar/nuggets-neoforge-1.21.1-1.1.0.48.jar\trequired\tneoforge\t21.1.264\t[21.1.205,)\tdirect",
+      "OK\tars_nouveau-1.21.1-5.13.3.jar!META-INF/jarjar/nuggets-neoforge-1.21.1-1.1.0.48.jar\trequired\tminecraft\t1.21.1\t[1.21, 1.22)\tdirect",
+      "OK\tars_nouveau-1.21.1-5.13.3.jar!META-INF/jarjar/infiniverse-568341-5486311.jar\trequired\tneoforge\t21.1.264\t[21.0.40-beta,)\tdirect",
+      "OK\tars_nouveau-1.21.1-5.13.3.jar!META-INF/jarjar/infiniverse-568341-5486311.jar\trequired\tminecraft\t1.21.1\t[1.21, 1.22)\tdirect",
+      "OK\tars_nouveau-1.21.1-5.13.3.jar!META-INF/jarjar/lambdynamiclights-api-4.5.1+1.21.1-mojmap.jar\trequired\tminecraft\t1.21.1\t[1.21,1.21.1]\tdirect",
+      "OK\tbalm-neoforge-1.21.1-21.0.66.jar\trequired\tneoforge\t21.1.264\t[21.0.82-beta,)\tdirect",
+      "OK\tbalm-neoforge-1.21.1-21.0.66.jar\trequired\tminecraft\t1.21.1\t[1.21.1,)\tdirect",
+      "OK\tbalm-neoforge-1.21.1-21.0.66.jar!META-INF/jarjar/kuma-api-neoforge-21.0.8+1.21.jar\trequired\tneoforge\t21.1.264\t[21-beta,)\tdirect",
+      "OK\tbalm-neoforge-1.21.1-21.0.66.jar!META-INF/jarjar/kuma-api-neoforge-21.0.8+1.21.jar\trequired\tminecraft\t1.21.1\t[1.21,)\tdirect",
+      "OK\tbeyonddimensions-1.21.1-neoforge-0.8.2.jar\trequired\tneoforge\t21.1.264\t[21.1.194,)\tdirect",
+      "OK\tbeyonddimensions-1.21.1-neoforge-0.8.2.jar\trequired\tminecraft\t1.21.1\t[1.21.1]\tdirect",
+      "OK\tbeyonddimensions-1.21.1-neoforge-0.8.2.jar\trequired\tcompixel\t0.1.15\t[0.1.12,0.2)\tdirect",
+      "OK\tbeyonddimensions-1.21.1-neoforge-0.8.2.jar\toptional\tcreate\t6.0.10\t[6.0.0,)\tdirect",
+      "OK\tBrandonsCore-1.21.1-3.2.1.309.jar\trequired\tneoforge\t21.1.264\t[21.1.72,)\tdirect",
+      "OK\tBrandonsCore-1.21.1-3.2.1.309.jar\trequired\tminecraft\t1.21.1\t[1.21.1]\tdirect",
+      "OK\tBrandonsCore-1.21.1-3.2.1.309.jar\trequired\tcodechickenlib\t4.6.1.529\t[4.6.1,5.0.0)\tdirect",
+      "OK\tCodeChickenLib-1.21.1-4.6.1.529.jar\trequired\tneoforge\t21.1.264\t[21.1.72,)\tdirect",
+      "OK\tCodeChickenLib-1.21.1-4.6.1.529.jar\trequired\tminecraft\t1.21.1\t[1.21.1]\tdirect",
+      "OK\tcompixel-neoforge-1.21.1-0.1.15-with-kotlin.jar\trequired\tneoforge\t21.1.264\t[21.1.1,)\tdirect",
+      "OK\tcompixel-neoforge-1.21.1-0.1.15-with-kotlin.jar\trequired\tminecraft\t1.21.1\t[1.21.1]\tdirect",
+      "OK\tconfigured-neoforge-1.21.1-2.6.3.jar\trequired\tneoforge\t21.1.264\t[21.1.211,)\tdirect",
+      "OK\tconfigured-neoforge-1.21.1-2.6.3.jar\trequired\tminecraft\t1.21.1\t[1.21.1,)\tdirect",
+      "OK\tconfigured-neoforge-1.21.1-2.6.3.jar\toptional\tjei\t19.69.0.457\t[19.25.0.322,)\tdirect",
+      "OK\tcraftingtweaks-neoforge-1.21.1-21.1.11.jar\trequired\tneoforge\t21.1.264\t[21-beta,)\tdirect",
+      "OK\tcraftingtweaks-neoforge-1.21.1-21.1.11.jar\trequired\tminecraft\t1.21.1\t[1.21,)\tdirect",
+      "OK\tcraftingtweaks-neoforge-1.21.1-21.1.11.jar\trequired\tbalm\t21.0.66\t[21.0.48,)\tdirect",
+      "OK\tcreate-1.21.1-6.0.10.jar\trequired\tneoforge\t21.1.264\t[21.1.219,)\tdirect",
+      "OK\tcreate-1.21.1-6.0.10.jar\trequired\tminecraft\t1.21.1\t[1.21.1]\tdirect",
+      "OK\tcreate-1.21.1-6.0.10.jar\trequired\tflywheel\t1.0.6\t[1.0.0,2.0)\tdirect",
+      "OK\tcreate-1.21.1-6.0.10.jar\trequired\tponder\t1.0.82+mc1.21.1\t[1.0.82,)\tdirect",
+      "OK\tcreate-1.21.1-6.0.10.jar!META-INF/jarjar/flywheel-neoforge-1.21.1-1.0.6.jar\trequired\tminecraft\t1.21.1\t[1.21.1,1.21.2)\tdirect",
+      "OK\tcreate-1.21.1-6.0.10.jar!META-INF/jarjar/flywheel-neoforge-1.21.1-1.0.6.jar\trequired\tneoforge\t21.1.264\t[21.1.66,)\tdirect",
+      "OK\tcreate-1.21.1-6.0.10.jar!META-INF/jarjar/ponder-neoforge-1.0.82+mc1.21.1.jar\trequired\tneoforge\t21.1.264\t[21.1.206,)\tdirect",
+      "OK\tcreate-1.21.1-6.0.10.jar!META-INF/jarjar/ponder-neoforge-1.0.82+mc1.21.1.jar\trequired\tminecraft\t1.21.1\t[1.21.1]\tdirect",
+      "OK\tcreate-1.21.1-6.0.10.jar!META-INF/jarjar/ponder-neoforge-1.0.82+mc1.21.1.jar\trequired\tflywheel\t1.0.6\t[1.0.0,2.0)\tdirect",
+      "OK\tcurios-neoforge-9.5.1+1.21.1.jar\trequired\tneoforge\t21.1.264\t[21.1.60,)\tdirect",
+      "OK\tcurios-neoforge-9.5.1+1.21.1.jar\trequired\tminecraft\t1.21.1\t[1.21, 1.22)\tdirect",
+      "OK\tDraconic-Evolution-1.21.1-3.1.4.633.jar\trequired\tneoforge\t21.1.264\t[21.1.72,)\tdirect",
+      "OK\tDraconic-Evolution-1.21.1-3.1.4.633.jar\trequired\tminecraft\t1.21.1\t[1.21.1]\tdirect",
+      "OK\tDraconic-Evolution-1.21.1-3.1.4.633.jar\trequired\tcodechickenlib\t4.6.1.529\t[4.6.1,5.0.0)\tdirect",
+      "OK\tDraconic-Evolution-1.21.1-3.1.4.633.jar\trequired\tbrandonscore\t3.2.1.309\t[3.2.1.+,)\tdirect",
+      "OK\tftb-essentials-neoforge-2101.1.10.jar\trequired\tneoforge\t21.1.264\t[21.1.0,)\tdirect",
+      "OK\tftb-essentials-neoforge-2101.1.10.jar\trequired\tminecraft\t1.21.1\t[1.21.1,)\tdirect",
+      "OK\tftb-essentials-neoforge-2101.1.10.jar\trequired\tftblibrary\t2101.1.37\t[2101.1.4,)\tdirect",
+      "OK\tftb-library-neoforge-2101.1.37.jar\trequired\tneoforge\t21.1.264\t[21.1.0,)\tdirect",
+      "OK\tftb-library-neoforge-2101.1.37.jar\trequired\tminecraft\t1.21.1\t[1.21.1,)\tdirect",
+      "OK\tftb-library-neoforge-2101.1.37.jar\trequired\tarchitectury\t13.0.11\t[13.0.6,)\tdirect",
+      "OK\tftb-quests-neoforge-2101.1.37.jar\trequired\tneoforge\t21.1.264\t[21.1.0,)\tdirect",
+      "OK\tftb-quests-neoforge-2101.1.37.jar\trequired\tminecraft\t1.21.1\t[1.21.1,)\tdirect",
+      "OK\tftb-quests-neoforge-2101.1.37.jar\trequired\tarchitectury\t13.0.11\t[13.0.8,)\tdirect",
+      "OK\tftb-quests-neoforge-2101.1.37.jar\trequired\tftblibrary\t2101.1.37\t[2101.1.36,)\tdirect",
+      "OK\tftb-quests-neoforge-2101.1.37.jar\trequired\tftbteams\t2101.1.11\t[2101.1.9,)\tdirect",
+      "OK\tftb-teams-neoforge-2101.1.11.jar\trequired\tneoforge\t21.1.264\t[21.1.0,)\tdirect",
+      "OK\tftb-teams-neoforge-2101.1.11.jar\trequired\tminecraft\t1.21.1\t[1.21.1,)\tdirect",
+      "OK\tftb-teams-neoforge-2101.1.11.jar\trequired\tarchitectury\t13.0.11\t[13.0.8,)\tdirect",
+      "OK\tftb-teams-neoforge-2101.1.11.jar\trequired\tftblibrary\t2101.1.37\t[2101.1.30,)\tdirect",
+      "OK\tftb-ultimine-neoforge-2101.1.15.jar\trequired\tneoforge\t21.1.264\t[21.1.0,)\tdirect",
+      "OK\tftb-ultimine-neoforge-2101.1.15.jar\trequired\tminecraft\t1.21.1\t[1.21.1,)\tdirect",
+      "OK\tftb-ultimine-neoforge-2101.1.15.jar\trequired\tarchitectury\t13.0.11\t[13.0.6,)\tdirect",
+      "OK\tftb-ultimine-neoforge-2101.1.15.jar\trequired\tftblibrary\t2101.1.37\t[2101.1.28,)\tdirect",
+      "OK\tgeckolib-neoforge-1.21.1-4.9.3.jar\trequired\tneoforge\t21.1.264\t[21.1.150,)\tdirect",
+      "OK\tgeckolib-neoforge-1.21.1-4.9.3.jar\trequired\tminecraft\t1.21.1\t[1.21,)\tdirect",
+      "OK\tgoety-3.2.1-primordial-metadatafix.jar\trequired\tneoforge\t21.1.264\t[21.1,)\tdirect",
+      "OK\tgoety-3.2.1-primordial-metadatafix.jar\trequired\tcurios\t9.5.1+1.21.1\t[9.5.1,)\tdirect",
+      "OK\tgoety-3.2.1-primordial-metadatafix.jar\trequired\tminecraft\t1.21.1\t[1.21.1,1.22)\tdirect",
+      "OK\tinvtweaks-1.21.1-1.2.0.jar\trequired\tneoforge\t21.1.264\t[21.1.0,)\tdirect",
+      "OK\tinvtweaks-1.21.1-1.2.0.jar\trequired\tminecraft\t1.21.1\t[1.21.1, 1.22)\tdirect",
+      "OK\tirons_lib-1.21.1-2.2.0.jar\trequired\tneoforge\t21.1.264\t[21.1.221,)\tdirect",
+      "OK\tirons_lib-1.21.1-2.2.0.jar\trequired\tminecraft\t1.21.1\t[1.21.1]\tdirect",
+      "OK\tirons_lib-1.21.1-2.2.0.jar\trequired\tgeckolib\t4.9.3\t4.7.5.1\tdirect",
+      "OK\tirons_spellbooks-1.21.1-3.16.3.jar\trequired\tneoforge\t21.1.264\t[21.0.0-beta,)\tdirect",
+      "OK\tirons_spellbooks-1.21.1-3.16.3.jar\trequired\tminecraft\t1.21.1\t[1.21.1,1.21.2)\tdirect",
+      "OK\tirons_spellbooks-1.21.1-3.16.3.jar\trequired\tgeckolib\t4.9.3\t[4.7.5.1,)\tdirect",
+      "OK\tirons_spellbooks-1.21.1-3.16.3.jar\trequired\tplayeranimator\t2.0.4+1.21.1\t[2.0.1+1.21.1,)\tdirect",
+      "OK\tirons_spellbooks-1.21.1-3.16.3.jar\trequired\tcurios\t9.5.1+1.21.1\t[9.0.5+1.21.0,)\tdirect",
+      "OK\tirons_spellbooks-1.21.1-3.16.3.jar\trequired\tirons_lib\t1.21.1-2.2.0\t[1.21.1-2,1.21.1-3)\tdirect",
+      "OK\tJade-1.21.1-NeoForge-15.10.6.jar\trequired\tneoforge\t21.1.264\t[21.0.143, )\tdirect",
+      "OK\tjei-1.21.1-neoforge-19.69.0.457.jar\trequired\tmezz_config\t0.6.6\t[0.6.3,1.0.0)\tdirect",
+      "OK\tjei-1.21.1-neoforge-19.69.0.457.jar\trequired\tneoforge\t21.1.264\t[21.1.238,)\tdirect",
+      "OK\tjei-1.21.1-neoforge-19.69.0.457.jar\trequired\tminecraft\t1.21.1\t[1.21, 1.21.1)\tneoforge1.21.1override->1.21",
+      "OK\tjei-1.21.1-neoforge-19.69.0.457.jar!META-INF/jarjar/mezz_config-1.21.1-neoforge-0.6.6.jar\trequired\tneoforge\t21.1.264\t[21.0.118-beta,)\tdirect",
+      "OK\tjei-1.21.1-neoforge-19.69.0.457.jar!META-INF/jarjar/mezz_config-1.21.1-neoforge-0.6.6.jar\trequired\tminecraft\t1.21.1\t[1.21.1]\tdirect",
+      "OK\tMekanism-1.21.1-10.7.19.85.jar\trequired\tminecraft\t1.21.1\t[1.21.1]\tdirect",
+      "OK\tMekanism-1.21.1-10.7.19.85.jar\trequired\tneoforge\t21.1.264\t[21.1.194,)\tdirect",
+      "OK\tMekanism-1.21.1-10.7.19.85.jar\toptional\tjei\t19.69.0.457\t[19.19.0.219,)\tdirect",
+      "OK\tMekanismGenerators-1.21.1-10.7.19.85.jar\trequired\tmekanism\t10.7.19\t[10.7.19]\tdirect",
+      "OK\tNaturesAura-41.10.jar\trequired\tneoforge\t21.1.264\t[21.1.0,)\tdirect",
+      "OK\tNaturesAura-41.10.jar\trequired\tminecraft\t1.21.1\t[1.21.1]\tdirect",
+      "OK\tNaturesAura-41.10.jar\trequired\tpatchouli\t1.21.1-93-NEOFORGE\t[1.21-87-NEOFORGE,)\tdirect",
+      "OK\tnotenoughcrashes-neoforge-4.4.9+1.21.1.jar\trequired\tneoforge\t21.1.264\t[20.6.1,)\tdirect",
+      "OK\tnotenoughcrashes-neoforge-4.4.9+1.21.1.jar\trequired\tminecraft\t1.21.1\t[1.17.1,)\tdirect",
+      "OK\tpipez-neoforge-1.21.1-1.2.31.jar\trequired\tneoforge\t21.1.264\t[21.0.8-beta,)\tdirect",
+      "OK\tpipez-neoforge-1.21.1-1.2.31.jar\trequired\tminecraft\t1.21.1\t[1.21,1.21.1]\tdirect",
+      "OK\tpipez-neoforge-1.21.1-1.2.31.jar\toptional\tmekanism\t10.7.19\t[1.21.1-10.7.3.59,)\tdirect",
+      "OK\tpipez-neoforge-1.21.1-1.2.31.jar\toptional\tjei\t19.69.0.457\t*\tdirect",
+      "OK\tpipez-neoforge-1.21.1-1.2.31.jar\toptional\tjade\t15.10.6+neoforge\t*\tdirect",
+      "OK\tplayer-animation-lib-forge-2.0.4+1.21.1.jar\trequired\tminecraft\t1.21.1\t[1.21,1.21.2)\tdirect",
+      "OK\tpneumaticcraft-repressurized-8.2.23+mc1.21.1.jar\trequired\tneoforge\t21.1.264\t[21.1.181,)\tdirect",
+      "OK\tpneumaticcraft-repressurized-8.2.23+mc1.21.1.jar\trequired\tminecraft\t1.21.1\t[1.21.1,1.22)\tdirect",
+      "OK\tpneumaticcraft-repressurized-8.2.23+mc1.21.1.jar\toptional\tpatchouli\t1.21.1-93-NEOFORGE\t[1.21-87,)\tdirect",
+      "OK\tpneumaticcraft-repressurized-8.2.23+mc1.21.1.jar\toptional\tjei\t19.69.0.457\t[19.9.0,)\tdirect",
+      "OK\tprimordial-2.0.0-neo-dev.jar\trequired\tneoforge\t21.1.264\t[21.1.264,)\tdirect",
+      "OK\tprimordial-2.0.0-neo-dev.jar\trequired\tminecraft\t1.21.1\t[1.21.1,1.21.2)\tdirect",
+      "OK\tprimordial-2.0.0-neo-dev.jar\trequired\tprojecte\t1.1.0\t[1.1.0,)\tdirect",
+      "OK\tprimordial-2.0.0-neo-dev.jar\trequired\tcurios\t9.5.1+1.21.1\t[9.5.1,)\tdirect",
+      "OK\tprimordial-2.0.0-neo-dev.jar\toptional\tae2\t19.2.18\t[19.2.18,)\tdirect",
+      "OK\tProjectE-1.21.1-PE1.1.0.jar\trequired\tminecraft\t1.21.1\t[1.21.1]\tdirect",
+      "OK\tProjectE-1.21.1-PE1.1.0.jar\trequired\tneoforge\t21.1.264\t[21.1.119,)\tdirect",
+      "OK\trefinedstorage-neoforge-2.0.9.jar\trequired\tneoforge\t21.1.264\t[21.1.181,)\tdirect",
+      "OK\tsophisticatedbackpacks-1.21.1-3.26.14.2222.jar\trequired\tsophisticatedcore\t1.5.17\t[1.5.15,)\tdirect",
+      "OK\tsophisticatedbackpacks-1.21.1-3.26.14.2222.jar\trequired\tneoforge\t21.1.264\t[21.1.229,)\tdirect",
+      "OK\tsophisticatedbackpacks-1.21.1-3.26.14.2222.jar\trequired\tminecraft\t1.21.1\t[1.21.1,1.21.2)\tdirect",
+      "OK\tsophisticatedcore-1.21.1-1.5.17.2426.jar\toptional\tjei\t19.69.0.457\t[19.32.0.359,)\tdirect",
+      "OK\tsophisticatedcore-1.21.1-1.5.17.2426.jar\trequired\tneoforge\t21.1.264\t[21.1.229,)\tdirect",
+      "OK\tsophisticatedcore-1.21.1-1.5.17.2426.jar\trequired\tminecraft\t1.21.1\t[1.21.1,1.21.2)\tdirect",
+      "OK\tSpear_of_Void-neoforge-1.21.1-1.3.0fix4.jar\trequired\tneoforge\t21.1.264\t[21.1,)\tdirect",
+      "OK\tSpear_of_Void-neoforge-1.21.1-1.3.0fix4.jar\trequired\tminecraft\t1.21.1\t[1.21.1,1.21.2)\tdirect",
+      "OK\tappliedenergistics2-19.2.18.jar\tloader\tjavafml\t4.0.45\t[1,)\tdirect",
+      "OK\tarchitectury-13.0.11-neoforge.jar\tloader\tjavafml\t4.0.45\t[1,)\tdirect",
+      "OK\tars_nouveau-1.21.1-5.13.3.jar\tloader\tjavafml\t4.0.45\t[4,)\tdirect",
+      "OK\tars_nouveau-1.21.1-5.13.3.jar!META-INF/jarjar/nuggets-neoforge-1.21.1-1.1.0.48.jar\tloader\tjavafml\t4.0.45\t[4,)\tdirect",
+      "OK\tars_nouveau-1.21.1-5.13.3.jar!META-INF/jarjar/infiniverse-568341-5486311.jar\tloader\tjavafml\t4.0.45\t[1,)\tdirect",
+      "OK\tars_nouveau-1.21.1-5.13.3.jar!META-INF/jarjar/lambdynamiclights-api-4.5.1+1.21.1-mojmap.jar\tloader\tjavafml\t4.0.45\t[2,)\tdirect",
+      "OK\tbalm-neoforge-1.21.1-21.0.66.jar\tloader\tjavafml\t4.0.45\t[1,)\tdirect",
+      "OK\tbalm-neoforge-1.21.1-21.0.66.jar!META-INF/jarjar/kuma-api-neoforge-21.0.8+1.21.jar\tloader\tjavafml\t4.0.45\t[1,)\tdirect",
+      "OK\tbeyonddimensions-1.21.1-neoforge-0.8.2.jar\tloader\tjavafml\t4.0.45\t[1,)\tdirect",
+      "OK\tBrandonsCore-1.21.1-3.2.1.309.jar\tloader\tjavafml\t4.0.45\t[2,)\tdirect",
+      "OK\tCodeChickenLib-1.21.1-4.6.1.529.jar\tloader\tjavafml\t4.0.45\t[2,)\tdirect",
+      "OK\tcompixel-neoforge-1.21.1-0.1.15-with-kotlin.jar\tloader\tjavafml\t4.0.45\t[1,)\tdirect",
+      "OK\tconfigured-neoforge-1.21.1-2.6.3.jar\tloader\tjavafml\t4.0.45\t[2,)\tdirect",
+      "OK\tcraftingtweaks-neoforge-1.21.1-21.1.11.jar\tloader\tjavafml\t4.0.45\t[1,)\tdirect",
+      "OK\tcreate-1.21.1-6.0.10.jar\tloader\tjavafml\t4.0.45\t[0,)\tdirect",
+      "OK\tcreate-1.21.1-6.0.10.jar!META-INF/jarjar/flywheel-neoforge-1.21.1-1.0.6.jar\tloader\tjavafml\t4.0.45\t[0,)\tdirect",
+      "OK\tcreate-1.21.1-6.0.10.jar!META-INF/jarjar/ponder-neoforge-1.0.82+mc1.21.1.jar\tloader\tjavafml\t4.0.45\t[0,)\tdirect",
+      "OK\tcurios-neoforge-9.5.1+1.21.1.jar\tloader\tjavafml\t4.0.45\t[1,)\tdirect",
+      "OK\tDraconic-Evolution-1.21.1-3.1.4.633.jar\tloader\tjavafml\t4.0.45\t[2,)\tdirect",
+      "OK\tftb-essentials-neoforge-2101.1.10.jar\tloader\tjavafml\t4.0.45\t[4,)\tdirect",
+      "OK\tftb-library-neoforge-2101.1.37.jar\tloader\tjavafml\t4.0.45\t[4,)\tdirect",
+      "OK\tftb-quests-neoforge-2101.1.37.jar\tloader\tjavafml\t4.0.45\t[4,)\tdirect",
+      "OK\tftb-teams-neoforge-2101.1.11.jar\tloader\tjavafml\t4.0.45\t[4,)\tdirect",
+      "OK\tftb-ultimine-neoforge-2101.1.15.jar\tloader\tjavafml\t4.0.45\t[4,)\tdirect",
+      "OK\tgeckolib-neoforge-1.21.1-4.9.3.jar\tloader\tjavafml\t4.0.45\t[4,)\tdirect",
+      "OK\tgoety-3.2.1-primordial-metadatafix.jar\tloader\tjavafml\t4.0.45\t[1,)\tdirect",
+      "OK\tguideme-21.1.20.jar\tloader\tjavafml\t4.0.45\t*\tdirect",
+      "OK\tinvtweaks-1.21.1-1.2.0.jar\tloader\tjavafml\t4.0.45\t[4,)\tdirect",
+      "OK\tirons_lib-1.21.1-2.2.0.jar\tloader\tjavafml\t4.0.45\t[1,)\tdirect",
+      "OK\tirons_spellbooks-1.21.1-3.16.3.jar\tloader\tjavafml\t4.0.45\t[4,)\tdirect",
+      "OK\tJade-1.21.1-NeoForge-15.10.6.jar\tloader\tjavafml\t4.0.45\t[1,)\tdirect",
+      "OK\tjecharacters-1.21.1-neoforge-4.5.30.jar\tloader\tjavafml\t4.0.45\t[4,)\tdirect",
+      "OK\tjei-1.21.1-neoforge-19.69.0.457.jar\tloader\tjavafml\t4.0.45\t[4,)\tdirect",
+      "OK\tjei-1.21.1-neoforge-19.69.0.457.jar!META-INF/jarjar/mezz_config-1.21.1-neoforge-0.6.6.jar\tloader\tjavafml\t4.0.45\t[4,)\tdirect",
+      "OK\tMekanism-1.21.1-10.7.19.85.jar\tloader\tjavafml\t4.0.45\t[4,)\tdirect",
+      "OK\tMekanismGenerators-1.21.1-10.7.19.85.jar\tloader\tjavafml\t4.0.45\t[4,)\tdirect",
+      "OK\tMouseTweaks-neoforge-mc1.21-2.26.1.jar\tloader\tjavafml\t4.0.45\t[4,)\tdirect",
+      "OK\tNaturesAura-41.10.jar\tloader\tjavafml\t4.0.45\t[4,)\tdirect",
+      "OK\tnotenoughcrashes-neoforge-4.4.9+1.21.1.jar\tloader\tjavafml\t4.0.45\t[3,)\tdirect",
+      "OK\tPatchouli-1.21.1-93-NEOFORGE.jar\tloader\tjavafml\t4.0.45\t[4,)\tdirect",
+      "OK\tpipez-neoforge-1.21.1-1.2.31.jar\tloader\tjavafml\t4.0.45\t*\tdirect",
+      "OK\tplayer-animation-lib-forge-2.0.4+1.21.1.jar\tloader\tjavafml\t4.0.45\t*\tdirect",
+      "OK\tpneumaticcraft-repressurized-8.2.23+mc1.21.1.jar\tloader\tjavafml\t4.0.45\t[4,)\tdirect",
+      "OK\tprimordial-2.0.0-neo-dev.jar\tloader\tjavafml\t4.0.45\t[1,)\tdirect",
+      "OK\tProjectE-1.21.1-PE1.1.0.jar\tloader\tjavafml\t4.0.45\t[4,)\tdirect",
+      "OK\trefinedstorage-neoforge-2.0.9.jar\tloader\tjavafml\t4.0.45\t[2,)\tdirect",
+      "OK\tsophisticatedbackpacks-1.21.1-3.26.14.2222.jar\tloader\tjavafml\t4.0.45\t[4,)\tdirect",
+      "OK\tsophisticatedcore-1.21.1-1.5.17.2426.jar\tloader\tjavafml\t4.0.45\t[4,)\tdirect",
+      "OK\tSpear_of_Void-neoforge-1.21.1-1.3.0fix4.jar\tloader\tjavafml\t4.0.45\t[4,)\tdirect",
+      "CHECKED\t171"
+    ],
+    "range_failures": [],
+    "java_stderr": "",
+    "java_returncode": 0,
+    "passed": true
+  },
+  "unavailable_owner_mods": {
+    "platformbuilder": {
+      "name": "Platform Builder",
+      "reason": "用户确认：自己制作的模组，没有1.21.1版本",
+      "source": "user correction"
+    }
+  },
+  "followup_changes": [
+    {
+      "at": "2026-10-24T23:50:12+08:00",
+      "action": "Added user-identified Spear of Void NeoForge1.21.1 from existing instance; corrected Platform Builder ownership/status",
+      "backup_path": "<PrismLauncher>/instances/ProjectE-Primordial-1.21.1-Test/migration-backups/20261024-235012"
+    },
+    {
+      "at": "2026-10-25T00:22:12+08:00",
+      "action": "Deploy AE2 node capability/owner snapshot/stale storage fixes after181/178 automatic GameTests",
+      "backup_path": "<PrismLauncher>/instances/ProjectE-Primordial-1.21.1-Test/migration-backups/20261025-002212",
+      "runtime_client_launched": false
+    },
+    {
+      "at": "2026-10-25T00:42:04+08:00",
+      "action": "Deploy AE2 fluid catalog, exact purchase/reclaim, independent owner fluid budget after185/179 automatic GameTests",
+      "backup_path": "<PrismLauncher>/instances/ProjectE-Primordial-1.21.1-Test/migration-backups/20261025-004204",
+      "runtime_client_launched": false
+    },
+    {
+      "at": "2026-10-25T01:09:54+08:00",
+      "action": "Deploy Refined Storage2 native item/fluid adapter and cache deltas after191/186 GameTests and production build",
+      "backup_path": "<PrismLauncher>/instances/ProjectE-Primordial-1.21.1-Test/migration-backups/20261025-010954",
+      "runtime_client_launched": false
+    },
+    {
+      "at": "2026-10-25T02:42:15+08:00",
+      "action": "Deploy Beyond Dimensions 0.8.2 virtual item/fluid adapter after 192/192 with-BD and no-BD GameTests plus production build",
+      "backup_path": "<PrismLauncher>/instances/ProjectE-Primordial-1.21.1-Test/migration-backups/20261025-024214",
+      "runtime_client_launched": false
+    },
+    {
+      "at": "2026-10-25T16:24:05+08:00",
+      "action": "Deploy player inventory replenishment backend after 169/169 GameTests and production build; UI and editing payload remain pending",
+      "backup_path": "<PrismLauncher>/instances/ProjectE-Primordial-1.21.1-Test/migration-backups/20261025-162405",
+      "runtime_client_launched": false
+    },
+    {
+      "at": "2026-10-25T17:00:52+08:00",
+      "action": "Deploy player inventory configurator and main-hand FE charging after 201/201 optional integration GameTests and production build",
+      "backup_path": "<PrismLauncher>/instances/ProjectE-Primordial-1.21.1-Test/migration-backups/20261025-165800",
+      "runtime_client_launched": false
+    },
+    {
+      "at": "2026-10-29T00:20:58+08:00",
+      "action": "Deploy NeoForge machine relative-target access and read-only paged port snapshots after 206/206 optional integration GameTests and production build",
+      "backup_path": "<PrismLauncher>/instances/ProjectE-Primordial-1.21.1-Test/migration-backups/20261029-001705",
+      "runtime_client_launched": false
+    }
+  ],
+  "optional_mod_research": {
+    "astral_sorcery": {
+      "checked_at": "2026-10-24",
+      "minecraft_1_21_1": {
+        "status": "official released alpha",
+        "version": "2.0.3",
+        "file": "AstralSorcery-2.0.3.59.jar",
+        "published_at": "2026-10-21T20:28:11.743Z",
+        "source_url": "https://www.curseforge.com/minecraft/mc-mods/astral-sorcery/files/9281073",
+        "source_repository": "https://github.com/HellFirePvP/AstralSorcery/tree/1.21.1",
+        "required_dependencies": {
+          "observerlib": "[1.10.3,)",
+          "curios": "[9.5.1,)"
+        },
+        "verified": "Read official CDN jar neoforge.mods.toml; no instance installation"
+      },
+      "minecraft_1_20_1": {
+        "status": "community source port found; no public release artifact found",
+        "source_url": "https://github.com/MrWizard94-Compile/Astral-Sorcery-1.20.1-Port",
+        "official_original_release_found": false,
+        "gameplay_completeness_verified": false
+      }
+    }
+  }
+}

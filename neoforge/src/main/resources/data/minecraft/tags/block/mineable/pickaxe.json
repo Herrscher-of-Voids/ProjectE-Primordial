@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "primordial:blackhole",
+    "primordial:transmutation_interface",
+    "primordial:entity_generator"
+  ]
+}
