@@ -2,11 +2,11 @@
 
 ## Current release (2026-10-31)
 
-**Stable release: [v2.0.1 — NeoForge 1.21.1](https://github.com/Herrscher-of-Voids/ProjectE-Primordial/releases/tag/v2.0.1-neoforge-1.21.1).** This patch broadens optional dependency ranges while retaining the tested 2.0.0 gameplay behavior. The maintainer tested the prior release in-game and reported no major issues; players can report remaining problems. Astral/Oritech and new functionality remain deferred.
+**Stable release: [v2.0.2 — NeoForge 1.21.1](https://github.com/Herrscher-of-Voids/ProjectE-Primordial/releases/tag/v2.0.2-neoforge-1.21.1).** This patch lowers the NeoForge runtime floor and retains the tested 2.0.0 gameplay behavior. The maintainer tested the prior release in-game and reported no major issues; players can report remaining problems. Astral/Oritech and new functionality remain deferred.
 
-The optional runtime integrations now accept broad same-Minecraft-version ranges: FTB Quests **2101.x+**, AE2 **19.2+**, Refined Storage **2.0+**, and Beyond Dimensions **0.8+**. The exact versions in `gradle.properties` remain compile/test baselines only. Optional adapters probe their public API at startup and log a warning while disabling that integration when a future API is incompatible, so an unrelated optional mod does not prevent the core mod from loading.
+NeoForge runtime support now starts at **21.1.119** for Minecraft 1.21.1 (`[21.1.119,21.2)`), matching required ProjectE 1.1.0's own minimum. `21.1.264` remains the development baseline. Other installed mods can impose a higher NeoForge minimum of their own. Optional integration ranges from 2.0.1 are retained: FTB Quests **2101.x+**, AE2 **19.2+**, Refined Storage **2.0+**, and Beyond Dimensions **0.8+**.
 
-Release JARs use the version passed to Gradle in both the filename and NeoForge metadata. From the repository root with JDK 21, run `./gradlew -p neoforge build -Pmod_version=2.0.1` (PowerShell: `.\gradlew.bat -p neoforge build '-Pmod_version=2.0.1'`). The default remains a development build.
+Release JARs use the version passed to Gradle in both the filename and NeoForge metadata. Build the release against the minimum supported API with JDK 21: `./gradlew -p neoforge build -Pmod_version=2.0.2 -Pneo_version=21.1.119` (PowerShell uses `.\gradlew.bat`). Defaults remain a development version on NeoForge 21.1.264. See the [changelog](CHANGELOG.md) for installation and validation details.
 
 ## Historical validation and acceptance records
 
