@@ -4,14 +4,14 @@
 
 > English: Primordial extends ProjectE's EMC economy with machine automation, resource conversion, recovery, equipment, and storage-network integrations. Separate source lines target Minecraft 1.20.1 with Forge and Minecraft 1.21.1 with NeoForge.
 
-正式下载：[Forge 1.20.1 / 2.0.0](https://github.com/Herrscher-of-Voids/ProjectE-Primordial/releases/tag/v2.0.0-forge-1.20.1) · [NeoForge 1.21.1 / 2.0.0](https://github.com/Herrscher-of-Voids/ProjectE-Primordial/releases/tag/v2.0.0-neoforge-1.21.1)。安装所需前置见各发布说明。
+正式下载：[Forge 1.20.1 / 2.0.0](https://github.com/Herrscher-of-Voids/ProjectE-Primordial/releases/tag/v2.0.0-forge-1.20.1) · [NeoForge 1.21.1 / 2.0.1](https://github.com/Herrscher-of-Voids/ProjectE-Primordial/releases/tag/v2.0.1-neoforge-1.21.1)。安装所需前置见各发布说明。
 
 ## 版本与分支
 
 | 分支 | 目标版本 | 状态 |
 | --- | --- | --- |
 | `forge/1.20.1` | Minecraft 1.20.1 + Forge | 原版源码维护线 |
-| `neoforge/1.21.1` | Minecraft 1.21.1 + NeoForge | 2.0.0 已正式发布，维护者已游戏内试用 |
+| `neoforge/1.21.1` | Minecraft 1.21.1 + NeoForge | 2.0.1 已正式发布，放宽可选前置版本范围 |
 
 ### NeoForge 1.21.1 当前进度（2026-10-31）
 
@@ -37,7 +37,7 @@
 - 使用配置器为机器、玩家物品栏和支持的装备安排物品、流体、气体、Forge 能源及其它资源的供给。
 - 将 EMC 转换为若干联动模组的资源，并通过黑洞方块和护符回收资源价值。
 - 提供黑洞装备、可配置目标的时间加速器，以及 AE2、Refined Storage 和 Beyond Dimensions 存储网络接口。
-- 根据已安装的可选模组启用相应适配；具体行为取决于目标模组版本及其公开 API。
+- 根据已安装的可选模组启用相应适配；NeoForge 1.21.1 的 FTB Quests、AE2、Refined Storage、Beyond Dimensions 采用同版本族的范围型前置要求，API 不兼容时仅停用对应联动。
 
 ## 运行要求
 

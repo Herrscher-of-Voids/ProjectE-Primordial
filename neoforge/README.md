@@ -2,9 +2,11 @@
 
 ## Current release (2026-10-31)
 
-**Stable release: [v2.0.0 — NeoForge 1.21.1](https://github.com/Herrscher-of-Voids/ProjectE-Primordial/releases/tag/v2.0.0-neoforge-1.21.1).** The maintainer has tested this version in-game, reported no major issues in that trial, and authorized the stable release; players can report remaining problems. The existing tag and published JAR are retained. Astral/Oritech and new functionality remain deferred.
+**Stable release: [v2.0.1 — NeoForge 1.21.1](https://github.com/Herrscher-of-Voids/ProjectE-Primordial/releases/tag/v2.0.1-neoforge-1.21.1).** This patch broadens optional dependency ranges while retaining the tested 2.0.0 gameplay behavior. The maintainer tested the prior release in-game and reported no major issues; players can report remaining problems. Astral/Oritech and new functionality remain deferred.
 
-Release JARs use the version passed to Gradle in both the filename and NeoForge metadata. From the repository root with JDK 21, run `./gradlew -p neoforge build -Pmod_version=2.0.0` (PowerShell: `.\gradlew.bat -p neoforge build '-Pmod_version=2.0.0'`). The default remains a development build.
+The optional runtime integrations now accept broad same-Minecraft-version ranges: FTB Quests **2101.x+**, AE2 **19.2+**, Refined Storage **2.0+**, and Beyond Dimensions **0.8+**. The exact versions in `gradle.properties` remain compile/test baselines only. Optional adapters probe their public API at startup and log a warning while disabling that integration when a future API is incompatible, so an unrelated optional mod does not prevent the core mod from loading.
+
+Release JARs use the version passed to Gradle in both the filename and NeoForge metadata. From the repository root with JDK 21, run `./gradlew -p neoforge build -Pmod_version=2.0.1` (PowerShell: `.\gradlew.bat -p neoforge build '-Pmod_version=2.0.1'`). The default remains a development build.
 
 ## Historical validation and acceptance records
 
@@ -22,9 +24,9 @@ The verified JAR has been copied to `ProjectE-Primordial-1.21.1-Test/minecraft/m
 
 Newly completed: native item-page pagination; JEI item/fluid/chemical affordable counts and server-authoritative Shift purchase; knowledge-based recipe transfer with physical ingredients first, atomic deficit payment, component identity, dynamic-recipe isolation and current-state revalidation; nine real media slots (73–81), continuous FE charging, container-based forgetting, page isolation and close/Shift return. Crafting slots remain 63–71, result 72, total slots 82. Hidden-slot double-click collection and malicious FE output-count changes have explicit regressions.
 
-FTB Quests is pinned to **2101.1.37**, whose reward claim changed from void to boolean. Native TeamData tests cover refused claims staying unclaimed and already-held stages completing personal rewards. Optional metadata accepts [2101.1.37,2101.1.38), preventing silent use of the incompatible older ABI. Library/Teams/Architectury match the installed test pack.
+FTB Quests is compiled and tested against **2101.1.37**, whose reward claim changed from void to boolean. Runtime metadata accepts the broad **2101.x+** range; the reward adapter validates the claim ABI and skips only that integration when it is incompatible. Native TeamData tests cover refused claims staying unclaimed and already-held stages completing personal rewards. Library/Teams/Architectury match the installed test pack.
 
-Beyond Dimensions 0.8.2 custom ExtractRule transactions now preserve reject/limit/take/fit/rollback/onCommit, including fractional fluid costs. Native commits occur only after payment; callback-time network revocation or removal of required physical materials cancels and refunds. This tests the real rule API, without installing KubeJS. A single authorized account pays the requested root resource; extra take resources require physical stock.
+Beyond Dimensions is compiled and tested against **0.8.2**; runtime metadata accepts **0.8.x+**. Its custom ExtractRule transactions preserve reject/limit/take/fit/rollback/onCommit, including fractional fluid costs. Native commits occur only after payment; callback-time network revocation or removal of required physical materials cancels and refunds. The adapter probes the transaction API and skips the integration if a later API is incompatible. This tests the real rule API, without installing KubeJS. A single authorized account pays the requested root resource; extra take resources require physical stock.
 
 Botania mana pools/spreaders are supported through **[Botania Revived 1.0.3](https://github.com/Velron-Devs/Botania-Revived)**, an unofficial altered port. [Official Botania](https://botaniamod.net/changelog.html) still lists 1.21+ as ongoing. The isolated test jar SHA-256 is `5D4F038E220A8981AD1AF9C2D4ABDD419D0B1FECC638C2333CAE073FE01D05B2`. It has not been added to Prism. BD and PneumaticCraft legacy Botania modules require the old API and are skipped only when that API is absent; Primordial mana/pressure adapters remain available. This does not restore those third-party modules' features.
 
@@ -63,6 +65,6 @@ From the repository root, use JDK 21:
 
 The `runClient` and `runServer` tasks use separate `neoforge/run/client` and `neoforge/run/server` directories. They must not use or overwrite a Forge 1.20.1 world.
 
-Core versions are fixed in `gradle.properties` and `build.gradle`. Optional integrations will be added as their gameplay systems are ported.
+Core versions are fixed in `gradle.properties` and `build.gradle`; optional versions there are compile/test baselines. Runtime dependency ranges are declared in `META-INF/neoforge.mods.toml` and intentionally remain broader for same-Minecraft-version compatibility.
 
 The NeoForge resource layout follows the 1.21.1 data-pack convention (`data/primordial/recipe`, singular). Do not use the Forge 1.20.1 `recipes` path when adding new NeoForge recipes.

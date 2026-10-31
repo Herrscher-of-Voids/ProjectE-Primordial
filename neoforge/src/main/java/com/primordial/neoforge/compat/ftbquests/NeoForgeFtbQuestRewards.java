@@ -1,5 +1,5 @@
 /**
- * 【文件职责】在可选 FTB Quests 2101.1.37 注册两类原初个人阶段奖励。
+ * 【文件职责】在可选 FTB Quests 2101.x 注册两类原初个人阶段奖励。
  * 【变更记录 #1】2026-10-23 16:19:59（第 1 次备注 · 2.0.0-neoforge-stages）
  * - 删除：无；不移植 Forge 的构造器 Mixin。
  * - 新增：流体、气体奖励工厂、图标及幂等注册；目标 API 不兼容时拒绝启用适配器。
@@ -28,9 +28,9 @@ public final class NeoForgeFtbQuestRewards {
         try {
             if (Reward.class.getMethod("claim", ServerPlayer.class, boolean.class).getReturnType() != boolean.class
                     || Reward.class.getMethod("tryClaim", ServerPlayer.class, boolean.class).getReturnType() != boolean.class)
-                throw new IllegalStateException("Unsupported FTB Quests reward claim API; expected 2101.1.37");
+                throw new IllegalStateException("Unsupported FTB Quests reward claim API; the optional stage adapter was disabled");
         } catch (NoSuchMethodException failure) {
-            throw new IllegalStateException("Missing FTB Quests 2101.1.37 reward claim API", failure);
+            throw new IllegalStateException("Missing FTB Quests reward claim API; the optional stage adapter was disabled", failure);
         }
         FLUID_STAGE = RewardTypes.register(ResourceLocation.fromNamespaceAndPath("primordial", "fluid_stage"),
                 NeoForgeStageReward.Fluid::new, () -> Icon.getIcon("minecraft:item/water_bucket"))

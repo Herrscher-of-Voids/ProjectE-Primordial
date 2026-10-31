@@ -2,7 +2,9 @@
 
 ## 当前发布状态（2026-10-31）
 
-**[v2.0.0 — NeoForge 1.21.1 已正式发布](https://github.com/Herrscher-of-Voids/ProjectE-Primordial/releases/tag/v2.0.0-neoforge-1.21.1)。** 维护者已在游戏内试用，反馈“基本上没啥大问题”，据此确认正式发布，后续问题由玩家反馈。沿用原有标签和已发布 JAR。星辉、奥瑞和新增功能继续暂缓。
+**[v2.0.1 — NeoForge 1.21.1 已正式发布](https://github.com/Herrscher-of-Voids/ProjectE-Primordial/releases/tag/v2.0.1-neoforge-1.21.1)。** 本补丁放宽可选前置版本范围，沿用已实测的 2.0.0 游戏行为。维护者已在游戏内试用，反馈“基本上没啥大问题”，后续问题由玩家反馈。星辉、奥瑞和新增功能继续暂缓。
+
+运行时可选前置采用范围型要求：FTB Quests `2101.x+`、AE2 `19.2+`、Refined Storage `2.0+`、Beyond Dimensions `0.8.x+`。构建文件里的具体版本只作为编译和测试基线；可选适配器遇到 API 不兼容时会记录警告并单独停用，不阻止核心模组启动。
 
 ## 历史部署与验收记录
 

@@ -74,7 +74,7 @@ public abstract class NeoForgeStageReward extends Reward {
         boolean granted = data.grant(player.getUUID(), id);
         if (granted && notify)
             player.sendSystemMessage(Component.translatable(messagePrefix() + ".granted", id.toString()));
-        // FTB 1.37 marks a personal claim only on true. An already-held stage is a
+        // The supported FTB 2101.x API marks a personal claim only on true. An already-held stage is a
         // fulfilled reward, while a refused/invalid grant must stay claimable.
         return granted || data.has(player.getUUID(), id);
     }

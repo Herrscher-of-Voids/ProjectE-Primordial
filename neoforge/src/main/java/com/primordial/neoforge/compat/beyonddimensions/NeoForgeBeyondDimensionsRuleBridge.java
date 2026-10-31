@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/** BD 0.8.2 plans rules against temporary purchasing power and commits only after exact EMC authorization. */
+/** BD 0.8.x plans rules against temporary purchasing power and commits only after exact EMC authorization. */
 public final class NeoForgeBeyondDimensionsRuleBridge {
     private static final ThreadLocal<Context> ACTIVE = new ThreadLocal<>();
     private static Api api;
@@ -86,7 +86,7 @@ public final class NeoForgeBeyondDimensionsRuleBridge {
                     method(type, "extract", key, long.class), method(type, "commit"),
                     method(storage.getType(), "storedAmount", key));
             return api;
-        } catch (ReflectiveOperationException failure) { throw new IllegalStateException("BD 0.8.2 rule transaction API changed", failure); }
+        } catch (ReflectiveOperationException failure) { throw new IllegalStateException("BD rule transaction API changed; the optional rule adapter was disabled", failure); }
     }
 
     private static Field field(Class<?> type, String name) throws ReflectiveOperationException {
