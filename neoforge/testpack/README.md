@@ -2,7 +2,7 @@
 
 ## 当前发布状态（2026-10-31）
 
-**[v2.0.3 — NeoForge 1.21.1 已正式发布](https://github.com/Herrscher-of-Voids/ProjectE-Primordial/releases/tag/v2.0.3-neoforge-1.21.1)。** 本补丁修复 JEI 默认列表遗漏定价器的问题，无需开启「Show Hidden Ingredients」；创造栏显示规则和服务端定价权限保持原样。NeoForge 下限保留 `21.1.119`。此前 2.0.0 已由维护者游戏内试用；本轮只做后台自动验证，未启动客户端或更新 Prism 实例，星辉、奥瑞和新增功能继续暂缓。
+**[v2.0.4 — NeoForge 1.21.1 已正式发布](https://github.com/Herrscher-of-Voids/ProjectE-Primordial/releases/tag/v2.0.4-neoforge-1.21.1)。** 本补丁修复实际创造物品栏中定价器缺失与目录缓存未刷新的问题：创造模式二级管理员或单人存档主人可直接看到，无需打开原版「管理员物品栏」。服务端定价权限保持原样，保留 2.0.3 的 JEI 修复和 NeoForge 下限 `21.1.119`。此前 2.0.0 已由维护者游戏内试用；本轮只做后台与离线缓存验证，未启动客户端或更新 Prism 实例，星辉、奥瑞和新增功能继续暂缓。
 
 NeoForge 运行时范围为 `[21.1.119,21.2)`，Minecraft 仍为 `1.21.1`。构建文件里的 `21.1.264` 保留为开发基线；其他模组自身可能要求更高的加载器版本。2.0.1 的可选前置范围保持：FTB Quests `2101.x+`、AE2 `19.2+`、Refined Storage `2.0+`、Beyond Dimensions `0.8.x+`。
 

@@ -25,6 +25,7 @@
     "NeoForgeCollectorTooltipMixin"
   ],
   "client": [
+    "NeoForgeCreativeModeTabsMixin",
     "NeoForgeTransmutationScreenMixin",
     "NeoForgeTransmutationSlotMixin",
     "NeoForgeJeiCountRendererMixin",

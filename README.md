@@ -4,20 +4,20 @@
 
 > English: Primordial extends ProjectE's EMC economy with machine automation, resource conversion, recovery, equipment, and storage-network integrations. Separate source lines target Minecraft 1.20.1 with Forge and Minecraft 1.21.1 with NeoForge.
 
-正式下载：[Forge 1.20.1 / 2.0.0](https://github.com/Herrscher-of-Voids/ProjectE-Primordial/releases/tag/v2.0.0-forge-1.20.1) · [NeoForge 1.21.1 / 2.0.3](https://github.com/Herrscher-of-Voids/ProjectE-Primordial/releases/tag/v2.0.3-neoforge-1.21.1)。安装所需前置见各发布说明。
+正式下载：[Forge 1.20.1 / 2.0.0](https://github.com/Herrscher-of-Voids/ProjectE-Primordial/releases/tag/v2.0.0-forge-1.20.1) · [NeoForge 1.21.1 / 2.0.4](https://github.com/Herrscher-of-Voids/ProjectE-Primordial/releases/tag/v2.0.4-neoforge-1.21.1)。安装所需前置见各发布说明。
 
 ## 版本与分支
 
 | 分支 | 目标版本 | 状态 |
 | --- | --- | --- |
 | `forge/1.20.1` | Minecraft 1.20.1 + Forge | 原版源码维护线 |
-| `neoforge/1.21.1` | Minecraft 1.21.1 + NeoForge | 2.0.3 修复 JEI 默认列表遗漏定价器；NeoForge 下限 21.1.119 |
+| `neoforge/1.21.1` | Minecraft 1.21.1 + NeoForge | 2.0.4 修复创造物品栏定价器显示与缓存；NeoForge 下限 21.1.119 |
 
 ### NeoForge 1.21.1 当前进度（2026-10-31）
 
 已迁移 EMC 账本与 HUD、黑洞回收、资源知识和阶段、定价器、转化桌物品/流体/化学品/合成页、AE2/RS 2/Beyond Dimensions 网络、机器配置器与自动任务、独立资源和玩家补充、护符、实体生成器、加速器、黑洞材料/装备/武器、奇点与生存配方。完整范围、运行要求及验证限制见 [NeoForge 迁移说明](neoforge/README.md)。
 
-2.0.3 修复定价器只有开启 JEI「Show Hidden Ingredients」才能找到的问题；通过附加物品注册加入默认列表，创造栏显示和服务端定价权限保持原样。保留 2.0.2 的 NeoForge 范围 `[21.1.119,21.2)`，与必需前置 ProjectE 1.1.0 的下限一致；其他模组自身的加载器要求仍适用。详见 [更新日志](neoforge/CHANGELOG.md)。
+2.0.4 修复实际创造物品栏缺少定价器的问题：创造模式二级管理员或单人存档主人可直接看到物品，无需开启原版「管理员物品栏」，显示资格变化时刷新目录和搜索。服务端定价权限保持原样；保留 2.0.3 的 JEI 默认列表修复，以及 NeoForge 范围 `[21.1.119,21.2)`，与必需前置 ProjectE 1.1.0 的下限一致。其他模组自身的加载器要求仍适用。详见 [更新日志](neoforge/CHANGELOG.md)。
 
 最近六项实测修复：补齐 33 项能力名称和说明及其他翻译（中英共 513 键）；修复黑洞/碎块及绊线回调的同步区块加载路径；修复 JEI“＋”转移和返回合成页；同步最新 1.20.1 定价器贴图；删除开发进度提示；恢复配置器邻接方块图标、六面布局并修复空面板、重叠与默认值。配置器网络协议升级为 **2**，联机时客户端和服务端须同时更新。
 

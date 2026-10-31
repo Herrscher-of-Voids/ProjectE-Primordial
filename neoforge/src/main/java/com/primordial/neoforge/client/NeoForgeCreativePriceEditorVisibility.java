@@ -1,5 +1,5 @@
 /**
- * 【文件职责】在 NeoForge 物理客户端识别本机创造模式存档主人，仅服务定价器创造目录展示。
+ * 【文件职责】在 NeoForge 物理客户端识别创造模式管理员或本机存档主人，仅服务定价器创造目录展示。
  * 【变更记录 #1】2026-10-23 17:01:51（第 1 次备注 · 2.0.0-neoforge-pricing）
  * - 删除：无。
  * - 新增：当前本地玩家、创造模式及 integrated server 原生主人身份检查。
@@ -9,15 +9,18 @@
 package com.primordial.neoforge.client;
 
 import net.minecraft.client.Minecraft;
+import com.primordial.neoforge.priceeditor.NeoForgePriceEditorAccess;
 
 public final class NeoForgeCreativePriceEditorVisibility {
     private NeoForgeCreativePriceEditorVisibility() {}
 
-    public static boolean isLocalCreativeOwner() {
+    public static boolean canShowPriceEditor() {
         Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft == null) return false;
         var player = minecraft.player;
         var server = minecraft.getSingleplayerServer();
-        return player != null && player.isCreative() && server != null
+        boolean localOwner = player != null && server != null && server.isSingleplayer()
                 && server.isSingleplayerOwner(player.getGameProfile());
+        return NeoForgePriceEditorAccess.canShowInCreative(player, localOwner);
     }
 }

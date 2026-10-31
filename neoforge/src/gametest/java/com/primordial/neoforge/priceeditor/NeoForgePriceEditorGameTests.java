@@ -17,11 +17,13 @@ import java.util.UUID;
 import java.nio.file.Files;
 import com.mojang.authlib.GameProfile;
 import com.primordial.neoforge.PrimordialNeoForgeMod;
+import com.primordial.neoforge.NeoForgeModRegistries;
 import com.primordial.neoforge.value.NeoForgePriceEditing;
 import com.primordial.neoforge.value.NeoForgeRecoveryPrices;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;
 import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.Connection;
@@ -35,6 +37,7 @@ import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.players.ServerOpListEntry;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -56,16 +59,25 @@ public final class NeoForgePriceEditorGameTests {
         try {
             player.setGameMode(GameType.CREATIVE);
             check(!NeoForgePriceEditorAccess.canEdit(player), "A creative visitor on a dedicated server must not edit prices");
+            check(!NeoForgePriceEditorAccess.canShowInCreative(player, false), "A creative visitor must not see the administrator tool");
+            check(NeoForgePriceEditorAccess.canShowInCreative(player, true) && !NeoForgePriceEditorAccess.canShowInCreative(null, true),
+                    "A local creative owner can see the tool without OP, but an absent client player cannot");
+            server.getPlayerList().getOps().add(new ServerOpListEntry(player.getGameProfile(), 1, false));
+            check(!NeoForgePriceEditorAccess.canShowInCreative(player, false) && !NeoForgePriceEditorAccess.canEdit(player),
+                    "Level-one creative operators must not see or use the price editor");
             grantOperator(server, player);
             for (GameType mode : List.of(GameType.SURVIVAL, GameType.CREATIVE, GameType.ADVENTURE, GameType.SPECTATOR)) {
                 player.setGameMode(mode);
                 check(NeoForgePriceEditorAccess.canEdit(player), "A level-two administrator may edit in every game mode");
+                check(NeoForgePriceEditorAccess.canShowInCreative(player, false) == (mode == GameType.CREATIVE),
+                        "Creative administrators must see the tool independently of the operator-items preference");
             }
             var menu = new NeoForgePriceEditorMenu(41, player.getInventory());
             player.containerMenu = menu;
             check(menu.stillValid(player), "Authorized menu must remain valid");
             server.getPlayerList().deop(player.getGameProfile());
             player.setGameMode(GameType.CREATIVE);
+            check(!NeoForgePriceEditorAccess.canShowInCreative(player, false), "Revoking OP must remove the creative listing");
             check(!menu.stillValid(player), "Losing operator status must invalidate even a creative visitor menu");
             menu.broadcastChanges();
             check(player.containerMenu == player.inventoryMenu, "A broadcast after losing permission must close the real open menu");
@@ -229,6 +241,24 @@ public final class NeoForgePriceEditorGameTests {
                 if (previous == null) Files.deleteIfExists(path); else Files.write(path, previous);
                 NeoForgeRecoveryPrices.reload();
             } finally { logout(server, player); }
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = "capability_proxy_empty", templateNamespace = PrimordialNeoForgeMod.MOD_ID)
+    public static void creativeCatalogAndSearchEntriesFollowGrantAndRevocation(GameTestHelper helper) {
+        var tab = BuiltInRegistries.CREATIVE_MODE_TAB.get(ResourceLocation.parse("primordial:main"));
+        check(tab != null, "The Primordial creative tab must be registered");
+        var level = helper.getLevel();
+        try {
+            for (boolean allowed : List.of(false, true, false)) {
+                tab.buildContents(new CreativeModeTab.ItemDisplayParameters(level.enabledFeatures(), allowed, level.registryAccess()));
+                check(tab.getDisplayItems().stream().anyMatch(stack -> stack.is(NeoForgeModRegistries.PRICE_EDITOR_ITEM.get())) == allowed
+                                && tab.getSearchTabDisplayItems().stream().anyMatch(stack -> stack.is(NeoForgeModRegistries.PRICE_EDITOR_ITEM.get())) == allowed,
+                        "The real creative generator must add and remove the tool in both its parent tab and search entries");
+            }
+        } finally {
+            tab.buildContents(new CreativeModeTab.ItemDisplayParameters(level.enabledFeatures(), false, level.registryAccess()));
         }
         helper.succeed();
     }

@@ -40,9 +40,9 @@ public final class NeoForgeCertificates {
                 .title(Component.translatable("itemGroup.primordial"))
                 .icon(() -> new ItemStack(NeoForgeModRegistries.BLACKHOLE_ITEM.get()))
                 .displayItems((parameters, output) -> {
-                    if (parameters.hasPermissions() || localCreativeOwner())
+                    if (parameters.hasPermissions() || clientCanShowPriceEditor())
                         output.accept(NeoForgeModRegistries.PRICE_EDITOR_ITEM.get());
-                        output.accept(NeoForgeModRegistries.CONFIGURATOR_ITEM.get());
+                    output.accept(NeoForgeModRegistries.CONFIGURATOR_ITEM.get());
                     output.accept(NeoForgeModRegistries.BLACKHOLE_ITEM.get());
                     output.accept(NeoForgeModRegistries.BLACKHOLE_CHARM_ITEM.get());
                     output.accept(NeoForgeModRegistries.TRANSMUTATION_INTERFACE_ITEM.get());
@@ -59,12 +59,12 @@ public final class NeoForgeCertificates {
     /** 显式启动静态注册；只从统一注册入口调用一次。 */
     public static void register() {}
 
-    /** 原生参数是管理员物品的显示偏好；主人无作弊的本地创造目录需另行补充展示。 */
-    private static boolean localCreativeOwner() {
+    /** 管理员物品栏开关是显示偏好，不能代替本模组工具的管理员或单人主人判断。 */
+    private static boolean clientCanShowPriceEditor() {
         if (FMLEnvironment.dist != Dist.CLIENT) return false;
         try {
             return Boolean.TRUE.equals(Class.forName("com.primordial.neoforge.client.NeoForgeCreativePriceEditorVisibility")
-                    .getMethod("isLocalCreativeOwner").invoke(null));
+                    .getMethod("canShowPriceEditor").invoke(null));
         } catch (ReflectiveOperationException | RuntimeException | LinkageError failure) {
             return false;
         }
