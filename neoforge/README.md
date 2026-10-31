@@ -2,11 +2,11 @@
 
 ## Current release (2026-10-31)
 
-**Stable release: [v2.0.2 — NeoForge 1.21.1](https://github.com/Herrscher-of-Voids/ProjectE-Primordial/releases/tag/v2.0.2-neoforge-1.21.1).** This patch lowers the NeoForge runtime floor and retains the tested 2.0.0 gameplay behavior. The maintainer tested the prior release in-game and reported no major issues; players can report remaining problems. Astral/Oritech and new functionality remain deferred.
+**Stable release: [v2.0.3 — NeoForge 1.21.1](https://github.com/Herrscher-of-Voids/ProjectE-Primordial/releases/tag/v2.0.3-neoforge-1.21.1).** This patch registers the price editor as an extra JEI item, so the default ingredient list includes it without enabling Show Hidden Ingredients. Creative-tab visibility and server-side pricing permissions are unchanged; deliberate user or pack hiding remains effective. The maintainer previously tested 2.0.0 in-game and reported no major issues. This patch has automated validation; its client UI has not been retested. Astral/Oritech and new functionality remain deferred.
 
 NeoForge runtime support now starts at **21.1.119** for Minecraft 1.21.1 (`[21.1.119,21.2)`), matching required ProjectE 1.1.0's own minimum. `21.1.264` remains the development baseline. Other installed mods can impose a higher NeoForge minimum of their own. Optional integration ranges from 2.0.1 are retained: FTB Quests **2101.x+**, AE2 **19.2+**, Refined Storage **2.0+**, and Beyond Dimensions **0.8+**.
 
-Release JARs use the version passed to Gradle in both the filename and NeoForge metadata. Build the release against the minimum supported API with JDK 21: `./gradlew -p neoforge build -Pmod_version=2.0.2 -Pneo_version=21.1.119` (PowerShell uses `.\gradlew.bat`). Defaults remain a development version on NeoForge 21.1.264. See the [changelog](CHANGELOG.md) for installation and validation details.
+Release JARs use the version passed to Gradle in both the filename and NeoForge metadata. Build the release against the minimum supported API with JDK 21: `./gradlew -p neoforge build -Pmod_version=2.0.3 -Pneo_version=21.1.119` (PowerShell uses `.\gradlew.bat`). Defaults remain a development version on NeoForge 21.1.264. See the [changelog](CHANGELOG.md) for installation and validation details.
 
 ## Historical validation and acceptance records
 

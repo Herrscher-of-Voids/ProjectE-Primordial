@@ -10,6 +10,7 @@ package com.primordial.neoforge.compat.jei;
 
 import java.util.List;
 
+import com.primordial.neoforge.NeoForgeModRegistries;
 import com.primordial.neoforge.PrimordialNeoForgeMod;
 import com.primordial.neoforge.compat.NeoForgePriceEditorChemicalBridge;
 import com.primordial.neoforge.priceeditor.NeoForgePriceEditorScreen;
@@ -17,6 +18,7 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
 import mezz.jei.api.ingredients.ITypedIngredient;
+import mezz.jei.api.registration.IExtraIngredientRegistration;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.resources.ResourceLocation;
@@ -27,6 +29,11 @@ import net.neoforged.neoforge.fluids.FluidStack;
 public final class NeoForgePriceEditorJeiPlugin implements IModPlugin {
     @Override public ResourceLocation getPluginUid() {
         return ResourceLocation.fromNamespaceAndPath(PrimordialNeoForgeMod.MOD_ID, "price_editor");
+    }
+
+    @Override public void registerExtraIngredients(IExtraIngredientRegistration registration) {
+        // Permission-filtered creative entries can be absent from JEI's initial item scan.
+        registration.addExtraItemStacks(List.of(NeoForgeModRegistries.PRICE_EDITOR_ITEM.get().getDefaultInstance()));
     }
 
     @Override public void registerGuiHandlers(IGuiHandlerRegistration registration) {
