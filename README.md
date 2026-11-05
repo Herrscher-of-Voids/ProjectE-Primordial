@@ -6,6 +6,8 @@
 
 正式下载：[Forge 1.20.1 / 2.0.0](https://github.com/Herrscher-of-Voids/ProjectE-Primordial/releases/tag/v2.0.0-forge-1.20.1) · [NeoForge 1.21.1 / 2.0.4](https://github.com/Herrscher-of-Voids/ProjectE-Primordial/releases/tag/v2.0.4-neoforge-1.21.1)。安装所需前置见各发布说明。
 
+**1.21.1 当前验收边界：** 2.0.4 已正式发布，但最新客户端 GUI、Mixin 实际应用和中文整包回归尚未复测。260/260 与 301/301 是本模组自动 GameTest 结果，不代表所有 GUI 或整包客户端均通过。见 [当前状态与缺口](neoforge/CURRENT_STATUS.md)。
+
 ## 版本与分支
 
 | 分支 | 目标版本 | 状态 |
