@@ -1,10 +1,12 @@
 package com.primordial.neoforge.transmutation;
 
+import java.util.Optional;
 import java.util.Set;
 
 import com.mojang.serialization.DynamicOps;
 import moze_intel.projecte.api.ItemInfo;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
@@ -12,9 +14,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 /** The three Forge learning flags applied to safe 1.21.1 component patches. */
@@ -34,9 +39,11 @@ public final class NeoForgeTransmutationNbtPolicy {
 
     public static ItemInfo persistent(ItemInfo info) {
         HolderLookup.Provider registries = null;
-        var server = ServerLifecycleHooks.getCurrentServer();
-        if (server != null) registries = server.registryAccess();
-        else if (FMLEnvironment.dist.isClient()) registries = ClientRegistries.get();
+        if (FMLEnvironment.dist.isClient() && EffectiveSide.get().isClient()) registries = ClientRegistries.get();
+        else {
+            var server = ServerLifecycleHooks.getCurrentServer();
+            if (server != null) registries = server.registryAccess();
+        }
         return normalize(info, 7, registries);
     }
 
@@ -63,7 +70,7 @@ public final class NeoForgeTransmutationNbtPolicy {
         DataComponentPatch patch = result.build();
         if (patch.isEmpty()) return info.itemOnly();
         try {
-            DynamicOps<Tag> ops = registries == null ? NbtOps.INSTANCE : registries.createSerializationContext(NbtOps.INSTANCE);
+            DynamicOps<Tag> ops = validationOps(registries);
             Tag encoded = DataComponentPatch.CODEC.encodeStart(ops, patch).result().orElse(null);
             if (encoded == null || !bounded(encoded, 0, new int[]{4096})) return info.itemOnly();
             // Codec round-trip also prevents mutable text/components from sharing the source sample.
@@ -72,6 +79,17 @@ public final class NeoForgeTransmutationNbtPolicy {
         } catch (RuntimeException | LinkageError invalid) {
             return info.itemOnly();
         }
+    }
+
+    private static DynamicOps<Tag> validationOps(HolderLookup.Provider registries) {
+        if (registries == null) return NbtOps.INSTANCE;
+        // Rejected foreign holders must not cache encoding failures in the world's save context, even inside text.
+        return RegistryOps.create(NbtOps.INSTANCE, new RegistryOps.RegistryInfoLookup() {
+            @Override
+            public <T> Optional<RegistryOps.RegistryInfo<T>> lookup(ResourceKey<? extends Registry<? extends T>> key) {
+                return registries.lookup(key).map(RegistryOps.RegistryInfo::fromRegistryLookup);
+            }
+        });
     }
 
     private static <T> void copy(DataComponentPatch source, DataComponentPatch.Builder target, DataComponentType<T> type) {

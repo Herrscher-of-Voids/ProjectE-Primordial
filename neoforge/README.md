@@ -1,14 +1,14 @@
 # NeoForge 1.21.1
 
-## Current release (2026-10-31)
+## Current release (2026-11-08)
 
-**Stable release: [v2.0.4 — NeoForge 1.21.1](https://github.com/Herrscher-of-Voids/ProjectE-Primordial/releases/tag/v2.0.4-neoforge-1.21.1).** This patch fixes the price editor's actual creative-tab listing: creative level-two operators and local creative world owners can see it regardless of the vanilla Operator Items Tab option. Visibility changes invalidate the native cache so the screen and search entries rebuild together. Server-side pricing authorization is unchanged; 2.0.3's separate JEI registration is retained. The maintainer previously tested 2.0.0 in-game and reported no major issues. This patch has automated and isolated cache-hook validation; its client UI has not been retested. Astral/Oritech and new functionality remain deferred.
+**Stable release: [v2.0.5 — NeoForge 1.21.1](https://github.com/Herrscher-of-Voids/ProjectE-Primordial/releases/tag/v2.0.5-neoforge-1.21.1).** Fixes enchanted-item saving crashes caused by integrated-client knowledge queries using server registries and poisoning shared component encoder caches. Registry selection now follows the logical side, and validation uses an isolated cache context, including nested hover items. Valid enchantments and source items remain intact. Restart the whole game after replacing the old JAR; both multiplayer sides should update. The regression failed on the old code and passes after the fix; minimum-loader base GameTests pass 263/263. The actual client UI has not been retested. Astral/Oritech and new functionality remain deferred.
 
 **Current verification boundary:** the latest release's GUI, actual client-side Mixin application, Chinese modpack client and representative long-duration load remain untested. Base GameTests and the test-pack dependency environment cover Primordial's tests only. See the dated [current status and gaps](CURRENT_STATUS.md); percentages and historical migration snapshots below are not release-readiness measures.
 
 NeoForge runtime support now starts at **21.1.119** for Minecraft 1.21.1 (`[21.1.119,21.2)`), matching required ProjectE 1.1.0's own minimum. `21.1.264` remains the development baseline. Other installed mods can impose a higher NeoForge minimum of their own. Optional integration ranges from 2.0.1 are retained: FTB Quests **2101.x+**, AE2 **19.2+**, Refined Storage **2.0+**, and Beyond Dimensions **0.8+**.
 
-Release JARs use the version passed to Gradle in both the filename and NeoForge metadata. Build the release against the minimum supported API with JDK 21: `./gradlew -p neoforge build -Pmod_version=2.0.4 -Pneo_version=21.1.119` (PowerShell uses `.\gradlew.bat`). Defaults remain a development version on NeoForge 21.1.264. See the [changelog](CHANGELOG.md) for installation and validation details.
+Release JARs use the version passed to Gradle in both the filename and NeoForge metadata. Build the release against the minimum supported API with JDK 21: `./gradlew -p neoforge build -Pmod_version=2.0.5 -Pneo_version=21.1.119` (PowerShell uses `.\gradlew.bat`). Defaults remain a development version on NeoForge 21.1.264. See the [changelog](CHANGELOG.md) for installation and validation details.
 
 ## Historical validation and acceptance records
 
