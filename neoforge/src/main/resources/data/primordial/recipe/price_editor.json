@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "DPD",
+    "MCM",
+    "DPD"
+  ],
+  "key": {
+    "D": { "item": "minecraft:diamond" },
+    "P": { "item": "minecraft:paper" },
+    "M": { "item": "projecte:dark_matter" },
+    "C": { "item": "minecraft:clock" }
+  },
+  "result": {
+    "count": 1,
+    "id": "primordial:price_editor"
+  }
+}

@@ -37,6 +37,7 @@ import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.JsonOps;
 import com.primordial.neoforge.PrimordialNeoForgeMod;
+import com.primordial.neoforge.NeoForgeModRegistries;
 import com.primordial.neoforge.config.NeoForgeServerConfig;
 import com.primordial.neoforge.knowledge.NeoForgeResourceKnowledge.Kind;
 import com.primordial.neoforge.registry.NeoForgeCertificates;
@@ -68,6 +69,7 @@ import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.players.ServerOpListEntry;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
@@ -188,8 +190,9 @@ public final class NeoForgePriceEditingGameTests {
                     && Files.readString(file).equals("[]") && IEMCProxy.INSTANCE.getValue(Items.DIAMOND) == beforeBad,
                     "A broken native root must stay intact and leave the published price untouched");
             server.getPlayerList().deop(player.getGameProfile());
+            player.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
             check(!NeoForgePriceEditing.mutate(server, player, (byte) 0, DIAMOND, "100").success()
-                    && Files.readString(file).equals("[]"), "Losing OP must immediately deny direct backend writes");
+                    && Files.readString(file).equals("[]"), "Losing the actual tool must immediately deny direct backend writes");
         } finally {
             server.getPlayerList().deop(player.getGameProfile());
             logout(server, player);
@@ -340,6 +343,7 @@ public final class NeoForgePriceEditingGameTests {
         try {
             NetworkRegistry.configureMockConnection(connection);
             server.getPlayerList().placeNewPlayer(connection, player, cookie);
+            player.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(NeoForgeModRegistries.PRICE_EDITOR_ITEM.get()));
             return player;
         } catch (RuntimeException | Error failure) {
             if (server.getPlayerList().getPlayer(player.getUUID()) == player) server.getPlayerList().remove(player);

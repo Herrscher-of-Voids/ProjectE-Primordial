@@ -110,7 +110,7 @@ public final class NeoForgeJeiEmcCounts {
     }
     public static void renderButton(GuiGraphics graphics, int mouseX, int mouseY, float partial) {
         var mc = Minecraft.getInstance();
-        if (left == Integer.MAX_VALUE || mc.screen == null || failed) return;
+        if (drewButton || left == Integer.MAX_VALUE || mc.screen == null || failed) return;
         if (enabled) NeoForgeJeiMediaQuotes.flush();
         if (button == null) button = Button.builder(Component.literal("E"), ignored -> {
             enabled = !enabled;

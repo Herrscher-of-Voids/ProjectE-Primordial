@@ -35,10 +35,13 @@ import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.players.ServerOpListEntry;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.GameType;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
@@ -53,34 +56,26 @@ public final class NeoForgePriceEditorGameTests {
     private NeoForgePriceEditorGameTests() {}
 
     @GameTest(template = "capability_proxy_empty", templateNamespace = PrimordialNeoForgeMod.MOD_ID)
-    public static void administratorAnyModeAndCreativeVisitorAreCheckedOnTheActualServer(GameTestHelper helper) {
+    public static void ordinaryPlayersCanUseTheToolAndLosingItClosesTheActualMenu(GameTestHelper helper) {
         MinecraftServer server = helper.getLevel().getServer();
         ServerPlayer player = login(server);
         try {
-            player.setGameMode(GameType.CREATIVE);
-            check(!NeoForgePriceEditorAccess.canEdit(player), "A creative visitor on a dedicated server must not edit prices");
-            check(!NeoForgePriceEditorAccess.canShowInCreative(player, false), "A creative visitor must not see the administrator tool");
-            check(NeoForgePriceEditorAccess.canShowInCreative(player, true) && !NeoForgePriceEditorAccess.canShowInCreative(null, true),
-                    "A local creative owner can see the tool without OP, but an absent client player cannot");
-            server.getPlayerList().getOps().add(new ServerOpListEntry(player.getGameProfile(), 1, false));
-            check(!NeoForgePriceEditorAccess.canShowInCreative(player, false) && !NeoForgePriceEditorAccess.canEdit(player),
-                    "Level-one creative operators must not see or use the price editor");
-            grantOperator(server, player);
-            for (GameType mode : List.of(GameType.SURVIVAL, GameType.CREATIVE, GameType.ADVENTURE, GameType.SPECTATOR)) {
+            check(!player.hasPermissions(2), "The test must use a real non-operator player");
+            for (GameType mode : List.of(GameType.SURVIVAL, GameType.CREATIVE, GameType.ADVENTURE)) {
                 player.setGameMode(mode);
-                check(NeoForgePriceEditorAccess.canEdit(player), "A level-two administrator may edit in every game mode");
-                check(NeoForgePriceEditorAccess.canShowInCreative(player, false) == (mode == GameType.CREATIVE),
-                        "Creative administrators must see the tool independently of the operator-items preference");
+                check(NeoForgePriceEditorAccess.canEdit(player), "Ordinary players holding the tool may edit without OP or creative mode");
             }
-            var menu = new NeoForgePriceEditorMenu(41, player.getInventory());
-            player.containerMenu = menu;
-            check(menu.stillValid(player), "Authorized menu must remain valid");
-            server.getPlayerList().deop(player.getGameProfile());
-            player.setGameMode(GameType.CREATIVE);
-            check(!NeoForgePriceEditorAccess.canShowInCreative(player, false), "Revoking OP must remove the creative listing");
-            check(!menu.stillValid(player), "Losing operator status must invalidate even a creative visitor menu");
+            player.setGameMode(GameType.SURVIVAL);
+            NeoForgeModRegistries.PRICE_EDITOR_ITEM.get().use(player.level(), player, InteractionHand.OFF_HAND);
+            check(player.containerMenu instanceof NeoForgePriceEditorMenu, "Right-clicking the real tool must open its menu for survival non-OP players");
+            var menu = (NeoForgePriceEditorMenu) player.containerMenu;
+            check(menu.stillValid(player), "The ordinary player's open menu must remain valid");
+            player.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
+            check(!NeoForgePriceEditorAccess.canEdit(player) && !NeoForgePriceEditorAccess.canEdit(null),
+                    "An absent tool or player cannot authorize price edits");
+            check(!menu.stillValid(player), "Losing the actual tool must invalidate the menu");
             menu.broadcastChanges();
-            check(player.containerMenu == player.inventoryMenu, "A broadcast after losing permission must close the real open menu");
+            check(player.containerMenu == player.inventoryMenu, "A broadcast after losing the tool must close the real open menu");
         } finally { logout(server, player); }
         helper.succeed();
     }
@@ -146,11 +141,10 @@ public final class NeoForgePriceEditorGameTests {
     }
 
     @GameTest(template = "capability_proxy_empty", templateNamespace = PrimordialNeoForgeMod.MOD_ID)
-    public static void wrongContainerTargetGenerationRevisionAndPermissionNeverWrite(GameTestHelper helper) {
+    public static void wrongContainerTargetGenerationRevisionAndMissingToolNeverWrite(GameTestHelper helper) {
         MinecraftServer server = helper.getLevel().getServer();
         ServerPlayer player = login(server);
         try {
-            grantOperator(server, player);
             var menu = new NeoForgePriceEditorMenu(44, player.getInventory());
             player.containerMenu = menu;
             menu.setItemSelection(new ItemStack(Items.DIAMOND));
@@ -171,11 +165,10 @@ public final class NeoForgePriceEditorGameTests {
                     && !menu.acceptTarget((byte) 1, ResourceLocation.parse("minecraft:empty"), version + 1)
                     && !menu.acceptTarget((byte) 99, DIAMOND, version + 1)
                     && !menu.acceptTarget((byte) 0, DIAMOND, version), "Empty, unknown kind and stale target requests must not establish a valid sample");
-            server.getPlayerList().deop(player.getGameProfile());
-            player.setGameMode(GameType.CREATIVE);
+            player.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
             NeoForgePriceEditorPayloads.handleEdit(player, new NeoForgePriceEditorPayloads.Edit(44, (byte) 0, DIAMOND.toString(), version, NeoForgePriceEditing.revision(), "999"));
             check(player.containerMenu == player.inventoryMenu && before.equals(NeoForgePriceEditing.snapshot((byte) 0, DIAMOND)),
-                    "A C2S save after losing permission must close the menu without writing even while creative");
+                    "A C2S save after losing the tool must close the menu without writing");
         } finally { logout(server, player); }
         helper.succeed();
     }
@@ -217,7 +210,9 @@ public final class NeoForgePriceEditorGameTests {
         var path = FMLPaths.CONFIGDIR.get().resolve("primordial_values.json");
         byte[] previous = Files.exists(path) ? Files.readAllBytes(path) : null;
         try {
-            grantOperator(server, player);
+            player.setGameMode(GameType.SURVIVAL);
+            check(!player.hasPermissions(2) && NeoForgePriceEditorAccess.canEdit(player),
+                    "Actual save requests must work for a survival non-operator holding the tool");
             var menu = new NeoForgePriceEditorMenu(46, player.getInventory());
             player.containerMenu = menu;
             check(menu.acceptTarget((byte) 1, WATER, 1), "A valid JEI target must establish the real server selection");
@@ -246,16 +241,28 @@ public final class NeoForgePriceEditorGameTests {
     }
 
     @GameTest(template = "capability_proxy_empty", templateNamespace = PrimordialNeoForgeMod.MOD_ID)
-    public static void creativeCatalogAndSearchEntriesFollowGrantAndRevocation(GameTestHelper helper) {
+    public static void survivalRecipeCraftsAndCreativeCatalogNeverRequiresOperatorItems(GameTestHelper helper) {
         var tab = BuiltInRegistries.CREATIVE_MODE_TAB.get(ResourceLocation.parse("primordial:main"));
         check(tab != null, "The Primordial creative tab must be registered");
         var level = helper.getLevel();
+        ItemStack diamond = new ItemStack(Items.DIAMOND), paper = new ItemStack(Items.PAPER);
+        ItemStack darkMatter = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse("projecte:dark_matter")));
+        CraftingInput input = CraftingInput.of(3, 3, List.of(
+                diamond.copy(), paper.copy(), diamond.copy(), darkMatter.copy(), new ItemStack(Items.CLOCK), darkMatter.copy(),
+                diamond.copy(), paper.copy(), diamond.copy()));
+        var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, level).orElseThrow();
+        ItemStack result = recipe.value().assemble(input, level.registryAccess());
+        check(recipe.id().equals(ResourceLocation.parse("primordial:price_editor"))
+                        && result.is(NeoForgeModRegistries.PRICE_EDITOR_ITEM.get()) && result.getCount() == 1,
+                "The survival ingredients must match the loaded price-editor recipe and craft exactly one tool");
+        check(level.getServer().getAdvancements().get(ResourceLocation.parse("primordial:recipes/misc/price_editor")) != null,
+                "The normal recipe-book unlock must be registered");
         try {
             for (boolean allowed : List.of(false, true, false)) {
                 tab.buildContents(new CreativeModeTab.ItemDisplayParameters(level.enabledFeatures(), allowed, level.registryAccess()));
-                check(tab.getDisplayItems().stream().anyMatch(stack -> stack.is(NeoForgeModRegistries.PRICE_EDITOR_ITEM.get())) == allowed
-                                && tab.getSearchTabDisplayItems().stream().anyMatch(stack -> stack.is(NeoForgeModRegistries.PRICE_EDITOR_ITEM.get())) == allowed,
-                        "The real creative generator must add and remove the tool in both its parent tab and search entries");
+                check(tab.getDisplayItems().stream().anyMatch(stack -> stack.is(NeoForgeModRegistries.PRICE_EDITOR_ITEM.get()))
+                                && tab.getSearchTabDisplayItems().stream().anyMatch(stack -> stack.is(NeoForgeModRegistries.PRICE_EDITOR_ITEM.get())),
+                        "The real creative generator must always list this survival tool in its parent tab and search entries");
             }
         } finally {
             tab.buildContents(new CreativeModeTab.ItemDisplayParameters(level.enabledFeatures(), false, level.registryAccess()));
@@ -281,6 +288,7 @@ public final class NeoForgePriceEditorGameTests {
         try {
             NetworkRegistry.configureMockConnection(connection);
             server.getPlayerList().placeNewPlayer(connection, player, cookie);
+            player.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(NeoForgeModRegistries.PRICE_EDITOR_ITEM.get()));
             return player;
         } catch (RuntimeException | Error failure) {
             try { logout(server, player); } finally { channel.finishAndReleaseAll(); }

@@ -27,6 +27,7 @@ import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.logging.LogUtils;
 import com.primordial.neoforge.PrimordialNeoForgeMod;
+import com.primordial.neoforge.NeoForgeModRegistries;
 import com.primordial.neoforge.api.MediaKnowledgeApi;
 import com.primordial.neoforge.api.MediaKnowledgeApi.Media;
 import com.primordial.neoforge.config.NeoForgeServerConfig;
@@ -49,6 +50,8 @@ import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.players.ServerOpListEntry;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.material.Fluids;
@@ -240,6 +243,7 @@ public final class NeoForgePricingPersistenceGameTests {
         try {
             NetworkRegistry.configureMockConnection(connection);
             server.getPlayerList().placeNewPlayer(connection, player, cookie);
+            player.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(NeoForgeModRegistries.PRICE_EDITOR_ITEM.get()));
             return player;
         } catch (RuntimeException | Error failure) {
             if (server.getPlayerList().getPlayer(OWNER) == player) server.getPlayerList().remove(player);

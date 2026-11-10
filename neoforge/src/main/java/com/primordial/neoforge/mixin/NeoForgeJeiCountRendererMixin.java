@@ -6,7 +6,10 @@ import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Pseudo
-@Mixin(targets = "mezz.jei.gui.overlay.IngredientListRenderer", remap = false)
+@Mixin(targets = {
+        "mezz.jei.gui.overlay.IngredientListRenderer",
+        "mezz.jei.gui.overlay.ingredients.IngredientListRenderer"
+}, remap = false)
 public abstract class NeoForgeJeiCountRendererMixin {
     @Shadow @Final private List<?> slots;
     @Shadow @Final private boolean searchable;

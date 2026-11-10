@@ -24,8 +24,6 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.loading.FMLEnvironment;
 
 public final class NeoForgeCertificates {
     public static final Map<Kind, DeferredHolder<Item, NeoForgeCertificateItem>> CERTIFICATES;
@@ -40,8 +38,7 @@ public final class NeoForgeCertificates {
                 .title(Component.translatable("itemGroup.primordial"))
                 .icon(() -> new ItemStack(NeoForgeModRegistries.BLACKHOLE_ITEM.get()))
                 .displayItems((parameters, output) -> {
-                    if (parameters.hasPermissions() || clientCanShowPriceEditor())
-                        output.accept(NeoForgeModRegistries.PRICE_EDITOR_ITEM.get());
+                    output.accept(NeoForgeModRegistries.PRICE_EDITOR_ITEM.get());
                     output.accept(NeoForgeModRegistries.CONFIGURATOR_ITEM.get());
                     output.accept(NeoForgeModRegistries.BLACKHOLE_ITEM.get());
                     output.accept(NeoForgeModRegistries.BLACKHOLE_CHARM_ITEM.get());
@@ -59,14 +56,4 @@ public final class NeoForgeCertificates {
     /** 显式启动静态注册；只从统一注册入口调用一次。 */
     public static void register() {}
 
-    /** 管理员物品栏开关是显示偏好，不能代替本模组工具的管理员或单人主人判断。 */
-    private static boolean clientCanShowPriceEditor() {
-        if (FMLEnvironment.dist != Dist.CLIENT) return false;
-        try {
-            return Boolean.TRUE.equals(Class.forName("com.primordial.neoforge.client.NeoForgeCreativePriceEditorVisibility")
-                    .getMethod("canShowPriceEditor").invoke(null));
-        } catch (ReflectiveOperationException | RuntimeException | LinkageError failure) {
-            return false;
-        }
-    }
 }

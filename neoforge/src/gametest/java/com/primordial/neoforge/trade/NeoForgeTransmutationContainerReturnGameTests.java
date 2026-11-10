@@ -10,11 +10,14 @@ import com.primordial.neoforge.PrimordialNeoForgeMod;
 import com.primordial.neoforge.transmutation.NeoForgeTransmutationContainerReturn;
 import com.primordial.neoforge.value.NeoForgeRecoveryPrices;
 import com.primordial.service.EmcAmount;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.proxy.IEMCProxy;
+import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.gameObjs.container.slots.transmutation.SlotConsume;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -32,6 +35,8 @@ import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.component.SeededContainerLoot;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 @GameTestHolder(PrimordialNeoForgeMod.MOD_ID)
 @PrefixGameTestTemplate(false)
@@ -168,6 +173,171 @@ public final class NeoForgeTransmutationContainerReturnGameTests {
         } finally {
             if (menu != null) menu.removed(player);
             logout(player.server, player);
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = "capability_proxy_empty", templateNamespace = PrimordialNeoForgeMod.MOD_ID)
+    public static void moddedContainersSellEmptyOrFilledThroughBothNativeEntrances(GameTestHelper helper) {
+        ServerPlayer player = login(helper.getLevel().getServer());
+        TransmutationContainer menu = null;
+        var prices = new Object2LongOpenHashMap<>(EMCMappingHandler.createPacketData().data());
+        try {
+            menu = menu(player, 104);
+            ItemStack storage = ContainerSaleTestFixture.stack(ContainerSaleTestFixture.STORAGE);
+            var testPrices = new Object2LongOpenHashMap<>(prices);
+            testPrices.put(ItemInfo.fromStack(storage), 321L);
+            EMCMappingHandler.updateEmcValues(testPrices);
+            check(NeoForgeTransmutationContainerReturn.prepare(storage, player.registryAccess()) != null,
+                    "An empty modded item handler must be sellable, not blanket-rejected as unknown storage");
+            menu.setCarried(storage.copy());
+            SlotConsume consume = menu.slots.stream().filter(SlotConsume.class::isInstance).map(SlotConsume.class::cast).findFirst().orElseThrow();
+            BigInteger before = knowledge(player).getEmc();
+            menu.clicked(menu.slots.indexOf(consume), 0, ClickType.PICKUP, player);
+            check(menu.getCarried().isEmpty() && knowledge(player).getEmc().subtract(before).equals(BigInteger.valueOf(321)),
+                    "The normal consume-slot click must accept an empty modded storage item and pay its shell value");
+
+            storage.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(List.of(new ItemStack(Items.DIAMOND, 3), new ItemStack(Items.EMERALD, 2))));
+            menu.getSlot(27).set(storage);
+            before = knowledge(player).getEmc();
+            menu.quickMoveStack(player, 27);
+            check(menu.getSlot(27).getItem().isEmpty(), "Shift sale must consume the modded container");
+            check(player.getInventory().countItem(Items.DIAMOND) == 3 && player.getInventory().countItem(Items.EMERALD) == 2,
+                    "Filled modded storage must return each child once instead of learning or selling its contents");
+            check(storage.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY).getSlots() == 0,
+                    "The live storage must actually be drained before the shell is consumed");
+            check(knowledge(player).getEmc().subtract(before).equals(BigInteger.valueOf(321)), "Only the empty shell may contribute EMC");
+            ItemStack learned = IEMCProxy.INSTANCE.getPersistentInfo(ItemInfo.fromStack(storage)).createStack();
+            check(!learned.has(DataComponents.CONTAINER), "The learned/re-created shell must not retain the storage component");
+
+            ItemStack twoEmpty = ContainerSaleTestFixture.stack(ContainerSaleTestFixture.STORAGE);
+            twoEmpty.setCount(2);
+            before = knowledge(player).getEmc();
+            check(NeoForgeTransmutationContainerReturn.sell(menu.transmutationInventory, twoEmpty, () -> twoEmpty.setCount(0)),
+                    "Empty stacked containers must be settled even when consume clears the source stack");
+            check(knowledge(player).getEmc().subtract(before).equals(BigInteger.valueOf(642)),
+                    "Settlement must capture the original count before the consume callback clears it");
+        } finally {
+            if (menu != null) menu.removed(player);
+            logout(player.server, player);
+            EMCMappingHandler.updateEmcValues(prices);
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = "capability_proxy_empty", templateNamespace = PrimordialNeoForgeMod.MOD_ID)
+    public static void moddedExtractionFailureRollsBackAndReentryCannotSellTwice(GameTestHelper helper) {
+        ServerPlayer player = login(helper.getLevel().getServer());
+        TransmutationContainer menu = null;
+        var prices = new Object2LongOpenHashMap<>(EMCMappingHandler.createPacketData().data());
+        try {
+            menu = menu(player, 105);
+            ItemStack storage = ContainerSaleTestFixture.stack(ContainerSaleTestFixture.FAILING);
+            ItemStack ordinary = ContainerSaleTestFixture.stack(ContainerSaleTestFixture.STORAGE);
+            var testPrices = new Object2LongOpenHashMap<>(prices);
+            testPrices.put(ItemInfo.fromStack(storage), 321L);
+            testPrices.put(ItemInfo.fromStack(ordinary), 321L);
+            EMCMappingHandler.updateEmcValues(testPrices);
+            storage.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(List.of(new ItemStack(Items.DIAMOND, 3), new ItemStack(Items.EMERALD, 2))));
+            ItemStack beforeStack = storage.copy();
+            menu.getSlot(27).set(storage);
+            BigInteger before = knowledge(player).getEmc();
+            menu.quickMoveStack(player, 27);
+            check(ItemStack.matches(menu.getSlot(27).getItem(), beforeStack) && knowledge(player).getEmc().equals(before),
+                    "A handler throwing after partial extraction must restore all original contents without consuming or paying the shell");
+            check(player.getInventory().countItem(Items.DIAMOND) == 0 && player.getInventory().countItem(Items.EMERALD) == 0,
+                    "Rolled-back extraction must not give the player snapshots of contents still in storage");
+
+            ordinary.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(List.of(new ItemStack(Items.DIAMOND))));
+            menu.getSlot(27).set(ordinary);
+            TransmutationContainer active = menu;
+            ContainerSaleTestFixture.onExtract = () -> check(!NeoForgeTransmutationContainerReturn.sell(
+                    active.transmutationInventory, ordinary, () -> { throw new AssertionError("Reentrant consume"); }),
+                    "An extraction callback must not re-enter settlement and sell the same shell twice");
+            menu.quickMoveStack(player, 27);
+            check(player.getInventory().countItem(Items.DIAMOND) == 1 && knowledge(player).getEmc().subtract(before).equals(BigInteger.valueOf(321)),
+                    "The outer non-reentrant sale must still return and pay exactly once");
+            ContainerSaleTestFixture.onExtract = null;
+            ItemStack interrupted = ContainerSaleTestFixture.stack(ContainerSaleTestFixture.STORAGE);
+            interrupted.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(List.of(new ItemStack(Items.EMERALD, 2))));
+            ItemStack interruptedCopy = interrupted.copy();
+            menu.getSlot(27).set(interrupted);
+            before = knowledge(player).getEmc();
+            check(!NeoForgeTransmutationContainerReturn.sell(menu.transmutationInventory, interrupted, () -> {
+                active.getSlot(27).set(ItemStack.EMPTY);
+                throw new IllegalStateException("Intentional failure after consuming the source");
+            }), "A failed consume callback must reject settlement");
+            check(ItemStack.matches(menu.getSlot(27).getItem(), interruptedCopy) && knowledge(player).getEmc().equals(before),
+                    "A commit failure must restore the consumed source with its contents and original EMC");
+
+            for (int i = 0; i < player.getInventory().items.size(); i++) player.getInventory().setItem(i, new ItemStack(Items.STONE, 64));
+            ItemStack full = ContainerSaleTestFixture.stack(ContainerSaleTestFixture.STORAGE);
+            full.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(List.of(new ItemStack(Items.DIAMOND, 128), new ItemStack(Items.EMERALD))));
+            menu.getSlot(27).set(full);
+            ItemStack fullCopy = full.copy();
+            menu.quickMoveStack(player, 27);
+            check(ItemStack.matches(menu.getSlot(27).getItem(), fullCopy) && knowledge(player).getEmc().equals(before),
+                    "Insufficient return space must preserve the whole container before draining, not drop an oversized item entity");
+            player.getInventory().setItem(0, ItemStack.EMPTY);
+            player.getInventory().setItem(1, ItemStack.EMPTY);
+            player.getInventory().setItem(2, ItemStack.EMPTY);
+            menu.quickMoveStack(player, 27);
+            check(player.getInventory().countItem(Items.DIAMOND) == 128 && player.getInventory().countItem(Items.EMERALD) == 1,
+                    "With sufficient room, oversized storage counts must be split into legal inventory stacks without losses");
+            for (ItemStack item : player.getInventory().items)
+                check(item.isEmpty() || item.getCount() <= item.getMaxStackSize(), "No returned inventory stack may exceed its item's normal stack limit");
+        } finally {
+            ContainerSaleTestFixture.onExtract = null;
+            if (menu != null) menu.removed(player);
+            logout(player.server, player);
+            EMCMappingHandler.updateEmcValues(prices);
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = "capability_proxy_empty", templateNamespace = PrimordialNeoForgeMod.MOD_ID)
+    public static void sophisticatedBackpackReturnsItemsAndUpgradesWithoutCopyingUuidStorage(GameTestHelper helper) throws Exception {
+        if (!ModList.get().isLoaded("sophisticatedbackpacks")) { helper.succeed(); return; }
+        ServerPlayer player = login(helper.getLevel().getServer());
+        TransmutationContainer menu = null;
+        var prices = new Object2LongOpenHashMap<>(EMCMappingHandler.createPacketData().data());
+        try {
+            menu = menu(player, 106);
+            ItemStack backpack = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse("sophisticatedbackpacks:backpack")));
+            ItemStack upgrade = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse("sophisticatedbackpacks:pickup_upgrade")));
+            check(!backpack.isEmpty() && !upgrade.isEmpty(), "The real installed backpack and pickup upgrade must exist");
+            check(IEMCProxy.INSTANCE.getSellValue(ItemInfo.fromStack(backpack)) > 0,
+                    "The default ProjectE mapping must price an empty basic Sophisticated Backpack");
+            var testPrices = new Object2LongOpenHashMap<>(prices);
+            testPrices.put(ItemInfo.fromStack(backpack), 1234L);
+            EMCMappingHandler.updateEmcValues(testPrices);
+            check(NeoForgeTransmutationContainerReturn.prepare(backpack, player.registryAccess()) != null,
+                    "A newly crafted, unopened Sophisticated Backpack must be sellable");
+            Class<?> type = Class.forName("net.p3pp3rf1y.sophisticatedbackpacks.backpack.wrapper.BackpackWrapper");
+            Object wrapper = type.getMethod("fromStack", ItemStack.class).invoke(null, backpack);
+            IItemHandlerModifiable items = (IItemHandlerModifiable) type.getMethod("getInventoryHandler").invoke(wrapper);
+            items.setStackInSlot(0, new ItemStack(Items.DIAMOND, 3));
+            IItemHandlerModifiable upgrades = (IItemHandlerModifiable) type.getMethod("getUpgradeHandler").invoke(wrapper);
+            check(upgrades.getSlots() > 0, "The real wrapper must expose its separate upgrade inventory");
+            upgrades.setStackInSlot(0, upgrade.copy());
+            ItemStack alias = backpack.copy();
+            menu.getSlot(27).set(backpack);
+            BigInteger before = knowledge(player).getEmc();
+            menu.quickMoveStack(player, 27);
+            check(menu.getSlot(27).getItem().isEmpty() && player.getInventory().countItem(Items.DIAMOND) == 3 && find(player, upgrade),
+                    "The real backpack must sell its shell and return inventory contents plus installed upgrades exactly once");
+            check(knowledge(player).getEmc().subtract(before).equals(BigInteger.valueOf(1234)), "The backpack must pay only its empty shell price");
+            Object aliasWrapper = type.getMethod("fromStack", ItemStack.class).invoke(null, alias);
+            IItemHandlerModifiable aliasItems = (IItemHandlerModifiable) type.getMethod("getInventoryHandler").invoke(aliasWrapper);
+            IItemHandlerModifiable aliasUpgrades = (IItemHandlerModifiable) type.getMethod("getUpgradeHandler").invoke(aliasWrapper);
+            check(aliasItems.getStackInSlot(0).isEmpty() && aliasUpgrades.getStackInSlot(0).isEmpty(),
+                    "Another reference to the same UUID must see drained storage, preventing duplicated returned contents");
+            ItemStack learned = IEMCProxy.INSTANCE.getPersistentInfo(ItemInfo.fromStack(alias)).createStack();
+            check(learned.getComponentsPatch().isEmpty(), "Learned backpack output must not carry a shared storage UUID");
+        } finally {
+            if (menu != null) menu.removed(player);
+            logout(player.server, player);
+            EMCMappingHandler.updateEmcValues(prices);
         }
         helper.succeed();
     }
