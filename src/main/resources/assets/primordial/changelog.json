@@ -2,6 +2,31 @@
   "_comment": "Primordial 的逐修订变更记录；原参考规范的 hk3gtl 资源命名空间在本项目使用 primordial。历史 entries 只追加，不覆盖。",
   "entries": [
     {
+      "revision": "2.0.1-forge-container-and-survival-price-editor",
+      "date": "2026-11-11",
+      "time": "01:21:28",
+      "reason": "将容器售卖和定价器生存获取修复补齐到 Forge 1.20.1，并独立核对 JEI 15 的客户端入口。",
+      "changes": [
+        {
+          "file": "src/main/java/com/primordial/service/TransmutationContainerReturn.java, ContainerItemStorage.java, related container mixins and tests",
+          "description": "售卖支持安全读写的容器时返还内容，按空容器结算；精妙背包同时处理主库存、升级槽和共享 UUID 存储；空间不足或交易失败时保留或恢复原状态。失败时同时恢复输入槽和原生克莱因之星充能；未知外部 EMC 储能物品提前拒绝。恢复某槽出现 LinkageError 时仍继续尝试其它槽。",
+          "purpose": "修复有内容背包无法卖入转化桌，并防止共享存储复制、物品丢失和异常 EMC 结算。"
+        },
+        {
+          "file": "src/main/java/com/primordial/service/PriceEditorAccess.java, price editor item/menu/network handlers, registry/ModCreativeTabs.java, recipes, advancements and tests",
+          "description": "恢复生存合成、普通玩家手持定价器操作和创造栏列出；保留服务端身份、菜单会话、样本及持有工具校验；管理员命令继续要求 OP。价格修改作用于整个服务器。",
+          "purpose": "使 JEI 与创造栏不再把定价器视为管理员专用物品，同时保留网络请求边界校验。"
+        },
+        {
+          "file": "src/test/java/com/primordial/client/JeiClientHookCompatibilityTest.java",
+          "description": "使用实际 JEI 15 JAR 字节码检查现有 E 按钮、数量显示和 Shift 购买所用入口，不盲目复制 NeoForge 的渲染器路径改动。",
+          "purpose": "独立验证 1.20.1 联动契约。"
+        }
+      ],
+      "scope": "Minecraft 1.20.1 Forge；2.0.1 修复包，独立定价器贴图沿用已发布版本。",
+      "validation": "JDK 17、Forge 47.2.0 的完整 test build 通过：401 项测试，零失败、零错误、零跳过。真实 JEI 15.20.0.106 与 15.20.0.129 字节码契约均通过；Sophisticated Backpacks 3.24.17.1481 / Core 1.2.117.1347 API 已核对，库存行为使用共享 handler 夹具回归，未做其 Forge 整包实机测试。未启动客户端。"
+    },
+    {
       "revision": "2.0.0-forge-price-editor-refresh",
       "date": "2026-10-29",
       "time": "23:24:30",

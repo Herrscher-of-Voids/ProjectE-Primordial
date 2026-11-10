@@ -44,8 +44,9 @@ public record C2SSetPriceTargetPacket(int containerId, byte kind, String id) {
                     || menu.containerId != message.containerId || message.id == null
                     || message.id.length() > 256) return;
             ResourceLocation id = ResourceLocation.tryParse(message.id);
-            if (!com.primordial.service.PriceEditorAccess.canEdit(player)) {
+            if (!menu.stillValid(player)) {
                 menu.sendPriceState(player, com.primordial.network.S2CPriceEditorStatePacket.Status.PERMISSION_DENIED);
+                player.closeContainer();
                 return;
             }
             if (id == null) return;

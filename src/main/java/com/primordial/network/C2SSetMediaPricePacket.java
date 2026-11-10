@@ -78,8 +78,9 @@ public record C2SSetMediaPricePacket(int containerId, byte kind, String id, Stri
             ServerPlayer player = context.getSender();
             if (player == null || !(player.containerMenu instanceof PriceEditorMenu menu)
                     || menu.containerId != message.containerId) return;
-            if (!com.primordial.service.PriceEditorAccess.canEdit(player)) {
+            if (!menu.stillValid(player)) {
                 menu.sendPriceState(player, Status.PERMISSION_DENIED);
+                player.closeContainer();
                 return;
             }
             ResourceLocation id = message.id == null || message.id.length() > 256

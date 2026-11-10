@@ -47,7 +47,7 @@ public final class PriceChangeAudit {
 
     private PriceChangeAudit() {}
 
-    /** GUI 入口复核管理员权限；实际保存沿用调用方已经验证的样本身份和原有事务。 */
+    /** GUI 入口复核服务端手持工具；实际保存沿用调用方已经验证的样本身份和原有事务。 */
     public static boolean change(ServerPlayer player, Kind kind, ResourceLocation id, BooleanSupplier save) {
         if (!PriceEditorAccess.canEdit(player)) return false;
         return change(player.getName().getString(), player.getUUID().toString(), "price_editor", kind, id, save);

@@ -23,11 +23,13 @@
 package com.primordial.machine;
 
 import com.primordial.service.PriceEditorAccess;
+import com.primordial.item.PriceEditorItem;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.MinecraftServer;
-import com.mojang.authlib.GameProfile;
-import java.util.UUID;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,31 +38,55 @@ import static org.mockito.Mockito.*;
 class PriceEditorAccessTest {
     @BeforeAll static void bootstrap() { AdapterTestBootstrap.initialize(); }
 
-    @ParameterizedTest @CsvSource({"true,true,true", "true,false,false", "false,true,true", "false,false,false"})
-    void administratorsCanUseAnyModeWithoutAnOwnerBypass(boolean creative, boolean admin, boolean allowed) {
-        var player = mock(ServerPlayer.class);
+    @ParameterizedTest @CsvSource({"false,false", "false,true", "true,false", "true,true"})
+    void ordinaryPlayersCanUseEitherHandInSurvivalOrCreative(boolean creative, boolean offhand) {
+        var player = player();
+        var editor = tool();
+        when(player.isCreative()).thenReturn(creative);
+        when(player.hasPermissions(2)).thenReturn(false);
+        when(player.getMainHandItem()).thenReturn(offhand ? ItemStack.EMPTY : editor);
+        when(player.getOffhandItem()).thenReturn(offhand ? editor : ItemStack.EMPTY);
+        assertTrue(PriceEditorAccess.canEdit(player));
+    }
+
+    @ParameterizedTest @CsvSource({"false,false", "false,true", "true,false", "true,true"})
+    void permissionsDoNotReplaceTheHeldTool(boolean creative, boolean admin) {
+        var player = player();
         when(player.isCreative()).thenReturn(creative);
         when(player.hasPermissions(2)).thenReturn(admin);
-        assertEquals(allowed, PriceEditorAccess.canEdit(player));
+        assertFalse(PriceEditorAccess.canEdit(player));
     }
 
-    @ParameterizedTest @CsvSource({
-            "true,false,true,true", "true,false,false,false", "false,false,true,false",
-            "true,true,true,false", "true,true,false,false", "false,true,true,false"})
-    void onlyCreativeIntegratedOwnerCanUseTheNonOpException(boolean creative, boolean dedicated,
-                                                           boolean owner, boolean allowed) {
+    @Test void missingServerAndWrongThreadAreDeniedEvenWithTheTool() {
+        var player = player();
+        var editor = tool();
+        when(player.getMainHandItem()).thenReturn(editor);
+        when(player.getServer().isSameThread()).thenReturn(false);
+        assertFalse(PriceEditorAccess.canEdit(player));
+        when(player.getServer()).thenReturn(null);
+        assertFalse(PriceEditorAccess.canEdit(player));
+    }
+
+    @Test void clientAndMissingPlayersAreDenied() {
+        assertFalse(PriceEditorAccess.canEdit(mock(Player.class)));
+        assertFalse(PriceEditorAccess.canEdit(null));
+    }
+
+    private static ServerPlayer player() {
         var player = mock(ServerPlayer.class);
         var server = mock(MinecraftServer.class);
-        var profile = new GameProfile(UUID.randomUUID(), "price-owner-test");
-        when(player.isCreative()).thenReturn(creative);
         when(player.getServer()).thenReturn(server);
-        when(player.getGameProfile()).thenReturn(profile);
-        when(server.isDedicatedServer()).thenReturn(dedicated);
-        when(server.isSingleplayerOwner(profile)).thenReturn(owner);
-        assertEquals(allowed, PriceEditorAccess.canEdit(player));
+        when(server.isSameThread()).thenReturn(true);
+        when(player.getMainHandItem()).thenReturn(ItemStack.EMPTY);
+        when(player.getOffhandItem()).thenReturn(ItemStack.EMPTY);
+        return player;
     }
 
-    @org.junit.jupiter.api.Test void missingPlayerIsDenied() {
-        assertFalse(PriceEditorAccess.canEdit(null));
+    static ItemStack tool() {
+        var stack = mock(ItemStack.class);
+        var editor = mock(PriceEditorItem.class);
+        when(stack.isEmpty()).thenReturn(false);
+        when(stack.getItem()).thenReturn(editor);
+        return stack;
     }
 }

@@ -119,8 +119,11 @@ class PriceAuditCommandsTest {
     @Test void disabledModeKeepsItsPriceAndUnauthorizedChangesNeverRun() {
         var id = new ResourceLocation("minecraft:water");
         var player = mock(ServerPlayer.class);
-        when(player.hasPermissions(2)).thenReturn(true);
-        when(player.isCreative()).thenReturn(true);
+        var server = mock(net.minecraft.server.MinecraftServer.class);
+        var editor = PriceEditorAccessTest.tool();
+        when(player.getServer()).thenReturn(server);
+        when(server.isSameThread()).thenReturn(true);
+        when(player.getMainHandItem()).thenReturn(editor);
         when(player.getName()).thenReturn(Component.literal("Admin\nquoted\"name"));
         when(player.getUUID()).thenReturn(UUID.randomUUID());
         assertTrue(PriceChangeAudit.change(player, PriceChangeAudit.Kind.FLUID, id,
@@ -130,9 +133,18 @@ class PriceAuditCommandsTest {
         assertEquals("DISABLED", entry.getAsJsonObject("after").get("mode").getAsString());
         assertEquals("1000", entry.getAsJsonObject("after").get("price").getAsString());
         audit.entries.clear();
-        when(player.hasPermissions(2)).thenReturn(false);
+        when(player.getMainHandItem()).thenReturn(net.minecraft.world.item.ItemStack.EMPTY);
         var save = mock(java.util.function.BooleanSupplier.class);
         assertFalse(PriceChangeAudit.change(player, PriceChangeAudit.Kind.FLUID, id, save));
+        verifyNoInteractions(save);
+        assertTrue(audit.entries.isEmpty());
+    }
+
+    @Test void nonAdministratorCommandSourcesStillCannotChangePrices() {
+        var save = mock(java.util.function.BooleanSupplier.class);
+        when(console.hasPermission(2)).thenReturn(false);
+        assertFalse(PriceChangeAudit.change(console, PriceChangeAudit.Kind.FLUID,
+                new ResourceLocation("minecraft:water"), save));
         verifyNoInteractions(save);
         assertTrue(audit.entries.isEmpty());
     }

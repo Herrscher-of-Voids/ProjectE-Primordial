@@ -87,8 +87,6 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public class ModCreativeTabs {
     public static final DeferredRegister<CreativeModeTab> TABS =
@@ -100,7 +98,7 @@ public class ModCreativeTabs {
                     .icon(() -> new ItemStack(ModItems.CONFIGURATOR.get()))
                     .displayItems((params, output) -> {
                         output.accept(ModItems.CONFIGURATOR.get());
-                        if (params.hasPermissions() || localCreativeOwner()) output.accept(ModItems.PRICE_EDITOR.get());
+                        output.accept(ModItems.PRICE_EDITOR.get());
                         output.accept(ModItems.BLACKHOLE.get());
                         output.accept(ModItems.TRANSMUTATION_INTERFACE.get());
                         output.accept(ModItems.ENTITY_GENERATOR.get());
@@ -114,14 +112,4 @@ public class ModCreativeTabs {
                     })
                     .build());
 
-    /** 创造目录参数还受客户端“管理员物品”显示设置影响，不能用作存档主人或服务端权限判据。 */
-    private static boolean localCreativeOwner() {
-        if (FMLEnvironment.dist != Dist.CLIENT) return false;
-        try {
-            return Boolean.TRUE.equals(Class.forName("com.primordial.client.CreativePriceEditorVisibility")
-                    .getMethod("isLocalCreativeOwner").invoke(null));
-        } catch (ReflectiveOperationException | RuntimeException | LinkageError failure) {
-            return false;
-        }
-    }
 }

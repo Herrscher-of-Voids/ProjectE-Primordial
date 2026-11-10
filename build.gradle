@@ -58,7 +58,7 @@ plugins {
 // - 删除：开发版本 1.2.0；新增：用户确认的 2.0.0 正式版本标识。
 // - 修改：JAR 文件名、Manifest 与 Forge 动态版本一并由 version 提供。
 // - 用途：让游戏内版本和本次更新日志一致，历史修订记录与模组 ID 保留。
-version = '2.0.0'
+version = '2.0.1'
 group = 'com.primordial'
 base { archivesName = 'primordial' }
 

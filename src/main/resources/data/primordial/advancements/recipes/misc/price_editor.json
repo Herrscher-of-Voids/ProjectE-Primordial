@@ -1,0 +1,17 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_dark_matter": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [ { "items": [ "projecte:dark_matter" ] } ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": { "recipe": "primordial:price_editor" }
+    }
+  },
+  "requirements": [ [ "has_dark_matter", "has_the_recipe" ] ],
+  "rewards": { "recipes": [ "primordial:price_editor" ] }
+}

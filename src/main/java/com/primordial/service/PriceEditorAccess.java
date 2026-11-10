@@ -1,5 +1,5 @@
 /**
- * 【文件职责】统一定价器的创造模式与管理员权限门禁；命令使用独立的管理员权限规则。
+ * 【文件职责】统一定价器的服务端手持工具门禁；命令使用独立的管理员权限规则。
  * 【变更记录 #1】2026-10-11 04:28:00（第 1 次备注 · 1.2.0-admin-pricing-system）
  * - 删除：无。
  * - 新增：同时要求创造模式与 permission level 2 的统一校验。
@@ -13,17 +13,22 @@
  */
 package com.primordial.service;
 
+import com.primordial.item.PriceEditorItem;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 public final class PriceEditorAccess {
     private PriceEditorAccess() {}
 
     public static boolean canEdit(Player player) {
-        if (player == null) return false;
-        if (player.hasPermissions(2)) return true;
-        if (!player.isCreative()) return false;
+        if (!(player instanceof ServerPlayer)) return false;
         var server = player.getServer();
-        return server != null && !server.isDedicatedServer()
-                && server.isSingleplayerOwner(player.getGameProfile());
+        return server != null && server.isSameThread()
+                && (isEditor(player.getMainHandItem()) || isEditor(player.getOffhandItem()));
+    }
+
+    private static boolean isEditor(ItemStack stack) {
+        return stack != null && !stack.isEmpty() && stack.getItem() instanceof PriceEditorItem;
     }
 }

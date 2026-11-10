@@ -150,10 +150,16 @@ public class PriceEditorMenu extends AbstractContainerMenu {
     /** 只在样本、权限或价格修订号改变时同步，静止菜单不重算价格或重复发包。 */
     @Override public void broadcastChanges() {
         super.broadcastChanges();
-        if (owner instanceof ServerPlayer player && (lastSentKind != selectionKind
+        if (!(owner instanceof ServerPlayer player)) return;
+        if (!stillValid(player)) {
+            sendPriceState(player, Status.PERMISSION_DENIED);
+            player.closeContainer();
+            return;
+        }
+        if (lastSentKind != selectionKind
                 || !java.util.Objects.equals(lastSentId, selectionId)
                 || lastEditable != com.primordial.service.PriceEditorAccess.canEdit(player)
-                || lastPriceRevision != ValueManager.priceRevision())) sendPriceState(player, Status.CURRENT);
+                || lastPriceRevision != ValueManager.priceRevision()) sendPriceState(player, Status.CURRENT);
     }
 
     /** 在服务端选择后、保存后或拒绝请求后调用，始终读取实际结算服务的价格。 */
@@ -178,7 +184,7 @@ public class PriceEditorMenu extends AbstractContainerMenu {
         }
         lastSentKind = selectionKind;
         lastSentId = selectionId;
-        lastEditable = com.primordial.service.PriceEditorAccess.canEdit(player);
+        lastEditable = player == owner && com.primordial.service.PriceEditorAccess.canEdit(player);
         lastPriceRevision = ValueManager.priceRevision();
         PrimordialNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player),
                 new S2CPriceEditorStatePacket(containerId, selectionKind,
@@ -228,6 +234,13 @@ public class PriceEditorMenu extends AbstractContainerMenu {
     }
 
     @Override public void clicked(int slotId, int button, ClickType type, Player player) {
+        if (!stillValid(player)) {
+            if (player == owner && player instanceof ServerPlayer serverPlayer) {
+                sendPriceState(serverPlayer, Status.PERMISSION_DENIED);
+                serverPlayer.closeContainer();
+            }
+            return;
+        }
         if (slotId == 0) {
             if (type != ClickType.PICKUP) return;
             if (button == 1) { clearSelection(); return; }
@@ -249,7 +262,8 @@ public class PriceEditorMenu extends AbstractContainerMenu {
     }
 
     @Override public boolean stillValid(Player player) {
-        return player.level().isClientSide || com.primordial.service.PriceEditorAccess.canEdit(player);
+        return player == owner && (player instanceof ServerPlayer
+                ? com.primordial.service.PriceEditorAccess.canEdit(player) : player.level().isClientSide);
     }
     @Override public ItemStack quickMoveStack(Player player, int index) { return ItemStack.EMPTY; }
 }

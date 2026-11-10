@@ -1,6 +1,6 @@
 /**
  * 【文件职责】提供独立的公共 EMC 价格编辑工具入口。
- * - 关键调用链：玩家空气右键 -> 服务端管理员权限校验 -> PriceEditorMenu -> PriceEditorScreen 与受权限保护的价格网络包。
+ * - 关键调用链：玩家空气右键 -> 服务端手持工具校验 -> PriceEditorMenu -> PriceEditorScreen 与受校验保护的价格网络包。
  *
  * 【变更记录 #1】2026-10-10 02:49:08（第 1 次备注 · 1.2.0-dedicated-price-editor）
  * - 删除：无；此前价格编辑入口位于 ConfiguratorItem 的潜行右键分支。
@@ -34,7 +34,7 @@ public class PriceEditorItem extends Item {
         super(properties);
     }
 
-    /** 定价器只在服务端开启菜单；非管理员请求被拒绝，避免仅依赖客户端创造栏隐藏达到权限控制。 */
+    /** 定价器在服务端主线程核验手持工具，生存玩家也可打开菜单。 */
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {

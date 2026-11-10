@@ -153,6 +153,7 @@ class PriceEditorSaveTest {
     private PriceEditorScreen screen;
     private EditBox input;
     private PriceAuditLogCapture audit;
+    private ItemStack editor;
 
     @BeforeAll static void bootstrap() throws Exception {
         AdapterTestBootstrap.initialize();
@@ -225,8 +226,11 @@ class PriceEditorSaveTest {
         serverField.setAccessible(true);
         serverField.set(player, server);
         when(server.getPlayerList().getPlayers()).thenReturn(List.of(player));
-        when(player.hasPermissions(2)).thenReturn(true);
-        when(player.isCreative()).thenReturn(true);
+        when(player.hasPermissions(2)).thenReturn(false);
+        when(player.isCreative()).thenReturn(false);
+        editor = PriceEditorAccessTest.tool();
+        when(player.getMainHandItem()).thenReturn(editor);
+        when(player.getOffhandItem()).thenReturn(ItemStack.EMPTY);
         context = mock(NetworkEvent.Context.class);
         when(context.getSender()).thenReturn(player);
         when(context.enqueueWork(any(Runnable.class))).thenAnswer(call -> {
@@ -495,9 +499,7 @@ class PriceEditorSaveTest {
         }
     }
 
-    @Test void survivalAdministratorCanSaveButLosesAccessImmediatelyAfterDeop() throws Exception {
-        when(player.level()).thenReturn(mock(net.minecraft.server.level.ServerLevel.class));
-        when(player.isCreative()).thenReturn(false);
+    @Test void ordinarySurvivalPlayerCanSaveButLosesAccessImmediatelyWithoutTheTool() throws Exception {
         assertTrue(serverMenu.stillValid(player));
         select(new ItemStack(Items.DIAMOND));
         submit("17");
@@ -505,30 +507,59 @@ class PriceEditorSaveTest {
         select(new FluidStack(Fluids.WATER, 1));
         submit("3/2");
         assertEquals(EmcAmount.parse("3/2"), ValueManager.fluidSnapshot().get("minecraft:water"));
-        when(player.hasPermissions(2)).thenReturn(false);
+        when(player.getMainHandItem()).thenReturn(ItemStack.EMPTY);
         assertFalse(serverMenu.stillValid(player));
         deliverRequest(new C2SSetMediaPricePacket(19, PriceEditorMenu.KIND_FLUID, "minecraft:water", "9"));
         assertEquals(Status.PERMISSION_DENIED, clientMenu.priceState().status());
         assertEquals(EmcAmount.parse("3/2"), ValueManager.fluidSnapshot().get("minecraft:water"));
+        verify(player).closeContainer();
     }
 
     @Test void permissionAndTargetFailuresAreReportedWithoutWriting() throws Exception {
         select(new ItemStack(Items.DIAMOND));
-        when(player.hasPermissions(2)).thenReturn(false);
+        when(player.getMainHandItem()).thenReturn(ItemStack.EMPTY);
         deliverRequest(new C2SPlayerActionPacket("minecraft:diamond", BigInteger.TEN, 19));
         assertEquals(Status.PERMISSION_DENIED, clientMenu.priceState().status());
         assertEquals("8192", clientMenu.priceState().price());
         assertTrue(ValueManager.overrideSnapshot().isEmpty());
-        when(player.hasPermissions(2)).thenReturn(true);
+        when(player.getMainHandItem()).thenReturn(editor);
         select(new FluidStack(Fluids.WATER, 1));
-        when(player.hasPermissions(2)).thenReturn(false);
+        when(player.getMainHandItem()).thenReturn(ItemStack.EMPTY);
         deliverRequest(new C2SSetMediaPricePacket(19, PriceEditorMenu.KIND_FLUID, "minecraft:water", "2"));
         assertEquals(Status.PERMISSION_DENIED, clientMenu.priceState().status());
         assertEquals(EmcAmount.ONE, EmcService.fluidPrice(Fluids.WATER));
-        when(player.hasPermissions(2)).thenReturn(true);
+        when(player.getMainHandItem()).thenReturn(editor);
         deliverRequest(new C2SSetMediaPricePacket(19, PriceEditorMenu.KIND_FLUID, "minecraft:lava", "7"));
         assertEquals(Status.INVALID_TARGET, clientMenu.priceState().status());
         assertEquals(EmcAmount.ONE, EmcService.fluidPrice(Fluids.LAVA));
+        assertTrue(audit.entries.isEmpty());
+    }
+
+    @Test void foreignMenuOwnersAndStaleContainerIdsCannotSave() throws Exception {
+        select(new ItemStack(Items.DIAMOND));
+        deliverRequest(new C2SPlayerActionPacket("minecraft:diamond", BigInteger.TEN, 20));
+        assertEquals(8192, IEMCProxy.INSTANCE.getValue(Items.DIAMOND));
+        var foreignMenu = new PriceEditorMenu(19, new Inventory(mock(ServerPlayer.class)));
+        foreignMenu.setItemSelection(new ItemStack(Items.DIAMOND));
+        player.containerMenu = foreignMenu;
+        assertFalse(foreignMenu.stillValid(player));
+        deliverRequest(new C2SPlayerActionPacket("minecraft:diamond", BigInteger.TEN, 19));
+        assertEquals(Status.PERMISSION_DENIED, clientMenu.priceState().status());
+        assertEquals(8192, IEMCProxy.INSTANCE.getValue(Items.DIAMOND));
+        assertTrue(audit.entries.isEmpty());
+        verify(player).closeContainer();
+    }
+
+    @Test void losingTheToolRejectsGhostClicksAndTargetPacketsAndClosesOnBroadcast() {
+        select(new ItemStack(Items.DIAMOND));
+        when(player.getMainHandItem()).thenReturn(ItemStack.EMPTY);
+        serverMenu.setCarried(new ItemStack(Items.IRON_INGOT));
+        serverMenu.clicked(0, 0, ClickType.PICKUP, player);
+        deliverRequest(new C2SSetPriceTargetPacket(19, PriceEditorMenu.KIND_ITEM, "minecraft:iron_ingot"));
+        assertEquals(new ResourceLocation("minecraft:diamond"), serverMenu.selectedId());
+        assertEquals(Status.PERMISSION_DENIED, clientMenu.priceState().status());
+        serverMenu.broadcastChanges();
+        verify(player, times(3)).closeContainer();
         assertTrue(audit.entries.isEmpty());
     }
 

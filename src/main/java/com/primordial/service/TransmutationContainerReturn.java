@@ -19,6 +19,10 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import moze_intel.projecte.api.ItemInfo;
+import moze_intel.projecte.api.capabilities.PECapabilities;
+import moze_intel.projecte.capability.EmcHolderItemCapabilityWrapper;
+import moze_intel.projecte.gameObjs.items.KleinStar;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -27,11 +31,15 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 public final class TransmutationContainerReturn {
     private TransmutationContainerReturn() { }
     private static final Set<String> LOCAL = Set.of("chest", "trapped_chest", "barrel", "bundle", "shulker_box");
-    public record Plan(ItemStack shell, List<ItemStack> contents) { }
+    private static final ThreadLocal<Boolean> SETTLING = ThreadLocal.withInitial(() -> false);
+    public record Plan(ItemStack shell, List<ItemStack> contents) {
+        public Plan { contents = List.copyOf(contents); }
+    }
     public static boolean localContainer(ItemStack stack) {
         var id = BuiltInRegistries.ITEM.getKey(stack.getItem());
         return id.getNamespace().equals("minecraft") && (LOCAL.contains(id.getPath()) || id.getPath().endsWith("_shulker_box"));
@@ -41,9 +49,13 @@ public final class TransmutationContainerReturn {
         return localContainer(stack) || stack.getCapability(ForgeCapabilities.ITEM_HANDLER).isPresent()
                 || stack.getTag() != null && (stack.getTag().contains("BlockEntityTag") || stack.getTag().contains("Items"));
     }
-    /** 未知存储实现保持原物品；不对可能指向共享库存的模组背包做快照复制。 */
+    /** 可写存储在成交时清空实际库存；未知实现保留原物品。 */
     public static Plan prepare(ItemStack stack) {
-        if (!localContainer(stack)) return null;
+        if (stack == null || stack.isEmpty()) return null;
+        if (!localContainer(stack)) {
+            ContainerItemStorage storage = ContainerItemStorage.read(stack.copy());
+            return storage == null ? null : new Plan(TransmutationNbtPolicy.safeOutput(stack), storage.contents());
+        }
         CompoundTag source = stack.getTag();
         CompoundTag contentsTag = source == null ? new CompoundTag()
                 : stack.is(net.minecraft.world.item.Items.BUNDLE) ? source : source.getCompound("BlockEntityTag");
@@ -64,14 +76,139 @@ public final class TransmutationContainerReturn {
         return new Plan(shell, List.copyOf(contents));
     }
     public static boolean sell(TransmutationInventory inventory, ItemStack original, Runnable consume) {
-        if (!(inventory.player instanceof ServerPlayer player)) return false;
-        Plan plan = prepare(original);
-        if (plan == null || EMCHelper.getEmcSellValue(plan.shell) <= 0) return false;
-        long price = EMCHelper.getEmcSellValue(plan.shell);
-        consume.run();
-        for (ItemStack item : plan.contents) player.getInventory().placeItemBackInInventory(item.copy());
-        inventory.handleKnowledge(plan.shell);
-        inventory.addEmc(BigInteger.valueOf(price).multiply(BigInteger.valueOf(original.getCount())));
-        return true;
+        if (!(inventory.player instanceof ServerPlayer player) || SETTLING.get()) return false;
+        SETTLING.set(true);
+        try {
+            int count = original.getCount();
+            var provider = inventory.provider;
+            if (provider == null) return false;
+            if (!(provider.getInputAndLocks() instanceof IItemHandlerModifiable inputs)) return false;
+            // External EMC holders can store charge outside the stack, where NBT rollback cannot undo it.
+            for (int slot = 0; slot < Math.min(8, inputs.getSlots()); slot++) {
+                ItemStack input = inputs.getStackInSlot(slot);
+                if (input.isEmpty()) continue;
+                var holder = input.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY).orElse(null);
+                if (holder != null && (input.getItem().getClass() != KleinStar.class
+                        || holder.getClass() != EmcHolderItemCapabilityWrapper.class)) return false;
+            }
+            List<ItemStack> beforeInputs = new ArrayList<>(inputs.getSlots());
+            for (int slot = 0; slot < inputs.getSlots(); slot++) beforeInputs.add(inputs.getStackInSlot(slot).copy());
+            BigInteger beforeEmc = provider.getEmc();
+            Set<ItemInfo> beforeKnowledge = Set.copyOf(provider.getKnowledge());
+            boolean beforeFull = provider.hasFullKnowledge();
+            Plan plan;
+            long price;
+            ContainerItemStorage storage = null;
+            ReturnInventory returned;
+            try {
+                plan = prepare(original);
+                if (plan == null || (price = EMCHelper.getEmcSellValue(plan.shell())) <= 0) return false;
+                returned = ReturnInventory.prepare(player, original, plan.contents());
+                if (returned == null) return false;
+                if (!localContainer(original)) {
+                    storage = ContainerItemStorage.read(original);
+                    if (storage == null || !storage.sameContents(plan.contents()) || !storage.drain()) {
+                        original.setCount(count);
+                        return false;
+                    }
+                    if (original.getCount() != count) {
+                        storage.restore();
+                        original.setCount(count);
+                        return false;
+                    }
+                }
+            } catch (RuntimeException | LinkageError invalid) {
+                original.setCount(count);
+                return false;
+            }
+            try {
+                consume.run();
+                if (!returned.consumed(player)) throw new IllegalStateException("Container source changed during settlement");
+                inventory.handleKnowledge(plan.shell());
+                inventory.addEmc(BigInteger.valueOf(price).multiply(BigInteger.valueOf(count)));
+                returned.publish(player, returned.output);
+                return true;
+            } catch (RuntimeException | LinkageError failed) {
+                try {
+                    try {
+                        if (storage != null) storage.restore();
+                    } finally {
+                        original.setCount(count);
+                        try {
+                            returned.publish(player, returned.before);
+                        } finally {
+                            try {
+                                // ProjectE charges EMC holders in these slots before updating the account balance.
+                                for (int slot = 0; slot < beforeInputs.size(); slot++) {
+                                    try {
+                                        inputs.setStackInSlot(slot, beforeInputs.get(slot).copy());
+                                    } catch (RuntimeException | LinkageError invalid) {
+                                        com.mojang.logging.LogUtils.getLogger().error("[Primordial] Could not restore transmutation input slot {}", slot, invalid);
+                                    }
+                                }
+                                for (ItemInfo item : Set.copyOf(provider.getKnowledge())) if (!beforeKnowledge.contains(item)) provider.removeKnowledge(item);
+                                for (ItemInfo item : beforeKnowledge) if (!provider.hasKnowledge(item)) provider.addKnowledge(item);
+                                provider.setFullKnowledge(beforeFull);
+                            } finally {
+                                try {
+                                    provider.setEmc(beforeEmc);
+                                } finally {
+                                    provider.sync(player);
+                                }
+                            }
+                        }
+                    }
+                } catch (RuntimeException | LinkageError rollbackFailure) {
+                    com.mojang.logging.LogUtils.getLogger().error("[Primordial] Could not fully roll back rejected container sale", rollbackFailure);
+                }
+                return false;
+            }
+        } catch (RuntimeException | LinkageError invalid) {
+            return false;
+        } finally {
+            SETTLING.remove();
+        }
     }
+
+    private record ReturnInventory(List<ItemStack> before, List<ItemStack> consumed, List<ItemStack> output) {
+        static ReturnInventory prepare(ServerPlayer player, ItemStack source, List<ItemStack> contents) {
+            var inventory = player.getInventory();
+            List<ItemStack> before = new ArrayList<>(inventory.getContainerSize());
+            List<ItemStack> consumed = new ArrayList<>(inventory.getContainerSize());
+            for (int i = 0; i < inventory.getContainerSize(); i++) {
+                ItemStack item = inventory.getItem(i);
+                before.add(item.copy());
+                consumed.add(item == source ? ItemStack.EMPTY : item.copy());
+            }
+            List<ItemStack> output = consumed.stream().map(ItemStack::copy).collect(java.util.stream.Collectors.toCollection(ArrayList::new));
+            for (ItemStack item : contents) {
+                int remaining = item.getCount();
+                for (int pass = 0; pass < 2 && remaining > 0; pass++) for (int slot = 0; slot < inventory.items.size() && remaining > 0; slot++) {
+                    ItemStack stored = output.get(slot);
+                    if (pass == 0 ? stored.isEmpty() || !ItemStack.isSameItemSameTags(stored, item) : !stored.isEmpty()) continue;
+                    int maximum = Math.min(inventory.getMaxStackSize(), item.getMaxStackSize());
+                    int moved = Math.min(remaining, Math.max(0, maximum - stored.getCount()));
+                    if (moved > 0) {
+                        ItemStack merged = item.copy();
+                        merged.setCount(stored.getCount() + moved);
+                        output.set(slot, merged);
+                        remaining -= moved;
+                    }
+                }
+                if (remaining != 0) return null;
+            }
+            return new ReturnInventory(before, consumed, output);
+        }
+
+        boolean consumed(ServerPlayer player) {
+            for (int i = 0; i < consumed.size(); i++) if (!ItemStack.matches(player.getInventory().getItem(i), consumed.get(i))) return false;
+            return true;
+        }
+
+        void publish(ServerPlayer player, List<ItemStack> items) {
+            for (int i = 0; i < items.size(); i++) player.getInventory().setItem(i, items.get(i).copy());
+            player.getInventory().setChanged();
+        }
+    }
+
 }

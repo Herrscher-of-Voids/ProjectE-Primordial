@@ -148,9 +148,10 @@ public class C2SPlayerActionPacket {
                 case 1 -> { // 热加载设置物品价格
                     if (!(player.containerMenu instanceof PriceEditorMenu menu)
                             || menu.containerId != msg.containerId) return;
-                    if (!com.primordial.service.PriceEditorAccess.canEdit(player)) {
+                    if (!menu.stillValid(player)) {
                         menu.sendPriceState(player, Status.PERMISSION_DENIED);
                         player.sendSystemMessage(Component.translatable("message.primordial.price_permission"));
+                        player.closeContainer();
                         return;
                     }
                     ResourceLocation id = msg.itemId == null || msg.itemId.length() > 256
