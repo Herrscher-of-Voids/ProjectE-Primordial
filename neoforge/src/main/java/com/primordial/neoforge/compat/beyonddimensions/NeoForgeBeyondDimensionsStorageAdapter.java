@@ -16,7 +16,6 @@ import java.util.UUID;
 
 import com.mojang.logging.LogUtils;
 import com.primordial.neoforge.trade.NeoForgeResourceTrades;
-import com.primordial.neoforge.transmutation.NeoForgeNetworkTransferBudget;
 import com.primordial.neoforge.transmutation.NeoForgeTransmutationInterfaceBlockEntity;
 import com.primordial.neoforge.transmutation.NeoForgeTransmutationNetworkPort;
 import com.primordial.neoforge.transmutation.NeoForgeTransmutationNetworkRegistry;
@@ -172,33 +171,31 @@ public final class NeoForgeBeyondDimensionsStorageAdapter {
         MinecraftServer server = level.getServer();
         UUID owner = host.owner();
         Map<Object, Long> result = new LinkedHashMap<>();
-        long itemLimit = NeoForgeNetworkTransferBudget.remainingItems(server, owner);
         IKnowledgeProvider knowledge = ITransmutationProxy.INSTANCE.getKnowledgeProviderFor(owner);
-        if (knowledge != null && itemLimit > 0) {
+        if (knowledge != null) {
             try {
                 if (knowledge.hasFullKnowledge()) {
-                    for (var item : BuiltInRegistries.ITEM) addItem(result, server, owner, new ItemStack(item), itemLimit);
+                    for (var item : BuiltInRegistries.ITEM) addItem(result, server, owner, new ItemStack(item));
                 } else {
                     for (ItemInfo info : knowledge.getKnowledge())
-                        addItem(result, server, owner, info.createStack(), itemLimit);
+                        addItem(result, server, owner, info.createStack());
                 }
             } catch (RuntimeException | LinkageError unavailable) {
                 LOGGER.debug("Could not read all Beyond Dimensions item knowledge", unavailable);
             }
         }
-        long fluidLimit = NeoForgeNetworkTransferBudget.remainingFluid(server, owner);
-        if (fluidLimit > 0) for (var fluid : BuiltInRegistries.FLUID) {
+        for (var fluid : BuiltInRegistries.FLUID) {
             FluidStack sample = new FluidStack(fluid, 1);
-            long available = NeoForgeResourceTrades.affordableFluid(server, owner, sample, fluidLimit);
+            long available = NeoForgeResourceTrades.affordableFluid(server, owner, sample, Long.MAX_VALUE);
             if (available > 0) result.put(fluidKey(sample), available);
         }
         return result;
     }
 
     private static void addItem(Map<Object, Long> result, MinecraftServer server, UUID owner,
-                                ItemStack sample, long limit) {
+                                ItemStack sample) {
         if (sample.isEmpty() || sample.is(net.minecraft.world.item.Items.AIR)) return;
-        long available = NeoForgeResourceTrades.affordableItem(server, owner, sample, limit);
+        long available = NeoForgeResourceTrades.affordableItem(server, owner, sample, Long.MAX_VALUE);
         if (available > 0) result.put(itemKey(sample), available);
     }
 
@@ -266,6 +263,12 @@ public final class NeoForgeBeyondDimensionsStorageAdapter {
         }
     }
 
+    public static boolean hasStack(Object storage, Object requested, boolean actual) {
+        if (actual || requested == null) return actual;
+        for (Port port : ports(storage)) if (port.snapshot.getOrDefault(requested, 0L) > 0) return true;
+        return false;
+    }
+
     /** Actual dimension stock is extracted first; only the same-key shortfall is purchased. */
     public static Object extract(Object storage, Object requested, long wanted, boolean simulate, Object actual) {
         if (NeoForgeBeyondDimensionsRuleBridge.committing(storage)) try {
@@ -285,28 +288,18 @@ public final class NeoForgeBeyondDimensionsStorageAdapter {
                 MinecraftServer server = level.getServer();
                 UUID owner = port.host.owner();
                 long missing = wanted - moved;
+                RuleFunding funding = new RuleFunding(server, owner, sample, missing, port);
+                // Native storage transactions may request an entire craft; physical port bandwidth is separate.
                 if (sample instanceof ItemStack item) {
-                    long requestedAmount = Math.min(missing,
-                            NeoForgeNetworkTransferBudget.remainingItems(server, owner));
-                    if (requestedAmount <= 0) continue;
-                    long bought;
-                    if (simulate) bought = NeoForgeResourceTrades.affordableItem(server, owner, item, requestedAmount);
-                    else try (var reservation = NeoForgeNetworkTransferBudget.reserveItems(server, owner, requestedAmount)) {
-                        bought = NeoForgeResourceTrades.purchaseItem(server, owner, item, reservation.amount(), units -> units);
-                        reservation.complete(bought);
-                    }
+                    long bought = simulate ? NeoForgeResourceTrades.affordableItem(server, owner, item, missing)
+                            : NeoForgeResourceTrades.purchaseItem(server, owner, item, missing,
+                                    units -> validFunding(funding, storage) ? units : 0);
                     moved += bought;
                 } else if (sample instanceof FluidStack fluid) {
                     if (!FluidStack.isSameFluidSameComponents(fluid, new FluidStack(fluid.getFluid(), 1))) break;
-                    long requestedAmount = Math.min(missing,
-                            NeoForgeNetworkTransferBudget.remainingFluid(server, owner));
-                    if (requestedAmount <= 0) continue;
-                    long bought;
-                    if (simulate) bought = NeoForgeResourceTrades.affordableFluid(server, owner, fluid, requestedAmount);
-                    else try (var reservation = NeoForgeNetworkTransferBudget.reserveFluid(server, owner, requestedAmount)) {
-                        bought = NeoForgeResourceTrades.purchaseFluid(server, owner, fluid, reservation.amount(), units -> units);
-                        reservation.complete(bought);
-                    }
+                    long bought = simulate ? NeoForgeResourceTrades.affordableFluid(server, owner, fluid, missing)
+                            : NeoForgeResourceTrades.purchaseFluid(server, owner, fluid, missing,
+                                    units -> validFunding(funding, storage) ? units : 0);
                     moved += bought;
                 }
             }
@@ -330,9 +323,9 @@ public final class NeoForgeBeyondDimensionsStorageAdapter {
                 MinecraftServer server = ((ServerLevel) port.host.getLevel()).getServer();
                 UUID owner = port.host.owner();
                 long available = sample instanceof ItemStack item
-                        ? NeoForgeResourceTrades.affordableItem(server, owner, item, NeoForgeNetworkTransferBudget.remainingItems(server, owner))
+                        ? NeoForgeResourceTrades.affordableItem(server, owner, item, Long.MAX_VALUE)
                         : sample instanceof FluidStack fluid && FluidStack.isSameFluidSameComponents(fluid, new FluidStack(fluid.getFluid(), 1))
-                        ? NeoForgeResourceTrades.affordableFluid(server, owner, fluid, NeoForgeNetworkTransferBudget.remainingFluid(server, owner)) : 0;
+                        ? NeoForgeResourceTrades.affordableFluid(server, owner, fluid, Long.MAX_VALUE) : 0;
                 if (available > 0 && (best == null || best.available() < available)) best = new RuleFunding(server, owner, sample, available, port);
             }
             return best;
@@ -342,15 +335,9 @@ public final class NeoForgeBeyondDimensionsStorageAdapter {
     static long payRule(RuleFunding funding, Object storage, long needed, java.util.function.LongUnaryOperator transfer) {
         if (!validFunding(funding, storage)) return 0;
         boolean item = funding.sample() instanceof ItemStack;
-        try (var reservation = item ? NeoForgeNetworkTransferBudget.reserveItems(funding.server(), funding.owner(), needed)
-                : NeoForgeNetworkTransferBudget.reserveFluid(funding.server(), funding.owner(), needed)) {
-            if (reservation.amount() != needed) return 0;
-            java.util.function.LongUnaryOperator guarded = authorized -> validFunding(funding, storage) ? transfer.applyAsLong(authorized) : 0;
-            long paid = item ? NeoForgeResourceTrades.purchaseItem(funding.server(), funding.owner(), (ItemStack) funding.sample(), needed, guarded)
-                    : NeoForgeResourceTrades.purchaseFluid(funding.server(), funding.owner(), (FluidStack) funding.sample(), needed, guarded);
-            reservation.complete(paid);
-            return paid;
-        }
+        java.util.function.LongUnaryOperator guarded = authorized -> validFunding(funding, storage) ? transfer.applyAsLong(authorized) : 0;
+        return item ? NeoForgeResourceTrades.purchaseItem(funding.server(), funding.owner(), (ItemStack) funding.sample(), needed, guarded)
+                : NeoForgeResourceTrades.purchaseFluid(funding.server(), funding.owner(), (FluidStack) funding.sample(), needed, guarded);
     }
 
     private static boolean validFunding(RuleFunding funding, Object storage) {

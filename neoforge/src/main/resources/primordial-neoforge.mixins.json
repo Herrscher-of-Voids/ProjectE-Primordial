@@ -8,6 +8,7 @@
     "ProjectECertificateMappingMixin",
     "NeoForgeTransmutationCraftingMixin",
     "NeoForgeTransmutationConsumeSaleMixin",
+    "NeoForgeAe2CraftingMixin",
     "NeoForgeBeyondDimensionsStorageMixin",
     "NeoForgeBeyondDimensionsBotaniaPresenceMixin",
     "NeoForgeBeyondDimensionsRuleMixin",

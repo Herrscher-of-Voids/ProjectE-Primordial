@@ -53,6 +53,9 @@ import net.neoforged.neoforge.fluids.FluidStack;
 
 public final class NeoForgeResourceTrades {
     private record Account(MinecraftServer server, UUID owner) {}
+    public record PurchaseReceipt(long units, EmcAmount unitPrice) {
+        private static final PurchaseReceipt EMPTY = new PurchaseReceipt(0, EmcAmount.ZERO);
+    }
     private static final Set<Account> ACTIVE = ConcurrentHashMap.newKeySet();
 
     private NeoForgeResourceTrades() {}
@@ -83,8 +86,12 @@ public final class NeoForgeResourceTrades {
     /** 样本必须已是 ProjectE 可持久生成的形态；不能拿基础物品价免费复制被剥离的容器或充能数据。 */
     public static long purchaseItem(MinecraftServer server, UUID owner, ItemStack sample,
                                    long requested, LongUnaryOperator transfer) {
-        return guarded(server, owner, requested, () -> transfer == null ? 0 : NeoForgeEmcTransactions.purchase(
-                server, owner, itemPurchasePrice(server, owner, sample), requested, transfer));
+        return purchaseItemWithReceipt(server, owner, sample, requested, transfer).units();
+    }
+
+    public static PurchaseReceipt purchaseItemWithReceipt(MinecraftServer server, UUID owner, ItemStack sample,
+                                                         long requested, LongUnaryOperator transfer) {
+        return purchaseWithReceipt(server, owner, requested, transfer, () -> itemPurchasePrice(server, owner, sample));
     }
 
     public static long affordableItem(MinecraftServer server, UUID owner, ItemStack sample, long requested) {
@@ -121,8 +128,12 @@ public final class NeoForgeResourceTrades {
 
     public static long purchaseFluid(MinecraftServer server, UUID owner, FluidStack sample,
                                     long requested, LongUnaryOperator transfer) {
-        return guarded(server, owner, requested, () -> transfer == null ? 0 : NeoForgeEmcTransactions.purchase(
-                server, owner, fluidPurchasePrice(server, owner, sample), requested, transfer));
+        return purchaseFluidWithReceipt(server, owner, sample, requested, transfer).units();
+    }
+
+    public static PurchaseReceipt purchaseFluidWithReceipt(MinecraftServer server, UUID owner, FluidStack sample,
+                                                          long requested, LongUnaryOperator transfer) {
+        return purchaseWithReceipt(server, owner, requested, transfer, () -> fluidPurchasePrice(server, owner, sample));
     }
 
     public static long affordableFluid(MinecraftServer server, UUID owner, FluidStack sample, long requested) {
@@ -200,6 +211,21 @@ public final class NeoForgeResourceTrades {
         return guarded(server, owner, requested, () -> extract == null ? 0 : NeoForgeEmcTransactions.reclaim(
                 server, owner, NeoForgeTradeQuote.stable(server, owner, () -> true, NeoForgeRecoveryPrices::energy),
                 requested, extract));
+    }
+
+    private static PurchaseReceipt purchaseWithReceipt(MinecraftServer server, UUID owner, long requested,
+                                                        LongUnaryOperator transfer, Supplier<EmcAmount> quote) {
+        NeoForgeEmcCredits.requireServerThread(server);
+        if (owner == null || requested <= 0 || transfer == null) return PurchaseReceipt.EMPTY;
+        Account account = new Account(server, owner);
+        if (!ACTIVE.add(account)) return PurchaseReceipt.EMPTY;
+        try {
+            EmcAmount price = quote.get();
+            long units = NeoForgeEmcTransactions.purchase(server, owner, price, requested, transfer);
+            return units == 0 ? PurchaseReceipt.EMPTY : new PurchaseReceipt(units, price);
+        } finally {
+            ACTIVE.remove(account);
+        }
     }
 
     private static long guarded(MinecraftServer server, UUID owner, long requested, LongSupplier operation) {

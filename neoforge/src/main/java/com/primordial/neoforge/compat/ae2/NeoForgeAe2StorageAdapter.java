@@ -26,7 +26,6 @@ import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.MEStorage;
 import com.primordial.neoforge.NeoForgeModRegistries;
 import com.primordial.neoforge.trade.NeoForgeResourceTrades;
-import com.primordial.neoforge.transmutation.NeoForgeNetworkTransferBudget;
 import com.primordial.neoforge.transmutation.NeoForgeTransmutationInterfaceBlockEntity;
 import com.primordial.neoforge.transmutation.NeoForgeTransmutationNetworkPort;
 import com.primordial.neoforge.transmutation.NeoForgeTransmutationNetworkRegistry;
@@ -78,7 +77,7 @@ public final class NeoForgeAe2StorageAdapter {
         private final NeoForgeTransmutationInterfaceBlockEntity host;
         private final MEStorage storage;
         private final IManagedGridNode managed;
-        private boolean hasSavedNode, firstTickPassed, closed;
+        private boolean hasSavedNode, firstTickPassed, closed, refreshPending;
         private CompoundTag loadedNodeData = new CompoundTag();
 
         Port(NeoForgeTransmutationInterfaceBlockEntity host) {
@@ -90,7 +89,8 @@ public final class NeoForgeAe2StorageAdapter {
                 }
 
                 @Override public void onStateChanged(NeoForgeTransmutationInterfaceBlockEntity owner, IGridNode node, State state) {
-                    if (!closed && managed.isReady()) IStorageProvider.requestUpdate(managed);
+                    // AE2 may still be adding/removing grid services during this callback.
+                    if (!closed) refreshPending = true;
                 }
             }).setTagName("aeNode").setInWorldNode(true)
                     .setExposedOnSides(EnumSet.allOf(Direction.class))
@@ -126,7 +126,10 @@ public final class NeoForgeAe2StorageAdapter {
             if (closed || (!firstTickPassed && !managed.isReady())) return;
             createWhenOwnerAvailable();
             if (managed.isReady() && host.getLevel() instanceof ServerLevel level
-                    && level.getGameTime() % 20 == 0) IStorageProvider.requestUpdate(managed);
+                    && (refreshPending || level.getGameTime() % 20 == 0)) {
+                refreshPending = false;
+                IStorageProvider.requestUpdate(managed);
+            }
         }
 
         private void createWhenOwnerAvailable() {
@@ -164,14 +167,25 @@ public final class NeoForgeAe2StorageAdapter {
 
         @Override public void getAvailableStacks(KeyCounter out) {
             ServerContext context = context();
-            if (context == null) return;
+            if (context == null || !isCatalogueRepresentative()) return;
             addAvailableItems(out, context);
             addAvailableFluids(out, context);
         }
 
+        private boolean isCatalogueRepresentative() {
+            for (IGridNode node : port.managed.getGrid().getNodes()) {
+                if (!node.isActive() || !(node.getService(IStorageProvider.class) instanceof Port other)
+                        || other == port || !host.owner().equals(other.host.owner())
+                        || !(other.storage instanceof Storage storage) || storage.context() == null) continue;
+                int dimension = other.host.getLevel().dimension().location()
+                        .compareTo(host.getLevel().dimension().location());
+                if (dimension < 0 || dimension == 0 && other.host.getBlockPos().compareTo(host.getBlockPos()) < 0)
+                    return false;
+            }
+            return true;
+        }
+
         private static void addAvailableItems(KeyCounter out, ServerContext context) {
-            long limit = NeoForgeNetworkTransferBudget.remainingItems(context.server, context.owner);
-            if (limit <= 0) return;
             IKnowledgeProvider knowledge = ITransmutationProxy.INSTANCE.getKnowledgeProviderFor(context.owner);
             if (knowledge == null) return;
             Set<AEItemKey> seen = new HashSet<>();
@@ -179,12 +193,12 @@ public final class NeoForgeAe2StorageAdapter {
                 if (knowledge.hasFullKnowledge()) {
                     for (var item : BuiltInRegistries.ITEM) {
                         if (item != net.minecraft.world.item.Items.AIR)
-                            addAvailable(out, context, new ItemStack(item), limit, seen);
+                            addAvailable(out, context, new ItemStack(item), seen);
                     }
                 } else {
                     for (ItemInfo info : knowledge.getKnowledge()) {
                         ItemStack sample = info.createStack();
-                        if (!sample.isEmpty()) addAvailable(out, context, sample, limit, seen);
+                        if (!sample.isEmpty()) addAvailable(out, context, sample, seen);
                     }
                 }
             } catch (RuntimeException | LinkageError unavailable) {
@@ -193,41 +207,36 @@ public final class NeoForgeAe2StorageAdapter {
         }
 
         private static void addAvailableFluids(KeyCounter out, ServerContext context) {
-            long limit = NeoForgeNetworkTransferBudget.remainingFluid(context.server, context.owner);
-            if (limit <= 0) return;
             for (var fluid : BuiltInRegistries.FLUID) {
                 FluidStack sample = new FluidStack(fluid, 1);
                 // The public quote enforces source IDs, knowledge/forget, stages and buy prices.
-                long amount = NeoForgeResourceTrades.affordableFluid(context.server, context.owner, sample, limit);
+                long amount = NeoForgeResourceTrades.affordableFluid(context.server, context.owner, sample, Long.MAX_VALUE);
                 if (amount > 0) out.add(AEFluidKey.of(sample), amount);
             }
         }
 
         private static void addAvailable(KeyCounter out, ServerContext context, ItemStack sample,
-                                         long limit, Set<AEItemKey> seen) {
+                                         Set<AEItemKey> seen) {
             AEItemKey key = AEItemKey.of(sample);
             if (key == null || !seen.add(key)) return;
-            long amount = NeoForgeResourceTrades.affordableItem(context.server, context.owner, sample, limit);
+            long amount = NeoForgeResourceTrades.affordableItem(context.server, context.owner, sample, Long.MAX_VALUE);
             if (amount > 0) out.add(key, amount);
         }
 
         @Override public long extract(AEKey key, long amount, Actionable mode, IActionSource source) {
             ServerContext context = context();
             if (context == null || mode == null || source == null || amount <= 0) return 0;
-            if (key instanceof AEFluidKey fluid) return extractFluid(context, fluid, amount, mode);
+            if (key instanceof AEFluidKey fluid) return extractFluid(context, fluid, amount, mode, source);
             if (!(key instanceof AEItemKey item)) return 0;
             ItemStack sample = item.toStack();
             if (sample.isEmpty()) return 0;
-            long requested = Math.min(amount, NeoForgeNetworkTransferBudget.remainingItems(context.server, context.owner));
-            if (requested <= 0) return 0;
             if (mode == Actionable.SIMULATE)
-                return NeoForgeResourceTrades.affordableItem(context.server, context.owner, sample, requested);
-            try (var reservation = NeoForgeNetworkTransferBudget.reserveItems(context.server, context.owner, requested)) {
-                long moved = NeoForgeResourceTrades.purchaseItem(context.server, context.owner, sample,
-                        reservation.amount(), units -> units);
-                reservation.complete(moved);
-                return moved;
-            }
+                return NeoForgeResourceTrades.affordableItem(context.server, context.owner, sample, amount);
+            // AE2 reserves a whole crafting plan synchronously, not one physical interface tick at a time.
+            var receipt = NeoForgeResourceTrades.purchaseItemWithReceipt(
+                    context.server, context.owner, sample, amount, units -> units);
+            NeoForgeAe2CraftingTransaction.record(context.server, context.owner, key, source, receipt);
+            return receipt.units();
         }
 
         @Override public long insert(AEKey key, long amount, Actionable mode, IActionSource source) {
@@ -235,51 +244,32 @@ public final class NeoForgeAe2StorageAdapter {
             if (context == null || mode == null || source == null || amount <= 0) return 0;
             if (key instanceof AEFluidKey fluid) return insertFluid(context, fluid, amount, mode);
             if (!(key instanceof AEItemKey item)) return 0;
-            long requested = Math.min(Math.min(amount, Integer.MAX_VALUE),
-                    NeoForgeNetworkTransferBudget.remainingItems(context.server, context.owner));
-            if (requested <= 0) return 0;
             ItemStack sample = item.toStack();
-            if (!sample.isEmpty()) sample.setCount((int) requested);
             if (sample.isEmpty()) return 0;
             if (mode == Actionable.SIMULATE)
-                return NeoForgeResourceTrades.reclaimableItem(context.server, context.owner, sample, requested);
-            try (var reservation = NeoForgeNetworkTransferBudget.reserveItems(context.server, context.owner, requested)) {
-                long moved = NeoForgeResourceTrades.reclaimItem(context.server, context.owner, sample,
-                        reservation.amount(), units -> units);
-                reservation.complete(moved);
-                return moved;
-            }
+                return NeoForgeResourceTrades.reclaimableItem(context.server, context.owner, sample, amount);
+            return NeoForgeResourceTrades.reclaimItem(context.server, context.owner, sample, amount, units -> units);
         }
 
-        private static long extractFluid(ServerContext context, AEFluidKey key, long amount, Actionable mode) {
+        private static long extractFluid(ServerContext context, AEFluidKey key, long amount, Actionable mode,
+                                         IActionSource source) {
             FluidStack sample = plainFluid(key);
             if (sample.isEmpty()) return 0;
-            long requested = Math.min(amount, NeoForgeNetworkTransferBudget.remainingFluid(context.server, context.owner));
-            if (requested <= 0) return 0;
             if (mode == Actionable.SIMULATE)
-                return NeoForgeResourceTrades.affordableFluid(context.server, context.owner, sample, requested);
-            try (var reservation = NeoForgeNetworkTransferBudget.reserveFluid(context.server, context.owner, requested)) {
-                long moved = NeoForgeResourceTrades.purchaseFluid(context.server, context.owner, sample,
-                        reservation.amount(), units -> units);
-                reservation.complete(moved);
-                return moved;
-            }
+                return NeoForgeResourceTrades.affordableFluid(context.server, context.owner, sample, amount);
+            var receipt = NeoForgeResourceTrades.purchaseFluidWithReceipt(
+                    context.server, context.owner, sample, amount, units -> units);
+            NeoForgeAe2CraftingTransaction.record(context.server, context.owner, key, source, receipt);
+            return receipt.units();
         }
 
         private static long insertFluid(ServerContext context, AEFluidKey key, long amount, Actionable mode) {
             // Reclaim the actual variant at the base fluid price; its data is consumed, never generated.
             FluidStack sample = key.toStack(1);
             if (sample.isEmpty()) return 0;
-            long requested = Math.min(amount, NeoForgeNetworkTransferBudget.remainingFluid(context.server, context.owner));
-            if (requested <= 0) return 0;
             if (mode == Actionable.SIMULATE)
-                return NeoForgeResourceTrades.reclaimableFluid(context.server, context.owner, sample, requested);
-            try (var reservation = NeoForgeNetworkTransferBudget.reserveFluid(context.server, context.owner, requested)) {
-                long moved = NeoForgeResourceTrades.reclaimFluid(context.server, context.owner, sample,
-                        reservation.amount(), units -> units);
-                reservation.complete(moved);
-                return moved;
-            }
+                return NeoForgeResourceTrades.reclaimableFluid(context.server, context.owner, sample, amount);
+            return NeoForgeResourceTrades.reclaimFluid(context.server, context.owner, sample, amount, units -> units);
         }
 
         private static FluidStack plainFluid(AEFluidKey key) {

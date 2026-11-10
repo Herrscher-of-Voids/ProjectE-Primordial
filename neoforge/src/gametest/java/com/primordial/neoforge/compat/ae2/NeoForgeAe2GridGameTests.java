@@ -1,6 +1,6 @@
 /**
  * Native powered ME-grid integration: adjacent capability discovery, account-backed transactions,
- * per-owner budgets and node persistence. No private adapter storage or synthetic grid is used.
+ * exact EMC settlement and node persistence. No private adapter storage or synthetic grid is used.
  */
 package com.primordial.neoforge.compat.ae2;
 
@@ -8,6 +8,7 @@ import java.math.BigInteger;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
@@ -17,6 +18,7 @@ import com.google.gson.JsonObject;
 import com.primordial.neoforge.NeoForgeModRegistries;
 import com.primordial.neoforge.blackhole.NeoForgeRecoveryKnowledge;
 import com.primordial.neoforge.config.NeoForgeServerConfig;
+import com.primordial.neoforge.emc.NeoForgeEmcCredits;
 import com.primordial.neoforge.emc.NeoForgeEmcSavedData;
 import com.primordial.neoforge.knowledge.NeoForgeResourceKnowledge;
 import com.primordial.neoforge.knowledge.NeoForgeResourceKnowledge.Kind;
@@ -27,18 +29,25 @@ import com.primordial.neoforge.value.NeoForgeRecoveryPrices;
 import com.primordial.service.EmcAmount;
 import appeng.api.AECapabilities;
 import appeng.api.config.Actionable;
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.GridHelper;
+import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.MEStorage;
 import io.netty.channel.embedded.EmbeddedChannel;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
+import moze_intel.projecte.config.ProjectEConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -78,9 +87,12 @@ public final class NeoForgeAe2GridGameTests {
     public static List<TestFunction> tests() {
         return List.of(test("ae2_native_grid_power_first_and_precreate_save", NeoForgeAe2GridGameTests::powerFirst),
                 test("ae2_native_grid_interface_first_real_transactions", NeoForgeAe2GridGameTests::interfaceFirst),
-                test("ae2_native_split_grids_share_owner_tick_budget", NeoForgeAe2GridGameTests::sharedBudget),
+                test("ae2_native_grid_catalogue_scales_with_emc_and_deduplicates", NeoForgeAe2GridGameTests::catalogue),
+                test("ae2_native_cpu_extracts_bulk_item_and_fluid_ingredients", NeoForgeAe2GridGameTests::bulkCraftingIngredients),
+                test("ae2_native_cpu_failed_plan_refunds_exactly_without_duplicating_physical_stock", NeoForgeAe2GridGameTests::failedCraftingIngredients),
+                test("ae2_native_split_grids_share_emc_without_physical_rate_limit", NeoForgeAe2GridGameTests::sharedAccount),
                 test("ae2_native_grid_fluid_fraction_simulation_and_components", NeoForgeAe2GridGameTests::fluidTransactions),
-                test("ae2_native_split_grids_share_fluid_tick_budget", NeoForgeAe2GridGameTests::sharedFluidBudget),
+                test("ae2_native_split_grids_share_fluid_emc_without_physical_rate_limit", NeoForgeAe2GridGameTests::sharedFluidAccount),
                 test("ae2_native_grid_fluid_stage_forget_and_switches", NeoForgeAe2GridGameTests::fluidAuthorization),
                 test("ae2_native_grid_reload_offline_suspend_and_remove", NeoForgeAe2GridGameTests::lifecycle));
     }
@@ -161,16 +173,16 @@ public final class NeoForgeAe2GridGameTests {
                                     && knowledge.hasKnowledge(ItemInfo.fromItem(Items.DIAMOND))
                                     && knowledge.getEmc().equals(FUNDING.add(sell.multiply(BigInteger.valueOf(3)))),
                             "Real ME insertion must learn and credit exactly the accepted quantity once");
-                    check(inventory.getAvailableStacks().get(DIAMOND) == budget - 3,
-                            "The ME grid catalogue must expose the owner's affordable learned item and current limit");
+                    check(inventory.getAvailableStacks().get(DIAMOND) == knowledge.getEmc().divide(buy).longValueExact(),
+                            "The ME grid catalogue must expose total affordability rather than physical throughput");
                     BigInteger before = knowledge.getEmc();
                     check(inventory.extract(DIAMOND, 5, Actionable.SIMULATE, source) == 5
                                     && inventory.extract(DIAMOND, 5, Actionable.SIMULATE, source) == 5
-                                    && knowledge.getEmc().equals(before) && fixture.remaining() == budget - 3,
+                                    && knowledge.getEmc().equals(before) && fixture.remaining() == budget,
                             "Repeated native ME extraction simulation must be read-only");
                     check(inventory.extract(DIAMOND, 5, Actionable.MODULATE, source) == 5
                                     && knowledge.getEmc().equals(before.subtract(buy.multiply(BigInteger.valueOf(5))))
-                                    && fixture.remaining() == budget - 8,
+                                    && fixture.remaining() == budget,
                             "Real native ME extraction must charge delivered units exactly once");
                     check(inventory.getAvailableStacks().get(WATER) == 0
                                     && inventory.extract(WATER, 1000, Actionable.SIMULATE, source) == 0
@@ -184,7 +196,64 @@ public final class NeoForgeAe2GridGameTests {
         }, "interface-first node never initialized");
     }
 
-    private static void sharedBudget(GameTestHelper helper) {
+    private static void catalogue(GameTestHelper helper) {
+        Fixture fixture = fixture(helper);
+        BlockPos second = new BlockPos(2, 1, 2);
+        fixture.knowledge().addKnowledge(ItemInfo.fromItem(Items.DIAMOND));
+        NeoForgeRecoveryKnowledge.recordFluid(fixture.server, fixture.owner, WATER_ID);
+        fixture.placeInterface(INTERFACE);
+        fixture.placeCell(CELL);
+        fixture.placeInterface(second);
+        fixture.await(() -> fixture.ready(INTERFACE, CELL) && fixture.ready(second, CELL), () -> {
+            check(fixture.node(INTERFACE).getGrid() == fixture.node(second).getGrid(),
+                    "Both interfaces must share one real powered ME network");
+            MEStorage inventory = fixture.inventory(second);
+            EmcAmount itemPrice = NeoForgeRecoveryPrices.itemPurchase(new ItemStack(Items.DIAMOND));
+            EmcAmount fluidPrice = NeoForgeRecoveryPrices.fluidPurchase(new FluidStack(Fluids.WATER, 1));
+            check(!itemPrice.isZero() && !fluidPrice.isZero(), "Catalogue fixtures require real buy prices");
+            for (BigInteger balance : List.of(FUNDING, FUNDING.multiply(BigInteger.TWO), BigInteger.ZERO,
+                    BigInteger.TEN.pow(40), FUNDING)) {
+                fixture.knowledge().setEmc(balance);
+                EmcAmount emc = EmcAmount.of(balance);
+                check(inventory.getAvailableStacks().get(DIAMOND) == emc.affordableUnits(itemPrice, Long.MAX_VALUE)
+                                && inventory.getAvailableStacks().get(WATER) == emc.affordableUnits(fluidPrice, Long.MAX_VALUE),
+                        "Two interfaces must list one account's EMC-derived item/fluid supply, including zero and long saturation");
+            }
+            cachedCatalogue(fixture, second, itemPrice, fluidPrice, 0);
+        }, "same-account interfaces never joined the powered native grid");
+    }
+
+    private static void cachedCatalogue(Fixture fixture, BlockPos survivingInterface,
+                                         EmcAmount itemPrice, EmcAmount fluidPrice, int step) {
+        List<BigInteger> balances = List.of(FUNDING, FUNDING.multiply(BigInteger.TWO), BigInteger.ZERO, FUNDING);
+        if (step == balances.size()) {
+            fixture.helper.setBlock(INTERFACE, Blocks.AIR);
+            fixture.helper.runAfterDelay(21, () -> fixture.run(() -> {
+                check(fixture.ready(survivingInterface, CELL),
+                        "The surviving same-account interface must retain its powered native grid");
+                assertCachedCatalogue(fixture, survivingInterface, EmcAmount.of(FUNDING), itemPrice, fluidPrice);
+                fixture.succeed();
+            }));
+            return;
+        }
+        BigInteger balance = balances.get(step);
+        fixture.knowledge().setEmc(balance);
+        // Exercise the production twenty-tick refresh; do not force a storage-provider update from the test.
+        fixture.helper.runAfterDelay(21, () -> fixture.run(() -> {
+            assertCachedCatalogue(fixture, survivingInterface, EmcAmount.of(balance), itemPrice, fluidPrice);
+            cachedCatalogue(fixture, survivingInterface, itemPrice, fluidPrice, step + 1);
+        }));
+    }
+
+    private static void assertCachedCatalogue(Fixture fixture, BlockPos position, EmcAmount balance,
+                                               EmcAmount itemPrice, EmcAmount fluidPrice) {
+        KeyCounter cached = fixture.node(position).getGrid().getStorageService().getCachedInventory();
+        check(cached.get(DIAMOND) == balance.affordableUnits(itemPrice, Long.MAX_VALUE)
+                        && cached.get(WATER) == balance.affordableUnits(fluidPrice, Long.MAX_VALUE),
+                "The native terminal/planner cache must refresh EMC-derived item/fluid quantities without duplicate interfaces or stale representative supply");
+    }
+
+    private static void sharedAccount(GameTestHelper helper) {
         Fixture fixture = fixture(helper);
         BlockPos first = new BlockPos(0, 1, 0), firstCell = new BlockPos(1, 1, 0);
         BlockPos second = new BlockPos(0, 1, 2), secondCell = new BlockPos(1, 1, 2);
@@ -195,31 +264,380 @@ public final class NeoForgeAe2GridGameTests {
         fixture.placeInterface(second);
         fixture.await(() -> fixture.ready(first, firstCell) && fixture.ready(second, secondCell), () -> {
             check(fixture.node(first).getGrid() != fixture.node(second).getGrid(),
-                    "The two budget fixtures must be genuinely separate ME networks");
+                    "The two account fixtures must be genuinely separate ME networks");
             MEStorage a = fixture.inventory(first), b = fixture.inventory(second);
             IActionSource source = IActionSource.ofPlayer(fixture.player);
             long limit = NeoForgeNetworkTransferBudget.ITEMS_PER_TICK;
             check(fixture.remaining() == limit, "Fresh owner must have its complete per-tick budget");
-            check(a.extract(DIAMOND, Long.MAX_VALUE, Actionable.SIMULATE, source) == limit
-                            && b.extract(DIAMOND, Long.MAX_VALUE, Actionable.SIMULATE, source) == limit,
-                    "Simulation on either real grid must not reserve any owner budget");
             BigInteger unit = NeoForgeRecoveryPrices.itemPurchase(new ItemStack(Items.DIAMOND)).floor();
             BigInteger before = fixture.knowledge().getEmc();
-            check(a.extract(DIAMOND, 3000, Actionable.MODULATE, source) == 3000
-                            && b.extract(DIAMOND, 3000, Actionable.MODULATE, source) == limit - 3000
+            long affordable = before.divide(unit).longValueExact();
+            check(a.extract(DIAMOND, Long.MAX_VALUE, Actionable.SIMULATE, source) == affordable
+                            && b.extract(DIAMOND, Long.MAX_VALUE, Actionable.SIMULATE, source) == affordable
+                            && fixture.knowledge().getEmc().equals(before) && fixture.remaining() == limit,
+                    "Both networks must simulate total affordability without charging or reserving physical allowance");
+            check(a.extract(DIAMOND, 6000, Actionable.MODULATE, source) == 6000
+                            && b.extract(DIAMOND, 7000, Actionable.MODULATE, source) == 7000
+                            && fixture.remaining() == limit
+                            && fixture.knowledge().getEmc().equals(before.subtract(unit.multiply(BigInteger.valueOf(13000)))),
+                    "Bulk native ME purchases must exceed 4096, settle exactly and leave physical transfer limits intact");
+            fixture.knowledge().setEmc(unit.multiply(BigInteger.valueOf(5)));
+            check(a.extract(DIAMOND, 4, Actionable.MODULATE, source) == 4
+                            && b.extract(DIAMOND, 4, Actionable.MODULATE, source) == 1
                             && a.extract(DIAMOND, 1, Actionable.MODULATE, source) == 0
-                            && b.insert(DIAMOND, 1, Actionable.MODULATE, source) == 0
-                            && fixture.remaining() == 0,
-                    "Purchases and reclamation on independent ME grids must share the same owner budget");
-            check(fixture.knowledge().getEmc().equals(before.subtract(unit.multiply(BigInteger.valueOf(limit)))),
-                    "Splitting a request across grids must charge exactly the shared accepted quantity");
-            fixture.helper.runAfterDelay(1, () -> fixture.run(() -> {
-                check(fixture.remaining() == limit
-                                && b.extract(DIAMOND, 1, Actionable.MODULATE, source) == 1,
-                        "The shared owner budget must become usable again on the next real server tick");
-                fixture.succeed();
-            }));
-        }, "isolated shared-budget grids never became active");
+                            && fixture.knowledge().getEmc().signum() == 0,
+                    "Independent networks must debit one shared account without duplication or overdraft");
+            fixture.succeed();
+        }, "isolated shared-account grids never became active");
+    }
+
+    private static void bulkCraftingIngredients(GameTestHelper helper) {
+        Fixture fixture = fixture(helper);
+        fixture.knowledge().addKnowledge(ItemInfo.fromItem(Items.DIAMOND));
+        NeoForgeRecoveryKnowledge.recordFluid(fixture.server, fixture.owner, WATER_ID);
+        fixture.placeInterface(INTERFACE);
+        fixture.placeCell(CELL);
+        fixture.await(() -> fixture.ready(INTERFACE, CELL), () -> {
+            KeyCounter required = new KeyCounter();
+            required.add(DIAMOND, 6000);
+            required.add(WATER, 2000001);
+            EmcAmount before = fixture.spendable();
+            EmcAmount cost = NeoForgeRecoveryPrices.itemPurchase(new ItemStack(Items.DIAMOND)).multiply(6000)
+                    .add(NeoForgeRecoveryPrices.fluidPurchase(new FluidStack(Fluids.WATER, 1)).multiply(2000001));
+            CraftingExtraction extraction = extractCraftingInputs(fixture.node(INTERFACE).getGrid(), required,
+                    IActionSource.ofPlayer(fixture.player));
+            check(extraction.missing == null && extraction.stored.get(DIAMOND) == 6000
+                            && extraction.stored.get(WATER) == 2000001
+                            && fixture.spendable().equals(before.subtract(cost))
+                            && fixture.remaining() == NeoForgeNetworkTransferBudget.ITEMS_PER_TICK
+                            && fixture.remainingFluid() == NeoForgeNetworkTransferBudget.FLUID_MB_PER_TICK,
+                    "The real AE crafting CPU initial extraction must receive its whole bulk item/fluid plan and pay exactly once");
+            fixture.succeed();
+        }, "native bulk crafting ingredient grid never became active");
+    }
+
+    private record CraftingExtraction(GenericStack missing, KeyCounter stored, Throwable failure) {}
+
+    private static void failedCraftingIngredients(GameTestHelper helper) {
+        Fixture fixture = fixture(helper);
+        AEItemKey emerald = AEItemKey.of(Items.EMERALD);
+        fixture.knowledge().addKnowledge(ItemInfo.fromItem(Items.DIAMOND));
+        fixture.knowledge().addKnowledge(ItemInfo.fromItem(Items.EMERALD));
+        NeoForgeRecoveryKnowledge.recordFluid(fixture.server, fixture.owner, WATER_ID);
+        fixture.placeInterface(INTERFACE);
+        fixture.placeCell(CELL);
+        fixture.await(() -> fixture.ready(INTERFACE, CELL), () -> {
+            IGrid grid = fixture.node(INTERFACE).getGrid();
+            MEStorage inventory = grid.getStorageService().getInventory();
+            IActionSource source = IActionSource.ofPlayer(fixture.player);
+            PhysicalStorage physical = new PhysicalStorage();
+            IStorageProvider provider = mounts -> {
+                mounts.mount(physical, 1000);
+                mounts.mount(physical.extractor, -1000);
+            };
+            double previousLoss = ProjectEConfig.server.difficulty.covalenceLoss.get();
+            grid.getStorageService().addGlobalStorageProvider(provider);
+            try (FluidPriceSnapshot ignored = new FluidPriceSnapshot()) {
+                ProjectEConfig.server.difficulty.covalenceLoss.set(0.5);
+                EmcAmount diamondBuy = NeoForgeRecoveryPrices.itemPurchase(new ItemStack(Items.DIAMOND));
+                EmcAmount diamondSell = NeoForgeRecoveryPrices.item(new ItemStack(Items.DIAMOND));
+                EmcAmount emeraldBuy = NeoForgeRecoveryPrices.itemPurchase(new ItemStack(Items.EMERALD));
+                EmcAmount waterBuy = NeoForgeRecoveryPrices.fluidPurchase(new FluidStack(Fluids.WATER, 1));
+                check(diamondBuy.affordableUnits(diamondSell, 1) == 1 && !diamondBuy.equals(diamondSell)
+                                && waterBuy.equals(new EmcAmount(BigInteger.ONE, BigInteger.valueOf(3000))),
+                        "Failed-plan fixtures require a native buy/sell spread and an exact fractional fluid price");
+
+                fixture.knowledge().setEmc(emeraldBuy.multiply(2).floor());
+                KeyCounter items = new KeyCounter();
+                items.add(DIAMOND, 3);
+                items.add(emerald, 1);
+                check(inventory.extract(DIAMOND, 3, Actionable.SIMULATE, source) == 3
+                                && inventory.extract(emerald, 1, Actionable.SIMULATE, source) == 1,
+                        "Each ingredient must be individually affordable while their combined cost exceeds the shared EMC");
+                for (int attempt = 0; attempt < 2; attempt++)
+                    failedPlanRestoresAccount(fixture, grid, items, source, physical, 0);
+
+                fixture.knowledge().setEmc(diamondBuy.add(EmcAmount.of(BigInteger.valueOf(308))).floor());
+                NeoForgeEmcCredits.credit(fixture.server, fixture.owner, waterBuy.divide(2));
+                KeyCounter fractional = new KeyCounter();
+                fractional.add(DIAMOND, 1);
+                fractional.add(WATER, 2000000);
+                check(inventory.extract(DIAMOND, 1, Actionable.SIMULATE, source) == 1
+                                && inventory.extract(WATER, 2000000, Actionable.SIMULATE, source) == 2000000,
+                        "Each mixed ingredient must fit separately while the combined fractional purchase cannot fit");
+                for (int attempt = 0; attempt < 2; attempt++)
+                    failedPlanRestoresAccount(fixture, grid, fractional, source, physical, 0);
+
+                fixture.knowledge().setEmc(emeraldBuy.multiply(2).floor());
+                physical.stored.add(DIAMOND, 1);
+                physical.stored.add(emerald, 1);
+                KeyCounter mixed = new KeyCounter();
+                mixed.add(DIAMOND, 3);
+                mixed.add(emerald, 3);
+                for (int attempt = 0; attempt < 2; attempt++) {
+                    long extracted = physical.extracted, inserted = physical.inserted;
+                    failedPlanRestoresAccount(fixture, grid, mixed, source, physical, 2);
+                    check(physical.stored.get(DIAMOND) == 1 && physical.stored.get(emerald) == 1
+                                    && physical.extracted == extracted + 2 && physical.inserted == inserted + 2,
+                            "A failed mixed plan must return exactly its original physical items and refund only virtual portions");
+                }
+                exceptionalRollbackConsumesRefunded(fixture, grid, source, physical, emerald);
+                rejectedRollbackPreservesCpu(fixture, grid, source, physical, emerald);
+            } finally {
+                ProjectEConfig.server.difficulty.covalenceLoss.set(previousLoss);
+                grid.getStorageService().removeGlobalStorageProvider(provider);
+            }
+            transactionScopeIsolation(fixture, inventory, source);
+            fixture.succeed();
+        }, "native failed crafting ingredient grid never became active");
+    }
+
+    private static void failedPlanRestoresAccount(Fixture fixture, IGrid grid, KeyCounter required,
+                                                  IActionSource source, PhysicalStorage physical, long physicalCount) {
+        EmcAmount before = fixture.spendable();
+        CraftingExtraction extraction = extractCraftingInputs(grid, required, source);
+        check(extraction.missing != null && extraction.missing.amount() > 0 && extraction.stored.isEmpty()
+                        && fixture.spendable().equals(before) && physical.total() == physicalCount,
+                "A real failed CPU reservation must empty temporary inventory, restore exact EMC and never bank generated items");
+    }
+
+    private static void transactionScopeIsolation(Fixture fixture, MEStorage inventory, IActionSource source) {
+        double previousLoss = ProjectEConfig.server.difficulty.covalenceLoss.get();
+        ProjectEConfig.server.difficulty.covalenceLoss.set(0.5);
+        try {
+            fixture.knowledge().setEmc(BigInteger.valueOf(100000));
+            EmcAmount buy = NeoForgeRecoveryPrices.itemPurchase(new ItemStack(Items.DIAMOND));
+            EmcAmount sell = NeoForgeRecoveryPrices.item(new ItemStack(Items.DIAMOND));
+            EmcAmount before = fixture.spendable();
+            check(inventory.insert(DIAMOND, 1, Actionable.MODULATE, source) == 1
+                            && fixture.spendable().equals(before.add(sell)),
+                    "An ordinary sale after repeated failed CPU reservations must still use the native sell price");
+
+            IActionSource other = IActionSource.ofPlayer(fixture.player);
+            check(other != source, "Source isolation requires distinct action-source identities for the same player");
+            before = fixture.spendable();
+            try (var scope = NeoForgeAe2CraftingTransaction.begin(source)) {
+                check(inventory.extract(DIAMOND, 1, Actionable.MODULATE, other) == 1
+                                && NeoForgeAe2CraftingTransaction.returnInitialItems(
+                                        inventory, DIAMOND, 1, Actionable.MODULATE, other) == 1,
+                        "Foreign-source operations must complete through ordinary native transactions");
+            }
+            check(fixture.spendable().equals(before.subtract(buy).add(sell)),
+                    "A different source must never capture another crafting scope's refund privilege");
+
+            before = fixture.spendable();
+            try (var outer = NeoForgeAe2CraftingTransaction.begin(source)) {
+                check(inventory.extract(DIAMOND, 1, Actionable.MODULATE, source) == 1,
+                        "Outer transaction must actually purchase its refund candidate");
+                try (var inner = NeoForgeAe2CraftingTransaction.begin(other)) {
+                    check(inventory.extract(DIAMOND, 1, Actionable.MODULATE, other) == 1
+                                    && NeoForgeAe2CraftingTransaction.returnInitialItems(
+                                            inventory, DIAMOND, 1, Actionable.MODULATE, other) == 1,
+                            "The nested scope must refund only its own generated units");
+                }
+                check(NeoForgeAe2CraftingTransaction.returnInitialItems(
+                                inventory, DIAMOND, 1, Actionable.MODULATE, source) == 1,
+                        "Closing the nested scope must restore the outer source and receipt");
+            }
+            check(fixture.spendable().equals(before), "Nested scope refunds must conserve exact account value");
+
+            before = fixture.spendable();
+            IllegalStateException expected = new IllegalStateException("intentional AE scope cleanup fixture");
+            try {
+                try (var scope = NeoForgeAe2CraftingTransaction.begin(source)) {
+                    check(inventory.extract(DIAMOND, 1, Actionable.MODULATE, source) == 1,
+                            "Exceptional scope must contain an actual paid purchase");
+                    throw expected;
+                }
+            } catch (IllegalStateException failure) {
+                if (failure != expected) throw failure;
+            }
+            check(NeoForgeAe2CraftingTransaction.returnInitialItems(
+                            inventory, DIAMOND, 1, Actionable.MODULATE, source) == 1
+                            && fixture.spendable().equals(before.subtract(buy).add(sell)),
+                    "An exception must close refund privileges before the next ordinary native sale");
+        } finally {
+            ProjectEConfig.server.difficulty.covalenceLoss.set(previousLoss);
+        }
+    }
+
+    private static void rejectedRollbackPreservesCpu(Fixture fixture, IGrid grid, IActionSource source,
+                                                      PhysicalStorage physical, AEItemKey emerald) {
+        CompoundTag quarantine;
+        try {
+            Field field = NeoForgeEmcSavedData.class.getDeclaredField("quarantined");
+            field.setAccessible(true);
+            quarantine = (CompoundTag) field.get(NeoForgeEmcSavedData.get(fixture.server));
+        } catch (ReflectiveOperationException failure) {
+            throw new IllegalStateException("Cannot prepare an account quarantine during native CPU reservation", failure);
+        }
+        String owner = fixture.owner.toString();
+        check(!quarantine.contains(owner), "The native refund-refusal fixture must start with a healthy account");
+        fixture.knowledge().setEmc(BigInteger.valueOf(100000));
+        physical.stored.reset();
+        physical.accepts = false;
+        KeyCounter required = new KeyCounter();
+        required.add(DIAMOND, 1);
+        required.add(emerald, 1);
+        List<AEItemKey> ordered = new ArrayList<>();
+        for (var entry : required) ordered.add((AEItemKey) entry.getKey());
+        AEItemKey first = ordered.getFirst(), second = ordered.get(1);
+        EmcAmount before = fixture.spendable();
+        EmcAmount cost = NeoForgeRecoveryPrices.itemPurchase(first.toStack());
+        long inserted = physical.inserted;
+        physical.beforeExtract = key -> {
+            if (key.equals(second)) {
+                check(fixture.spendable().equals(before.subtract(cost)),
+                        "The first native ingredient must be paid before quarantine interrupts the second");
+                quarantine.putString(owner, "intentional native CPU refund-refusal fixture");
+            }
+        };
+        try {
+            CraftingExtraction extraction = extractCraftingInputs(grid, required, source);
+            check(extraction.missing != null && extraction.stored.get(first) == 1
+                            && extraction.stored.get(second) == 0 && total(extraction.stored) == 1
+                            && physical.total() == 0 && physical.inserted == inserted
+                            && !NeoForgeEmcSavedData.get(fixture.server).canCredit(fixture.owner)
+                            && fixture.spendable().equals(before.subtract(cost)),
+                    "When both exact refund and physical reinsertion fail, AE must retain the paid resource in its native CPU inventory");
+        } finally {
+            physical.beforeExtract = key -> {};
+            physical.accepts = true;
+            quarantine.remove(owner);
+        }
+    }
+
+    private static void exceptionalRollbackConsumesRefunded(Fixture fixture, IGrid grid, IActionSource source,
+                                                            PhysicalStorage physical, AEItemKey emerald) {
+        EmcAmount emeraldBuy = NeoForgeRecoveryPrices.itemPurchase(new ItemStack(Items.EMERALD));
+        fixture.knowledge().setEmc(emeraldBuy.multiply(2).floor());
+        physical.stored.reset();
+        physical.stored.add(DIAMOND, 1);
+        physical.stored.add(emerald, 1);
+        KeyCounter required = new KeyCounter();
+        required.add(DIAMOND, 3);
+        required.add(emerald, 3);
+        List<AEItemKey> ordered = new ArrayList<>();
+        for (var entry : required) ordered.add((AEItemKey) entry.getKey());
+        AEItemKey first = ordered.getFirst(), second = ordered.get(1);
+        EmcAmount before = fixture.spendable();
+        IllegalStateException expected = new IllegalStateException("intentional physical rollback insertion failure");
+        physical.insertFailure = expected;
+        physical.insertFailureKey = first;
+        physical.failedInsertKey = null;
+        physical.failedInsertAmount = 0;
+        try {
+            CraftingExtraction extraction = extractCraftingInputs(grid, required, source, true);
+            long paidUnitsRetained = extraction.stored.get(second) + physical.stored.get(second) - 1;
+            check(paidUnitsRetained >= 0,
+                    "All original physical inputs must remain in the CPU or physical storage after a rollback exception");
+            EmcAmount paid = NeoForgeRecoveryPrices.itemPurchase(second.toStack()).multiply(paidUnitsRetained);
+            check(extraction.failure == expected && extraction.stored.get(first) == 1
+                            && physical.stored.get(first) == 0 && first.equals(physical.failedInsertKey)
+                            && physical.failedInsertAmount == 1
+                            && total(extraction.stored) + physical.total() == 2 + paidUnitsRetained
+                            && fixture.spendable().equals(before.subtract(paid)),
+                    "A physical rollback exception after exact virtual refund must remove refunded CPU copies and conserve every physical/paid unit; target="
+                            + first + ", cpuTarget=" + extraction.stored.get(first) + ", otherCpu="
+                            + extraction.stored.get(second) + ", otherPhysical=" + physical.stored.get(second)
+                            + ", rejected=" + physical.failedInsertAmount);
+        } finally {
+            physical.insertFailure = null;
+            physical.insertFailureKey = null;
+        }
+    }
+
+    private static long total(KeyCounter values) {
+        long total = 0;
+        for (var entry : values) total += entry.getLongValue();
+        return total;
+    }
+
+    private static final class PhysicalStorage implements MEStorage {
+        final KeyCounter stored = new KeyCounter();
+        final MEStorage extractor = new MEStorage() {
+            @Override public Component getDescription() { return PhysicalStorage.this.getDescription(); }
+            @Override public void getAvailableStacks(KeyCounter out) { out.addAll(stored); }
+            @Override public long extract(AEKey key, long amount, Actionable mode, IActionSource source) {
+                return take(key, amount, mode);
+            }
+        };
+        long extracted, inserted;
+        boolean accepts = true;
+        RuntimeException insertFailure;
+        AEKey insertFailureKey, failedInsertKey;
+        long failedInsertAmount;
+        Consumer<AEKey> beforeExtract = key -> {};
+
+        @Override public Component getDescription() { return Component.literal("Native CPU physical return fixture"); }
+
+        @Override public boolean isPreferredStorageFor(AEKey key, IActionSource source) { return true; }
+
+        private long take(AEKey key, long amount, Actionable mode) {
+            if (mode == Actionable.MODULATE) beforeExtract.accept(key);
+            long moved = Math.min(amount, stored.get(key));
+            if (mode == Actionable.MODULATE && moved > 0) {
+                stored.remove(key, moved);
+                extracted += moved;
+            }
+            return moved;
+        }
+
+        @Override public long insert(AEKey key, long amount, Actionable mode, IActionSource source) {
+            if (!accepts) return 0;
+            if (insertFailure != null && mode == Actionable.MODULATE
+                    && (insertFailureKey == null || insertFailureKey.equals(key))) {
+                failedInsertKey = key;
+                failedInsertAmount = amount;
+                throw insertFailure;
+            }
+            if (mode == Actionable.MODULATE && amount > 0) {
+                stored.add(key, amount);
+                inserted += amount;
+            }
+            return amount;
+        }
+
+        long total() { return NeoForgeAe2GridGameTests.total(stored); }
+    }
+
+    private record IngredientPlan(KeyCounter usedItems) implements ICraftingPlan {
+        @Override public GenericStack finalOutput() { return new GenericStack(DIAMOND, 1); }
+        @Override public long bytes() { return 1; }
+        @Override public boolean simulation() { return false; }
+        @Override public boolean multiplePaths() { return false; }
+        @Override public KeyCounter emittedItems() { return new KeyCounter(); }
+        @Override public KeyCounter missingItems() { return new KeyCounter(); }
+        @Override public Map<IPatternDetails, Long> patternTimes() { return Map.of(); }
+    }
+
+    private static CraftingExtraction extractCraftingInputs(IGrid grid, KeyCounter required, IActionSource source) {
+        return extractCraftingInputs(grid, required, source, false);
+    }
+
+    private static CraftingExtraction extractCraftingInputs(IGrid grid, KeyCounter required, IActionSource source,
+                                                            boolean captureFailure) {
+        try {
+            Class<?> inventoryType = Class.forName("appeng.crafting.inv.ListCraftingInventory");
+            Class<?> listenerType = Class.forName("appeng.crafting.inv.ListCraftingInventory$ChangeListener");
+            Object listener = java.lang.reflect.Proxy.newProxyInstance(listenerType.getClassLoader(),
+                    new Class<?>[] { listenerType }, (proxy, method, arguments) -> null);
+            Object inventory = inventoryType.getConstructor(listenerType).newInstance(listener);
+            Class<?> helperType = Class.forName("appeng.crafting.execution.CraftingCpuHelper");
+            GenericStack missing = null;
+            Throwable failure = null;
+            try {
+                missing = (GenericStack) helperType.getMethod("tryExtractInitialItems",
+                        ICraftingPlan.class, IGrid.class, inventoryType, IActionSource.class)
+                        .invoke(null, new IngredientPlan(required), grid, inventory, source);
+            } catch (java.lang.reflect.InvocationTargetException thrown) {
+                if (!captureFailure) throw thrown;
+                failure = thrown.getCause();
+            }
+            return new CraftingExtraction(missing, (KeyCounter) inventoryType.getField("list").get(inventory), failure);
+        } catch (ReflectiveOperationException failure) {
+            throw new IllegalStateException("Cannot execute the installed native AE crafting CPU ingredient extraction", failure);
+        }
     }
 
     private static void fluidTransactions(GameTestHelper helper) {
@@ -257,12 +675,13 @@ public final class NeoForgeAe2GridGameTests {
                 check(inventory.insert(decoratedKey, 37, Actionable.MODULATE, source) == 37
                                 && NeoForgeRecoveryKnowledge.knowsFluid(fixture.server, fixture.owner, WATER_ID)
                                 && fixture.spendable().equals(EmcAmount.of(FUNDING).add(unit.multiply(37)))
-                                && fixture.remainingFluid() == limit - 37,
+                                && fixture.remainingFluid() == limit,
                         "Real component-bearing fluid reclamation must destroy 37 mB, learn only its ID and credit its exact value");
-                check(inventory.getAvailableStacks().get(WATER) == limit - 37
+                check(inventory.getAvailableStacks().get(WATER) == fixture.spendable().affordableUnits(unit, Long.MAX_VALUE)
                                 && inventory.getAvailableStacks().get(decoratedKey) == 0
-                                && inventory.getAvailableStacks().get(DIAMOND) == NeoForgeNetworkTransferBudget.ITEMS_PER_TICK,
-                        "One native ME grid must list plain learned fluids and items using independent per-kind budgets");
+                                && inventory.getAvailableStacks().get(DIAMOND) == fixture.spendable().affordableUnits(
+                                        NeoForgeRecoveryPrices.itemPurchase(new ItemStack(Items.DIAMOND)), Long.MAX_VALUE),
+                        "One native ME grid must list affordable plain fluids and items without throughput caps");
                 EmcAmount before = fixture.spendable();
                 ledger = fixture.ledger();
                 check(inventory.extract(decoratedKey, 1, Actionable.SIMULATE, source) == 0
@@ -270,15 +689,15 @@ public final class NeoForgeAe2GridGameTests {
                                 && inventory.extract(WATER, 5, Actionable.SIMULATE, source) == 5
                                 && inventory.extract(WATER, 5, Actionable.SIMULATE, source) == 5
                                 && fixture.spendable().equals(before) && fixture.ledger().equals(ledger)
-                                && fixture.remainingFluid() == limit - 37,
+                                && fixture.remainingFluid() == limit,
                         "A base fluid identity must not recreate discarded components; all extraction simulations stay read-only");
                 check(inventory.extract(WATER, 5, Actionable.MODULATE, source) == 5
                                 && fixture.spendable().equals(before.subtract(unit.multiply(5)))
-                                && fixture.remainingFluid() == limit - 42,
+                                && fixture.remainingFluid() == limit,
                         "Native ME extraction must deliver five mB and debit the exact fractional price once");
                 long fluidBudget = fixture.remainingFluid();
                 check(inventory.extract(DIAMOND, 3, Actionable.MODULATE, source) == 3
-                                && fixture.remaining() == NeoForgeNetworkTransferBudget.ITEMS_PER_TICK - 3
+                                && fixture.remaining() == NeoForgeNetworkTransferBudget.ITEMS_PER_TICK
                                 && fixture.remainingFluid() == fluidBudget,
                         "A real item trade on the same grid must not consume any fluid allowance");
 
@@ -293,15 +712,15 @@ public final class NeoForgeAe2GridGameTests {
                                 && fixture.spendable().isZero()
                                 && inventory.extract(WATER, 1, Actionable.MODULATE, source) == 0,
                         "A fraction-only owner must receive exactly its affordable mB with no rounding, free final unit or overdraft");
-                check(fixture.remainingFluid() == limit - 74
-                                && fixture.remaining() == NeoForgeNetworkTransferBudget.ITEMS_PER_TICK - 3,
-                        "Only accepted fluid units may consume the independent owner budget");
+                check(fixture.remainingFluid() == limit
+                                && fixture.remaining() == NeoForgeNetworkTransferBudget.ITEMS_PER_TICK,
+                        "Native virtual trades must not consume physical interface throughput allowances");
             }
             fixture.succeed();
         }, "native fluid transaction grid never became active");
     }
 
-    private static void sharedFluidBudget(GameTestHelper helper) {
+    private static void sharedFluidAccount(GameTestHelper helper) {
         Fixture fixture = fixture(helper);
         BlockPos first = new BlockPos(0, 1, 0), firstCell = new BlockPos(1, 1, 0);
         BlockPos second = new BlockPos(0, 1, 2), secondCell = new BlockPos(1, 1, 2);
@@ -313,43 +732,42 @@ public final class NeoForgeAe2GridGameTests {
         fixture.placeCell(secondCell);
         fixture.await(() -> fixture.ready(first, firstCell) && fixture.ready(second, secondCell), () -> {
             check(fixture.node(first).getGrid() != fixture.node(second).getGrid(),
-                    "Fluid budget sharing must be exercised by genuinely separate native ME networks");
+                    "Fluid account sharing must be exercised by genuinely separate native ME networks");
             MEStorage a = fixture.inventory(first), b = fixture.inventory(second);
             IActionSource source = IActionSource.ofPlayer(fixture.player);
             long limit = NeoForgeNetworkTransferBudget.FLUID_MB_PER_TICK;
-            check(fixture.remainingFluid() == limit
-                            && a.extract(WATER, Long.MAX_VALUE, Actionable.SIMULATE, source) == limit
-                            && b.insert(WATER, Long.MAX_VALUE, Actionable.SIMULATE, source) == limit
-                            && fixture.remainingFluid() == limit,
-                    "Native grids must cap simulated fluid amounts in mB without reserving owner allowance");
-            EmcAmount before = fixture.spendable();
             FluidStack sample = new FluidStack(Fluids.WATER, 1);
+            EmcAmount before = fixture.spendable();
+            EmcAmount buyPrice = NeoForgeRecoveryPrices.fluidPurchase(sample);
+            check(fixture.remainingFluid() == limit
+                            && a.extract(WATER, Long.MAX_VALUE, Actionable.SIMULATE, source)
+                                    == before.affordableUnits(buyPrice, Long.MAX_VALUE)
+                            && b.insert(WATER, Long.MAX_VALUE, Actionable.SIMULATE, source) == Long.MAX_VALUE
+                            && fixture.remainingFluid() == limit && fixture.spendable().equals(before),
+                    "Native fluid simulation must use total mB affordability without mutation or a physical throughput cap");
             EmcAmount sold = NeoForgeRecoveryPrices.fluid(sample).multiply(600000);
-            EmcAmount bought = NeoForgeRecoveryPrices.fluidPurchase(sample).multiply(limit - 600000);
+            EmcAmount bought = buyPrice.multiply(limit + 600000);
             check(a.insert(WATER, 600000, Actionable.MODULATE, source) == 600000
-                            && b.extract(WATER, Long.MAX_VALUE, Actionable.MODULATE, source) == limit - 600000
-                            && a.extract(WATER, 1, Actionable.MODULATE, source) == 0
-                            && b.insert(WATER, 1, Actionable.MODULATE, source) == 0
-                            && fixture.remainingFluid() == 0
+                            && b.extract(WATER, limit + 600000, Actionable.MODULATE, source) == limit + 600000
+                            && fixture.remainingFluid() == limit
                             && fixture.spendable().equals(before.add(sold).subtract(bought)),
-                    "Reclamation and purchases across separate grids must share one million mB and settle only accepted units");
-            check(inventoryItemTradeAfterFluidLimit(fixture, b, source),
-                    "Exhausting the fluid budget must leave the independent item budget available");
-            fixture.helper.runAfterDelay(1, () -> fixture.run(() -> {
-                check(fixture.remainingFluid() == limit
-                                && b.extract(WATER, 1, Actionable.MODULATE, source) == 1
-                                && fixture.remainingFluid() == limit - 1,
-                        "Every owner's shared fluid allowance must reset on the next real server tick");
-                fixture.succeed();
-            }));
-        }, "isolated shared-fluid-budget grids never became active");
+                    "Native grids must settle bulk fluid trades above one million mB without spending physical allowance");
+            check(inventoryItemTradeUsesNoPhysicalBudget(fixture, b, source),
+                    "Bulk fluid trading must leave item transactions and physical allowances available");
+            long affordable = fixture.spendable().affordableUnits(buyPrice, Long.MAX_VALUE);
+            check(a.extract(WATER, Long.MAX_VALUE, Actionable.MODULATE, source) == affordable
+                            && b.extract(WATER, 1, Actionable.MODULATE, source) == 0
+                            && fixture.remainingFluid() == limit,
+                    "Separate ME grids must not spend the same fluid EMC twice");
+            fixture.succeed();
+        }, "isolated shared-fluid-account grids never became active");
     }
 
-    private static boolean inventoryItemTradeAfterFluidLimit(Fixture fixture, MEStorage inventory, IActionSource source) {
+    private static boolean inventoryItemTradeUsesNoPhysicalBudget(Fixture fixture, MEStorage inventory, IActionSource source) {
         return fixture.remaining() == NeoForgeNetworkTransferBudget.ITEMS_PER_TICK
                 && inventory.extract(DIAMOND, 1, Actionable.MODULATE, source) == 1
-                && fixture.remaining() == NeoForgeNetworkTransferBudget.ITEMS_PER_TICK - 1
-                && fixture.remainingFluid() == 0;
+                && fixture.remaining() == NeoForgeNetworkTransferBudget.ITEMS_PER_TICK
+                && fixture.remainingFluid() == NeoForgeNetworkTransferBudget.FLUID_MB_PER_TICK;
     }
 
     private static void fluidAuthorization(GameTestHelper helper) {
@@ -443,6 +861,7 @@ public final class NeoForgeAe2GridGameTests {
                     "The lifecycle fixture must start with an actual learned fluid catalogue and working transactions");
             IInWorldGridNodeHost cachedHost = fixture.nodeHost(INTERFACE);
             IGridNode originalNode = fixture.node(INTERFACE);
+            deferredStateRefresh(block, originalNode);
             int ownerId = originalNode.getOwningPlayerId();
             MEStorage oldStorage = mountedStorage(originalNode);
             CompoundTag saved = block.saveWithFullMetadata(helper.getLevel().registryAccess());
@@ -458,6 +877,7 @@ public final class NeoForgeAe2GridGameTests {
                     "A save between NBT load and first tick must preserve the loaded native AE2 identity");
             fixture.await(() -> fixture.ready(INTERFACE, CELL), () -> {
                 IGridNode restored = fixture.node(INTERFACE);
+                deferredStateRefresh(block, restored);
                 check(restored != originalNode && restored.getOwningPlayerId() == ownerId
                                 && fixture.owner.equals(restored.getOwningPlayerProfileId())
                                 && cachedHost.getGridNode(Direction.EAST) == restored,
@@ -476,11 +896,14 @@ public final class NeoForgeAe2GridGameTests {
                 block.onLoad();
                 fixture.await(() -> fixture.ready(INTERFACE, CELL), () -> {
                     IGridNode resumed = fixture.node(INTERFACE);
+                    deferredStateRefresh(block, resumed);
                     check(resumed != restored && resumed.getOwningPlayerId() == ownerId,
                             "Resuming a suspended interface must retain owner identity on a fresh native node");
                     MEStorage finalStorage = mountedStorage(resumed);
                     MEStorage finalNetwork = fixture.inventory(INTERFACE);
+                    var finalPort = block.networkPort("ae2");
                     helper.setBlock(INTERFACE, Blocks.AIR);
+                    closedStateRefresh(finalPort, resumed);
                     check(cachedHost.getGridNode(Direction.EAST) == null
                                     && helper.getLevel().getCapability(AECapabilities.IN_WORLD_GRID_NODE_HOST,
                                     helper.absolutePos(INTERFACE), null) == null,
@@ -496,6 +919,45 @@ public final class NeoForgeAe2GridGameTests {
                 }, "chunk-resumed interface never rejoined the native grid");
             }, "offline-loaded interface never rejoined the native grid");
         }, "lifecycle native grid never became active");
+    }
+
+    private static void deferredStateRefresh(NeoForgeTransmutationInterfaceBlockEntity block, IGridNode node) {
+        var port = block.networkPort("ae2");
+        check(port != null, "The active native node must retain its production AE2 port");
+        var service = (appeng.api.networking.IGridServiceProvider) node.getGrid().getStorageService();
+        try {
+            Field pending = port.getClass().getDeclaredField("refreshPending");
+            pending.setAccessible(true);
+            service.removeNode(node);
+            try {
+                // Reproduce the callback before its storage service is mounted, using the real native node.
+                node.getClass().getMethod("notifyStatusChange", appeng.api.networking.IGridNodeListener.State.class)
+                        .invoke(node, appeng.api.networking.IGridNodeListener.State.CHANNEL);
+                check(pending.getBoolean(port), "A native state callback must queue its refresh without querying an unmounted service");
+            } finally {
+                service.addNode(node, null);
+            }
+            block.tickNetworks();
+            check(!pending.getBoolean(port), "The next host tick must consume the deferred storage refresh");
+            block.tickNetworks();
+            check(!pending.getBoolean(port) && block.networkPort("ae2") == port
+                            && node.getGrid().getStorageService().getInventory().getAvailableStacks().get(DIAMOND) > 0,
+                    "A stable native grid must not reschedule refreshes or lose its item catalogue");
+        } catch (ReflectiveOperationException failure) {
+            throw new IllegalStateException("Cannot inspect the native AE2 state callback", failure);
+        }
+    }
+
+    private static void closedStateRefresh(Object port, IGridNode node) {
+        try {
+            Field pending = port.getClass().getDeclaredField("refreshPending");
+            pending.setAccessible(true);
+            node.getClass().getMethod("notifyStatusChange", appeng.api.networking.IGridNodeListener.State.class)
+                    .invoke(node, appeng.api.networking.IGridNodeListener.State.CHANNEL);
+            check(!pending.getBoolean(port), "A late native callback must not schedule storage refreshes after block removal");
+        } catch (ReflectiveOperationException failure) {
+            throw new IllegalStateException("Cannot inspect a late native AE2 state callback", failure);
+        }
     }
 
     private static MEStorage mountedStorage(IGridNode node) {

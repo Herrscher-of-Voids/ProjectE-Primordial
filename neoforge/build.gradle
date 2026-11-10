@@ -179,6 +179,8 @@ dependencies {
     compileOnly "mezz.jei:jei-1.21.1-common-api:${project.jei_version}"
     if (withJei) runtimeOnly "mezz.jei:jei-1.21.1-neoforge:${project.jei_version}"
     compileOnly "org.appliedenergistics:appliedenergistics2:${project.ae2_version}:api"
+    // The optional crafting rollback hook targets AE2's internal inventory signature.
+    compileOnly "curse.maven:applied-energistics-2-223794:${project.ae2_file_id}"
     compileOnly "maven.modrinth:refined-storage:${project.rs2_version_id}"
     if (withRs2) runtimeOnly "maven.modrinth:refined-storage:${project.rs2_version_id}"
     if (withBeyondDimensions) {

@@ -35,6 +35,11 @@ public abstract class NeoForgeBeyondDimensionsStorageMixin {
         if (key != null) cir.setReturnValue(NeoForgeBeyondDimensionsStorageAdapter.stack(this, key, cir.getReturnValue()));
     }
 
+    @Inject(method = "hasStack", at = @At("RETURN"), cancellable = true, remap = false)
+    private void primordial$hasStack(@Coerce Object key, CallbackInfoReturnable<Boolean> cir) {
+        cir.setReturnValue(NeoForgeBeyondDimensionsStorageAdapter.hasStack(this, key, cir.getReturnValue()));
+    }
+
     @Inject(method = "extract(Lcom/wintercogs/beyonddimensions/api/storage/key/IStackKey;JZZ)Lcom/wintercogs/beyonddimensions/api/storage/key/KeyAmount;",
             at = @At("RETURN"), cancellable = true, remap = false)
     private void primordial$extract(@Coerce Object key, long amount, boolean simulate, boolean fuzzy,

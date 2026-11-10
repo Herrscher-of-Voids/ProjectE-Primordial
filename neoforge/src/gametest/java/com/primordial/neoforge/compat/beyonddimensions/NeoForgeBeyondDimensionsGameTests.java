@@ -7,6 +7,7 @@ import java.lang.reflect.Proxy;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
@@ -25,6 +26,7 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
+import io.netty.buffer.Unpooled;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
@@ -34,6 +36,8 @@ import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.TestFunction;
 import net.minecraft.network.Connection;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.server.MinecraftServer;
@@ -42,6 +46,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
@@ -49,6 +54,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.network.connection.ConnectionType;
 import net.neoforged.neoforge.network.registration.NetworkRegistry;
+import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 
 public final class NeoForgeBeyondDimensionsGameTests {
     private static final BlockPos INTERFACE = new BlockPos(1, 1, 1);
@@ -106,13 +112,19 @@ public final class NeoForgeBeyondDimensionsGameTests {
                 fluidKey = Class.forName(ROOT + "api.storage.key.impl.FluidStackKey")
                         .getConstructor(FluidStack.class).newInstance(new FluidStack(Fluids.WATER, 1));
 
+                Object pathway = helper.getBlockEntity(OWNER_PATH);
+                pathway.getClass().getMethod("clearNetId").invoke(pathway);
+
                 placed.add(INTERFACE);
                 helper.setBlock(INTERFACE, NeoForgeModRegistries.TRANSMUTATION_INTERFACE.get());
                 host = (NeoForgeTransmutationInterfaceBlockEntity) helper.getBlockEntity(INTERFACE);
                 check(host != null, "Production transmutation interface must be placed");
                 host.bindOwner(owner.player.getUUID());
                 host.onLoad();
-                helper.runAfterDelay(1, () -> guarded(this::verify));
+                check(!has(ownerStorage, itemKey), "An unbound pathway cannot mount the virtual catalogue");
+                pathway.getClass().getMethod("setNetId", int.class)
+                        .invoke(pathway, ((Number) invoke(ownerNet, "getId")).intValue());
+                helper.runAfterDelay(21, () -> guarded(this::verify));
             } catch (RuntimeException | Error failure) {
                 close();
                 throw failure;
@@ -134,6 +146,7 @@ public final class NeoForgeBeyondDimensionsGameTests {
                         boolean.class, boolean.class);
                 check(amount(invoke(otherStorage, extract, itemKey, 1L, false, false)) == 0,
                         "An unauthorized adjacent network must not purchase from the interface owner");
+                verifyCatalogueAndLargeTransfers(extract);
                 invoke(ownerStorage, insert, itemKey, 2L, false);
                 IKnowledgeProvider account = knowledge(owner);
                 BigInteger itemUnit = NeoForgeRecoveryPrices.itemPurchase(new ItemStack(Items.COAL)).floor();
@@ -146,8 +159,8 @@ public final class NeoForgeBeyondDimensionsGameTests {
                         "Item simulation must include virtual shortfall without charging or reserving bandwidth");
                 check(amount(invoke(ownerStorage, extract, itemKey, 4L, false, false)) == 4
                                 && account.getEmc().equals(itemBefore.subtract(itemUnit.multiply(BigInteger.TWO)))
-                                && NeoForgeNetworkTransferBudget.remainingItems(server, owner.player.getUUID()) == itemBudget - 2,
-                        "Actual stock must be free, with exact EMC and bandwidth charged only for the purchased shortfall");
+                                && NeoForgeNetworkTransferBudget.remainingItems(server, owner.player.getUUID()) == itemBudget,
+                        "Actual stock must be free, with exact EMC charged only for virtual shortfall and no physical port bandwidth consumed");
 
                 FluidStack water = new FluidStack(Fluids.WATER, 1);
                 EmcAmount fluidUnit = NeoForgeRecoveryPrices.fluidPurchase(water);
@@ -160,8 +173,8 @@ public final class NeoForgeBeyondDimensionsGameTests {
                         "Fluid simulation must be read-only");
                 check(amount(invoke(ownerStorage, extract, fluidKey, 1000L, false, false)) == 1000
                                 && spendable(owner).equals(fluidBefore.subtract(fluidUnit.multiply(1000)))
-                                && NeoForgeNetworkTransferBudget.remainingFluid(server, owner.player.getUUID()) == fluidBudget - 1000,
-                        "Fluid purchase must charge exact fractional EMC and mB bandwidth");
+                                && NeoForgeNetworkTransferBudget.remainingFluid(server, owner.player.getUUID()) == fluidBudget,
+                        "Fluid purchase must charge exact fractional EMC independently of physical port bandwidth");
                 check(has(ownerStorage, itemKey) && has(ownerStorage, fluidKey),
                         "Purchased virtual resources must remain visible in the live catalogue");
                 String saved = ownerStorage.getClass().getMethod("serializeNBT",
@@ -207,11 +220,213 @@ public final class NeoForgeBeyondDimensionsGameTests {
             }
         }
 
+        private void verifyCatalogueAndLargeTransfers(Method extract) throws ReflectiveOperationException {
+            Class<?> storageType = Class.forName(ROOT + "api.storage.handler.impl.AbstractUnorderedStackHandler");
+            Method stack = storageType.getMethod("getStackByKey", keyType);
+            IKnowledgeProvider account = knowledge(owner);
+            BigInteger itemUnit = NeoForgeRecoveryPrices.itemPurchase(new ItemStack(Items.COAL)).floor();
+            long fundedItems = FUNDING.divide(itemUnit).longValueExact();
+            long fundedFluid = FUNDING.multiply(BigInteger.valueOf(3000)).longValueExact();
+            check(NeoForgeRecoveryPrices.fluidPurchase(new FluidStack(Fluids.WATER, 1)).equals(EmcAmount.parse("1/3000"))
+                            && ((FluidStack) fluidKey.getClass().getMethod("copyStackWithCount", long.class)
+                                    .invoke(fluidKey, 1000L)).getAmount() == 1000,
+                    "The fixture price is 1/3 EMC per 1000 mB, and native BD fluid key amounts must use mB without a bucket conversion");
+            try (NativeStorageSync sync = new NativeStorageSync(storageType)) {
+                long actualItems = amount(invoke(ownerStorage, stack, itemKey));
+                long actualFluid = amount(invoke(ownerStorage, stack, fluidKey));
+                long snapshotItems = sync.amount(itemKey), snapshotFluid = sync.amount(fluidKey);
+                System.out.println("[Primordial GameTest] Beyond native snapshot: coal expected=" + fundedItems
+                        + " catalogue=" + actualItems + " snapshot=" + snapshotItems + "; water expected=" + fundedFluid
+                        + " catalogue=" + actualFluid + " snapshot=" + snapshotFluid);
+                check(fundedItems > 4096 && fundedFluid > 2_000_000
+                                && actualItems == fundedItems && actualFluid == fundedFluid
+                                && snapshotItems == fundedItems && snapshotFluid == fundedFluid,
+                        "A pathway bound after interface placement must expose full EMC-backed stock in native server resource snapshots");
+                sync.verifySentPayloads();
+                account.setEmc(itemUnit.multiply(BigInteger.TEN));
+                host.networkPort("beyonddimensions").onLoad();
+                check(sync.amount(itemKey) == 10
+                                && sync.amount(fluidKey) == itemUnit.multiply(BigInteger.valueOf(30_000)).longValueExact(),
+                        "Native server resource subscriptions must refresh quantities when the owner's EMC changes");
+                account.setEmc(BigInteger.ZERO);
+                host.networkPort("beyonddimensions").onLoad();
+                check(sync.amount(itemKey) == 0 && sync.amount(fluidKey) == 0,
+                        "Zero EMC must remove purely virtual resources from the native server snapshot");
+                account.setEmc(FUNDING);
+                host.networkPort("beyonddimensions").onLoad();
+                Method insert = ownerStorage.getClass().getMethod("insert", keyType, long.class, boolean.class);
+                invoke(ownerStorage, insert, itemKey, 2L, false);
+                invoke(ownerStorage, insert, fluidKey, 3L, false);
+                check(sync.amount(itemKey) == fundedItems + 2 && sync.amount(fluidKey) == fundedFluid + 3,
+                        "Native snapshots must add real stock and virtual affordability exactly once for the same key");
+                EmcAmount physicalBefore = spendable(owner);
+                check(amount(invoke(ownerStorage, extract, itemKey, 2L, false, false)) == 2
+                                && amount(invoke(ownerStorage, extract, fluidKey, 3L, false, false)) == 3
+                                && spendable(owner).equals(physicalBefore),
+                        "With a virtual catalogue mounted, native extraction must still consume real stock first without charging EMC");
+                Object pathway = helper.getBlockEntity(OWNER_PATH);
+                Method bind = pathway.getClass().getMethod("setNetId", int.class);
+                try {
+                    bind.invoke(pathway, ((Number) invoke(otherNet, "getId")).intValue());
+                    host.networkPort("beyonddimensions").onLoad();
+                    check(sync.amount(itemKey) == 0 && sync.amount(fluidKey) == 0,
+                            "Losing the authorized pathway must remove virtual resources from native server snapshots");
+                } finally {
+                    bind.invoke(pathway, ((Number) invoke(ownerNet, "getId")).intValue());
+                    host.networkPort("beyonddimensions").onLoad();
+                }
+                try (var items = NeoForgeNetworkTransferBudget.reserveItems(server, owner.player.getUUID(), Long.MAX_VALUE);
+                     var fluid = NeoForgeNetworkTransferBudget.reserveFluid(server, owner.player.getUUID(), Long.MAX_VALUE)) {
+                    items.complete(items.amount());
+                    fluid.complete(fluid.amount());
+                }
+                check(NeoForgeNetworkTransferBudget.remainingItems(server, owner.player.getUUID()) == 0
+                                && NeoForgeNetworkTransferBudget.remainingFluid(server, owner.player.getUUID()) == 0,
+                        "The test must exhaust the owner's physical transfer allowance");
+                host.networkPort("beyonddimensions").onLoad();
+                check(sync.amount(itemKey) == fundedItems && sync.amount(fluidKey) == fundedFluid,
+                        "Exhausting physical port bandwidth must not hide the native network's EMC-backed stock");
+                EmcAmount before = spendable(owner);
+                check(amount(invoke(ownerStorage, extract, itemKey, 10_000L, true, false)) == 10_000
+                                && amount(invoke(ownerStorage, extract, fluidKey, 3_000_000L, true, false)) == 3_000_000
+                                && spendable(owner).equals(before),
+                        "Native bulk simulations must quote the full affordable request without charging EMC");
+                check(amount(invoke(ownerStorage, extract, itemKey, 10_000L, false, false)) == 10_000
+                                && amount(invoke(ownerStorage, extract, fluidKey, 3_000_000L, false, false)) == 3_000_000
+                                && spendable(owner).equals(before.subtract(EmcAmount.of(itemUnit).multiply(10_000))
+                                        .subtract(EmcAmount.of(BigInteger.valueOf(1000))))
+                                && physical(ownerStorage, itemKey) == 0 && physical(ownerStorage, fluidKey) == 0,
+                        "Native bulk extraction must deliver and charge the full request without materializing virtual stock");
+                check(sync.amount(itemKey) == spendable(owner).floor().divide(itemUnit).longValueExact()
+                                && sync.amount(fluidKey) == spendable(owner).multiply(3000).floor().longValueExact(),
+                        "Native server snapshots must track the remaining EMC after bulk purchases");
+                rejectPlainTransferOnEmcSync(extract, itemKey, 1);
+                rejectPlainTransferOnEmcSync(extract, fluidKey, 3000);
+            }
+        }
+
+        private final class NativeStorageSync implements AutoCloseable {
+            private final AbstractContainerMenu previous = owner.player.containerMenu;
+            private final AbstractContainerMenu menu;
+            private final Object resources, sessions;
+            private final List<Object> packets = new ArrayList<>();
+
+            NativeStorageSync(Class<?> storageType) throws ReflectiveOperationException {
+                Class<?> base = Class.forName(ROOT + "common.menu.BDBaseMenu");
+                menu = (AbstractContainerMenu) Class.forName(ROOT + "common.menu.NetControlMenu")
+                        .getConstructor(int.class, net.minecraft.world.entity.player.Inventory.class)
+                        .newInstance(91, owner.player.getInventory());
+                Class<?> groupType = Class.forName(ROOT + "common.menu.widget.slot.DisorderedSlotGroupSync");
+                Object group = groupType.getConstructor(base, int.class, storageType).newInstance(menu, 0, ownerStorage);
+                Method addGroup = base.getDeclaredMethod("addSlotGroupSync", groupType);
+                addGroup.setAccessible(true);
+                addGroup.invoke(menu, group);
+                resources = base.getMethod("resources").invoke(menu);
+                Class<?> networking = Class.forName("dev.compixel.forge.sync.MenuSyncNetworking");
+                Field registry = networking.getDeclaredField("SESSIONS");
+                registry.setAccessible(true);
+                sessions = registry.get(null);
+                owner.channel.pipeline().addLast("bd-storage-payloads", new ChannelOutboundHandlerAdapter() {
+                    @Override public void write(ChannelHandlerContext context, Object message, ChannelPromise promise) throws Exception {
+                        if (message instanceof ClientboundCustomPayloadPacket packet
+                                && packet.payload().getClass().getName().startsWith("dev.compixel.forge.sync.SyncPayloads$"))
+                            packets.add(packet.payload());
+                        context.write(message, promise);
+                    }
+                });
+                owner.player.containerMenu = menu;
+                networking.getMethod("opened", PlayerContainerEvent.Open.class)
+                        .invoke(null, new PlayerContainerEvent.Open(owner.player, menu));
+            }
+
+            long amount(Object requested) throws ReflectiveOperationException {
+                Map<?, ?> amounts = (Map<?, ?>) invoke(resources, "amounts");
+                long id = ((Number) resources.getClass().getMethod("idOf", keyType).invoke(resources, requested)).longValue();
+                for (Object entry : amounts.values()) {
+                    Object ref = invoke(entry, "ref");
+                    if (((Number) invoke(ref, "group")).intValue() == 0
+                            && ((Number) invoke(ref, "resource")).longValue() == id)
+                        return ((Number) invoke(entry, "count")).longValue();
+                }
+                return 0;
+            }
+
+            @SuppressWarnings("unchecked")
+            void verifySentPayloads() throws ReflectiveOperationException {
+                sessions.getClass().getMethod("tick", Object.class).invoke(sessions, server);
+                check(packets.stream().anyMatch(packet -> packet.getClass().getSimpleName().equals("Data")),
+                        "The real native server menu session must send a storage snapshot payload to the player's connection");
+                for (Object packet : packets) {
+                    Field codecField = packet.getClass().getDeclaredField("CODEC");
+                    codecField.setAccessible(true);
+                    StreamCodec<RegistryFriendlyByteBuf, Object> codec =
+                            (StreamCodec<RegistryFriendlyByteBuf, Object>) codecField.get(null);
+                    RegistryFriendlyByteBuf first = new RegistryFriendlyByteBuf(Unpooled.buffer(), helper.getLevel().registryAccess());
+                    RegistryFriendlyByteBuf second = new RegistryFriendlyByteBuf(Unpooled.buffer(), helper.getLevel().registryAccess());
+                    try {
+                        codec.encode(first, packet);
+                        byte[] expected = new byte[first.readableBytes()];
+                        first.getBytes(first.readerIndex(), expected);
+                        Object decoded = codec.decode(first);
+                        check(!first.isReadable(), "Native storage payload decoding must consume its entire frame");
+                        codec.encode(second, decoded);
+                        byte[] actual = new byte[second.readableBytes()];
+                        second.getBytes(second.readerIndex(), actual);
+                        check(java.util.Arrays.equals(expected, actual), "Actual native storage payloads must survive their production codec round trip");
+                    } finally {
+                        first.release();
+                        second.release();
+                    }
+                }
+            }
+
+            @Override public void close() {
+                owner.player.containerMenu = previous;
+                menu.removed(owner.player);
+                owner.channel.pipeline().remove("bd-storage-payloads");
+                try { sessions.getClass().getMethod("tick", Object.class).invoke(sessions, server); }
+                catch (ReflectiveOperationException failure) { throw new IllegalStateException("Close native storage sync test session", failure); }
+            }
+        }
+
+        private void rejectPlainTransferOnEmcSync(Method extract, Object requested, long wanted)
+                throws ReflectiveOperationException {
+            EmcAmount before = spendable(owner);
+            var armed = new AtomicBoolean(true);
+            owner.channel.pipeline().addLast("bd-plain-emc-callback", new ChannelOutboundHandlerAdapter() {
+                @Override public void write(ChannelHandlerContext context, Object message, ChannelPromise promise) throws Exception {
+                    if (message instanceof ClientboundCustomPayloadPacket packet
+                            && packet.payload().getClass().getName().endsWith(".KnowledgeSyncEmcPKT")
+                            && armed.compareAndSet(true, false)) host.networkPort("beyonddimensions").unload(false);
+                    context.write(message, promise);
+                }
+            });
+            try {
+                check(amount(invoke(ownerStorage, extract, requested, wanted, false, false)) == 0
+                                && !armed.get() && spendable(owner).equals(before)
+                                && physical(ownerStorage, requested) == 0,
+                        "Stopping the mounted port during a real prepayment EMC sync must reject native delivery and refund the exact EMC");
+            } finally {
+                owner.channel.pipeline().remove("bd-plain-emc-callback");
+                host.networkPort("beyonddimensions").onLoad();
+            }
+        }
+
         private void verifyExtractRules(Method extract, Method insert, BigInteger itemUnit) throws ReflectiveOperationException {
             Class<?> rules = Class.forName(ROOT + "api.dimensionnet.rule.UnifiedStorageRules");
             var ruleId = net.minecraft.resources.ResourceLocation.parse("primordial:gametest_extract_" + UUID.randomUUID());
             var effects = new AtomicLong();
             try {
+                setExtractRule(rules, ruleId, () -> plan(false, -1, null, effects));
+                EmcAmount bulkBefore = spendable(owner);
+                check(amount(invoke(ownerStorage, extract, itemKey, 10_000L, true, false)) == 10_000
+                                && spendable(owner).equals(bulkBefore) && effects.get() == 0,
+                        "Native rule planning must quote an entire affordable bulk request after physical bandwidth is exhausted");
+                check(amount(invoke(ownerStorage, extract, itemKey, 10_000L, false, false)) == 10_000
+                                && spendable(owner).equals(bulkBefore.subtract(EmcAmount.of(itemUnit).multiply(10_000)))
+                                && effects.get() == 10_000 && physical(ownerStorage, itemKey) == 0,
+                        "Native rule bulk commit must atomically purchase and deliver the full planned request");
+                effects.set(0);
                 setExtractRule(rules, ruleId, () -> plan(false, 3, null, effects));
                 EmcAmount before = spendable(owner);
                 long budget = NeoForgeNetworkTransferBudget.remainingItems(server, owner.player.getUUID());
@@ -221,7 +436,7 @@ public final class NeoForgeBeyondDimensionsGameTests {
                         "Custom rule simulation must honor limits without EMC, effects, or bandwidth changes");
                 check(amount(invoke(ownerStorage, extract, itemKey, 4L, false, false)) == 3 && effects.get() == 3
                                 && spendable(owner).equals(before.subtract(EmcAmount.of(itemUnit).multiply(3)))
-                                && NeoForgeNetworkTransferBudget.remainingItems(server, owner.player.getUUID()) == budget - 3,
+                                && NeoForgeNetworkTransferBudget.remainingItems(server, owner.player.getUUID()) == budget,
                         "A native rule can purchase only its authorized shortfall, with its commit effect exactly once");
 
                 setExtractRule(rules, ruleId, () -> plan(true, -1, null, effects));
@@ -279,7 +494,7 @@ public final class NeoForgeBeyondDimensionsGameTests {
                 check(amount(invoke(ownerStorage, extract, fluidKey, 1000L, false, false)) == 750
                                 && spendable(owner).equals(before.subtract(NeoForgeRecoveryPrices.fluidPurchase(new FluidStack(Fluids.WATER, 1)).multiply(750)))
                                 && fluidEffects.get() == 750 && physical(ownerStorage, fluidKey) == 0
-                                && NeoForgeNetworkTransferBudget.remainingFluid(server, owner.player.getUUID()) == fluidBudget - 750,
+                                && NeoForgeNetworkTransferBudget.remainingFluid(server, owner.player.getUUID()) == fluidBudget,
                         "A native fluid rule purchases only its limited amount at the exact fractional price without materializing virtual stock");
 
                 invoke(ownerStorage, insert, itemKey, 2L, false);
