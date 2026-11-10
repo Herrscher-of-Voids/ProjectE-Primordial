@@ -113,7 +113,7 @@ final class NeoForgeContainerItemStorage {
 
     void restore() {
         // Restore upgrades first: slot counts and stack limits can depend on them.
-        RuntimeException failure = null;
+        Throwable failure = null;
         for (int i = inventories.size() - 1; i >= 0; i--) {
             Inventory inventory = inventories.get(i);
             for (int slot = 0; slot < inventory.slots.size(); slot++) {
@@ -121,7 +121,7 @@ final class NeoForgeContainerItemStorage {
                     inventory.handler.setStackInSlot(slot, inventory.slots.get(slot).copy());
                     if (!ItemStack.matches(inventory.handler.getStackInSlot(slot), inventory.slots.get(slot)))
                         throw new IllegalStateException("Storage refused to restore a rejected transmutation");
-                } catch (RuntimeException invalid) {
+                } catch (RuntimeException | LinkageError invalid) {
                     if (failure == null) failure = invalid;
                     else failure.addSuppressed(invalid);
                 }
@@ -129,7 +129,7 @@ final class NeoForgeContainerItemStorage {
         }
         if (failure != null) {
             com.mojang.logging.LogUtils.getLogger().error("[Primordial] Item handler failed to restore rejected container contents", failure);
-            throw failure;
+            throw new IllegalStateException("Storage could not fully restore a rejected transmutation", failure);
         }
     }
 

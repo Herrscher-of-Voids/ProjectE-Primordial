@@ -7,9 +7,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.mojang.logging.LogUtils;
 import moze_intel.projecte.api.ItemInfo;
+import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
+import moze_intel.projecte.gameObjs.items.KleinStar;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -20,8 +23,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.BundleContents;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import org.slf4j.Logger;
 
 public final class NeoForgeTransmutationContainerReturn {
+    private static final Logger LOGGER = LogUtils.getLogger();
     private static final Set<String> LOCAL = Set.of("chest", "trapped_chest", "barrel", "bundle", "shulker_box");
     private static final int MAX_CONTENTS = 256;
     private static final ThreadLocal<Boolean> SETTLING = ThreadLocal.withInitial(() -> false);
@@ -128,7 +134,21 @@ public final class NeoForgeTransmutationContainerReturn {
             Plan plan;
             NeoForgeContainerItemStorage storage = null;
             ReturnInventory returned;
+            IItemHandlerModifiable inputs;
+            List<ItemStack> beforeInputs;
             try {
+                if (!(provider.getInputAndLocks() instanceof IItemHandlerModifiable modifiable)) return false;
+                inputs = modifiable;
+                beforeInputs = new ArrayList<>(inputs.getSlots());
+                for (int slot = 0; slot < inputs.getSlots(); slot++) {
+                    ItemStack item = inputs.getStackInSlot(slot);
+                    if (slot != 8) {
+                        var holder = item.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
+                        // Only ProjectE's exact component-backed star can be rolled back by restoring its stack.
+                        if (holder != null && (item.getItem().getClass() != KleinStar.class || holder != item.getItem())) return false;
+                    }
+                    beforeInputs.add(item.copy());
+                }
                 plan = prepare(original, player.registryAccess());
                 if (plan == null) return false;
                 returned = ReturnInventory.prepare(player, original, plan.contents());
@@ -152,24 +172,48 @@ public final class NeoForgeTransmutationContainerReturn {
             try {
                 consume.run();
                 if (!returned.consumed(player)) throw new IllegalStateException("Container source changed during settlement");
+                if (inputs.getSlots() != beforeInputs.size()) throw new IllegalStateException("Transmutation input layout changed during settlement");
+                for (int slot = 0; slot < beforeInputs.size(); slot++)
+                    if (!ItemStack.matches(inputs.getStackInSlot(slot), beforeInputs.get(slot)))
+                        throw new IllegalStateException("Transmutation inputs changed during settlement");
                 inventory.handleKnowledge(ItemInfo.fromStack(plan.shell()));
                 inventory.addEmc(BigInteger.valueOf(plan.shellValue()).multiply(BigInteger.valueOf(count)));
                 returned.publish(player, returned.output);
                 return true;
             } catch (RuntimeException | LinkageError failed) {
                 try {
-                    if (storage != null) storage.restore();
-                } finally {
-                    original.setCount(count);
-                    returned.publish(player, returned.before);
                     try {
-                        for (ItemInfo item : Set.copyOf(provider.getKnowledge())) if (!beforeKnowledge.contains(item)) provider.removeKnowledge(item);
-                        for (ItemInfo item : beforeKnowledge) if (!provider.hasKnowledge(item)) provider.addKnowledge(item);
-                        provider.setFullKnowledge(beforeFull);
+                        if (storage != null) storage.restore();
                     } finally {
-                        provider.setEmc(beforeEmc);
-                        provider.sync(player);
+                        original.setCount(count);
+                        try {
+                            returned.publish(player, returned.before);
+                        } finally {
+                            try {
+                                for (int slot = 0; slot < beforeInputs.size(); slot++) {
+                                    try {
+                                        inputs.setStackInSlot(slot, beforeInputs.get(slot).copy());
+                                    } catch (RuntimeException | LinkageError rollback) {
+                                        LOGGER.error("Failed to restore transmutation input slot {} after a rejected container sale", slot, rollback);
+                                    }
+                                }
+                            } finally {
+                                try {
+                                    for (ItemInfo item : Set.copyOf(provider.getKnowledge())) if (!beforeKnowledge.contains(item)) provider.removeKnowledge(item);
+                                    for (ItemInfo item : beforeKnowledge) if (!provider.hasKnowledge(item)) provider.addKnowledge(item);
+                                    provider.setFullKnowledge(beforeFull);
+                                } finally {
+                                    try {
+                                        provider.setEmc(beforeEmc);
+                                    } finally {
+                                        provider.sync(player);
+                                    }
+                                }
+                            }
+                        }
                     }
+                } catch (RuntimeException | LinkageError rollback) {
+                    LOGGER.error("Failed to fully roll back a rejected container sale", rollback);
                 }
                 return false;
             }

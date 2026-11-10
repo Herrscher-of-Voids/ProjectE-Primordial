@@ -190,7 +190,7 @@
   "message.primordial.media_trade_inventory_full": "Inventory has no room for the split container.",
   "message.primordial.media_trade_no_transfer": "No media delivered; the original container was retained.",
   "message.primordial.media_trade_error": "Media trade failed; check server logs.",
-  "message.primordial.container_return_unsupported": "Container not recycled. Check its empty-shell EMC value, free inventory space, and whether its storage supports safe returns.",
+  "message.primordial.container_return_unsupported": "Container not recycled. Check its empty-shell EMC value, free inventory space, safe storage returns, and safe settlement of EMC holders in the charging slots.",
   "item.primordial.configurator": "Configurator",
   "message.primordial.no_machine": "This block has no configurable item, fluid, energy, or standalone resource capability.",
   "message.primordial.blackhole_no_config": "The Black Hole needs no configuration; feed it items or fluids.",

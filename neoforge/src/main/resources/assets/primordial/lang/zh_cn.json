@@ -190,7 +190,7 @@
   "message.primordial.media_trade_inventory_full": "背包没有空间接收拆分后的容器。",
   "message.primordial.media_trade_no_transfer": "未完成介质交付，原容器已保留。",
   "message.primordial.media_trade_error": "介质交易失败，请检查服务器日志。",
-  "message.primordial.container_return_unsupported": "容器未回收。请检查空壳的 EMC 价格、背包剩余空间，以及内部库存是否支持安全返还。",
+  "message.primordial.container_return_unsupported": "容器未回收。请检查空壳 EMC 价格、背包空间、库存是否支持安全返还，以及充能槽中的 EMC 储能物品是否支持安全结算。",
   "item.primordial.configurator": "配置器",
   "message.primordial.no_machine": "该方块没有可配置的物品、流体、能量或独立资源接口。",
   "message.primordial.blackhole_no_config": "黑洞无需配置，直接投入物品或流体即可回收。",

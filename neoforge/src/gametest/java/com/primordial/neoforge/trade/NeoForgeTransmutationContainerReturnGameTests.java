@@ -4,7 +4,9 @@ package com.primordial.neoforge.trade;
 import static com.primordial.neoforge.trade.TradeTestPlayers.*;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.primordial.neoforge.PrimordialNeoForgeMod;
 import com.primordial.neoforge.transmutation.NeoForgeTransmutationContainerReturn;
@@ -12,9 +14,12 @@ import com.primordial.neoforge.value.NeoForgeRecoveryPrices;
 import com.primordial.service.EmcAmount;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import moze_intel.projecte.api.ItemInfo;
+import moze_intel.projecte.api.capabilities.PECapabilities;
+import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage.EmcAction;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.emc.EMCMappingHandler;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
+import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.gameObjs.container.slots.transmutation.SlotConsume;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -334,6 +339,168 @@ public final class NeoForgeTransmutationContainerReturnGameTests {
                     "Another reference to the same UUID must see drained storage, preventing duplicated returned contents");
             ItemStack learned = IEMCProxy.INSTANCE.getPersistentInfo(ItemInfo.fromStack(alias)).createStack();
             check(learned.getComponentsPatch().isEmpty(), "Learned backpack output must not carry a shared storage UUID");
+        } finally {
+            if (menu != null) menu.removed(player);
+            logout(player.server, player);
+            EMCMappingHandler.updateEmcValues(prices);
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = "capability_proxy_empty", templateNamespace = PrimordialNeoForgeMod.MOD_ID)
+    public static void failureAfterCreditRestoresRealKleinStarAccountKnowledgeAndContainer(GameTestHelper helper) {
+        ServerPlayer player = login(helper.getLevel().getServer());
+        TransmutationContainer menu = null;
+        var prices = new Object2LongOpenHashMap<>(EMCMappingHandler.createPacketData().data());
+        try {
+            menu = menu(player, 107);
+            var provider = knowledge(player);
+            IItemHandlerModifiable inputs = (IItemHandlerModifiable) provider.getInputAndLocks();
+            ItemStack star = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse("projecte:klein_star_ein")));
+            var holder = star.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
+            check(holder != null && holder == star.getItem(), "The real ProjectE Klein Star must supply its native EMC capability");
+            long maximum = holder.getMaximumEmc(star);
+            check(maximum > 100 && holder.insertEmc(star, maximum - 100, EmcAction.EXECUTE) == maximum - 100,
+                    "The real Klein Star must start with exactly 100 EMC of free capacity");
+            inputs.setStackInSlot(0, star);
+            inputs.setStackInSlot(1, new ItemStack(Items.STONE, 2));
+            inputs.setStackInSlot(8, new ItemStack(Items.EMERALD));
+            List<ItemStack> beforeInputs = new ArrayList<>();
+            for (int slot = 0; slot < inputs.getSlots(); slot++) beforeInputs.add(inputs.getStackInSlot(slot).copy());
+
+            ItemStack storage = ContainerSaleTestFixture.stack(ContainerSaleTestFixture.STORAGE);
+            ItemInfo shell = ItemInfo.fromStack(storage);
+            var testPrices = new Object2LongOpenHashMap<>(prices);
+            testPrices.put(shell, 321L);
+            EMCMappingHandler.updateEmcValues(testPrices);
+            storage.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(List.of(new ItemStack(Items.DIAMOND, 3), new ItemStack(Items.EMERALD, 2))));
+            ItemStack beforeStorage = storage.copy();
+            menu.getSlot(27).set(storage);
+            provider.setEmc(BigInteger.valueOf(19));
+            provider.setFullKnowledge(false);
+            provider.removeKnowledge(shell);
+            provider.addKnowledge(ItemInfo.fromStack(new ItemStack(Items.STONE)));
+            BigInteger beforeEmc = provider.getEmc();
+            Set<ItemInfo> beforeKnowledge = Set.copyOf(provider.getKnowledge());
+            boolean beforeFull = provider.hasFullKnowledge();
+            boolean[] credited = {false};
+            TransmutationInventory failingInventory = new TransmutationInventory(player) {
+                @Override public void addEmc(BigInteger amount) {
+                    super.addEmc(amount);
+                    credited[0] = holder.getStoredEmc(inputs.getStackInSlot(0)) == maximum
+                            && provider.getEmc().equals(beforeEmc.add(BigInteger.valueOf(221)));
+                    throw new IllegalStateException("Intentional failure after real Klein Star and account credit");
+                }
+            };
+            TransmutationContainer active = menu;
+            check(!NeoForgeTransmutationContainerReturn.sell(failingInventory, storage, () -> active.getSlot(27).set(ItemStack.EMPTY)),
+                    "A failure after addEmc must reject settlement");
+            check(credited[0], "The regression must fail only after real ProjectE addEmc has charged both the Klein Star and the account remainder");
+            for (int slot = 0; slot < beforeInputs.size(); slot++)
+                check(ItemStack.matches(inputs.getStackInSlot(slot), beforeInputs.get(slot)), "Rollback must restore every input and lock stack, including Klein Star EMC");
+            check(ItemStack.matches(menu.getSlot(27).getItem(), beforeStorage) && ItemStack.matches(storage, beforeStorage),
+                    "Rollback must restore both the source container and its complete original contents");
+            check(player.getInventory().countItem(Items.DIAMOND) == 0 && player.getInventory().countItem(Items.EMERALD) == 0,
+                    "Rejected settlement must not publish returned contents");
+            check(provider.getEmc().equals(beforeEmc) && Set.copyOf(provider.getKnowledge()).equals(beforeKnowledge)
+                            && provider.hasFullKnowledge() == beforeFull,
+                    "Rollback must restore account EMC, all original knowledge, and the full-knowledge flag");
+
+            menu.quickMoveStack(player, 27);
+            check(menu.getSlot(27).getItem().isEmpty() && holder.getStoredEmc(inputs.getStackInSlot(0)) == maximum
+                            && provider.getEmc().equals(beforeEmc.add(BigInteger.valueOf(221))),
+                    "A subsequent successful sale must still charge the supported Klein Star once and credit only the account remainder");
+            check(player.getInventory().countItem(Items.DIAMOND) == 3 && player.getInventory().countItem(Items.EMERALD) == 2
+                            && provider.hasKnowledge(shell),
+                    "Successful settlement must return contents once and learn only the empty storage shell");
+        } finally {
+            if (menu != null) menu.removed(player);
+            logout(player.server, player);
+            EMCMappingHandler.updateEmcValues(prices);
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = "capability_proxy_empty", templateNamespace = PrimordialNeoForgeMod.MOD_ID)
+    public static void externalEmcHolderRejectsBeforeDrainOrConsumeButLockSlotDoesNotCharge(GameTestHelper helper) {
+        ServerPlayer player = login(helper.getLevel().getServer());
+        TransmutationContainer menu = null;
+        var prices = new Object2LongOpenHashMap<>(EMCMappingHandler.createPacketData().data());
+        try {
+            menu = menu(player, 108);
+            var provider = knowledge(player);
+            IItemHandlerModifiable inputs = (IItemHandlerModifiable) provider.getInputAndLocks();
+            ItemStack external = ContainerSaleTestFixture.stack(ContainerSaleTestFixture.EXTERNAL_EMC);
+            ContainerSaleTestFixture.externalEmc = 77;
+            ContainerSaleTestFixture.externalEmcInsertions = 0;
+            inputs.setStackInSlot(0, external);
+            var holder = external.copy().getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
+            check(holder != null && holder.getStoredEmc(external.copy()) == 77,
+                    "The fixture must expose EMC outside the copied ItemStack");
+            ItemStack storage = ContainerSaleTestFixture.stack(ContainerSaleTestFixture.STORAGE);
+            ItemInfo shell = ItemInfo.fromStack(storage);
+            var testPrices = new Object2LongOpenHashMap<>(prices);
+            testPrices.put(shell, 321L);
+            EMCMappingHandler.updateEmcValues(testPrices);
+            storage.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(List.of(new ItemStack(Items.DIAMOND, 3))));
+            ItemStack beforeStorage = storage.copy();
+            menu.getSlot(27).set(storage);
+            BigInteger beforeEmc = provider.getEmc();
+            Set<ItemInfo> beforeKnowledge = Set.copyOf(provider.getKnowledge());
+            boolean[] drained = {false};
+            boolean[] consumed = {false};
+            ContainerSaleTestFixture.onExtract = () -> drained[0] = true;
+            TransmutationContainer active = menu;
+            check(!NeoForgeTransmutationContainerReturn.sell(menu.transmutationInventory, storage, () -> {
+                consumed[0] = true;
+                active.getSlot(27).set(ItemStack.EMPTY);
+            }), "An unknown externally backed EMC holder must reject the sale safely");
+            check(!drained[0] && !consumed[0] && ContainerSaleTestFixture.externalEmcInsertions == 0
+                            && ContainerSaleTestFixture.externalEmc == 77,
+                    "Unsafe holder rejection must occur before draining storage, consuming the shell, or inserting EMC");
+            check(ItemStack.matches(menu.getSlot(27).getItem(), beforeStorage) && provider.getEmc().equals(beforeEmc)
+                            && Set.copyOf(provider.getKnowledge()).equals(beforeKnowledge),
+                    "Rejected holder support must preserve the source, contents, account, and knowledge");
+
+            inputs.setStackInSlot(0, ItemStack.EMPTY);
+            inputs.setStackInSlot(8, external);
+            ContainerSaleTestFixture.onExtract = null;
+            menu.quickMoveStack(player, 27);
+            check(menu.getSlot(27).getItem().isEmpty() && provider.getEmc().equals(beforeEmc.add(BigInteger.valueOf(321)))
+                            && ContainerSaleTestFixture.externalEmcInsertions == 0 && ContainerSaleTestFixture.externalEmc == 77,
+                    "An unknown holder in the non-charging lock slot must neither block settlement nor receive EMC");
+        } finally {
+            ContainerSaleTestFixture.onExtract = null;
+            ContainerSaleTestFixture.externalEmc = 0;
+            ContainerSaleTestFixture.externalEmcInsertions = 0;
+            if (menu != null) menu.removed(player);
+            logout(player.server, player);
+            EMCMappingHandler.updateEmcValues(prices);
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = "capability_proxy_empty", templateNamespace = PrimordialNeoForgeMod.MOD_ID)
+    public static void linkageFailureDuringRestoreStillRestoresRemainingStorageSlots(GameTestHelper helper) {
+        ServerPlayer player = login(helper.getLevel().getServer());
+        TransmutationContainer menu = null;
+        var prices = new Object2LongOpenHashMap<>(EMCMappingHandler.createPacketData().data());
+        try {
+            menu = menu(player, 109);
+            ItemStack storage = ContainerSaleTestFixture.stack(ContainerSaleTestFixture.RESTORE_LINKAGE);
+            var testPrices = new Object2LongOpenHashMap<>(prices);
+            testPrices.put(ItemInfo.fromStack(storage), 321L);
+            EMCMappingHandler.updateEmcValues(testPrices);
+            storage.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(List.of(new ItemStack(Items.DIAMOND, 3), new ItemStack(Items.EMERALD, 2))));
+            ItemStack beforeStorage = storage.copy();
+            menu.getSlot(27).set(storage);
+            BigInteger beforeEmc = knowledge(player).getEmc();
+            menu.quickMoveStack(player, 27);
+            check(ItemStack.matches(menu.getSlot(27).getItem(), beforeStorage),
+                    "A LinkageError after restoring one slot must not skip restoration of later storage slots");
+            check(knowledge(player).getEmc().equals(beforeEmc) && player.getInventory().countItem(Items.DIAMOND) == 0
+                            && player.getInventory().countItem(Items.EMERALD) == 0,
+                    "A restoration fault must neither pay for the rejected shell nor duplicate its retained contents");
         } finally {
             if (menu != null) menu.removed(player);
             logout(player.server, player);
