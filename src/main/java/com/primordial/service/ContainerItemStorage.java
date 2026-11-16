@@ -11,7 +11,6 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-/** Reads storage without copying its identity, then drains the live inventory before returning its items. */
 final class ContainerItemStorage {
     private static final int MAX_SLOTS = 4096;
     private static final int MAX_ITEMS = 256;
@@ -57,7 +56,6 @@ final class ContainerItemStorage {
             List<ItemStack> contents = new ArrayList<>();
             int slots = 0;
             for (IItemHandler handler : handlers) {
-                if (!(handler instanceof IItemHandlerModifiable writable)) return null;
                 int size = handler.getSlots();
                 if (size < 0 || size > MAX_SLOTS - slots) return null;
                 slots += size;
@@ -69,7 +67,10 @@ final class ContainerItemStorage {
                     if (!item.isEmpty()) contents.add(item.copy());
                     if (contents.size() > MAX_ITEMS) return null;
                 }
-                inventories.add(new Inventory(writable, snapshot));
+                if (snapshot.stream().anyMatch(item -> !item.isEmpty())) {
+                    if (!(handler instanceof IItemHandlerModifiable writable)) return null;
+                    inventories.add(new Inventory(writable, snapshot));
+                }
             }
             if (!contents.isEmpty() && stack.getCount() != 1) return null;
             return new ContainerItemStorage(inventories, List.copyOf(contents));
