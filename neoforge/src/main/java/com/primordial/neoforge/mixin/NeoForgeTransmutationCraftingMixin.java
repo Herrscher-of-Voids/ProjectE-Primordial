@@ -1,24 +1,3 @@
-/**
- * 【文件职责】在 NeoForge 1.21.1 ProjectE 原生转化桌追加服务端权威的 3x3 合成网格与结果槽。
- *
- * 【变更记录 #1】2026-10-23 19:39:28（第 1 次备注 · 2.0.0-neoforge-transmutation-table）
- * - 删除：无。
- * - 新增：原生 TransmutationContainer 的九个 CraftingContainer 输入槽、ResultSlot、配方重算、Shift 取出和关闭返还。
- * - 修改：沿用 ProjectE 的 0–62 原生槽、知识/EMC 逻辑和 GUI；配方查询使用 1.21.1 CraftingInput/RecipeHolder，不复制 ProjectE 菜单。
- * - 用途：先完成转化桌系统的最小可用容器闭环，后续 JEI 配方展示、媒体页和网络购买在同一原生菜单上逐步接入。
- *
- * 【变更记录 #2】2026-10-23（第 2 次备注 · 2.0.0-neoforge-transmutation-media）
- * - 删除：结果槽 Shift 提取只能放下部分产物时仍消耗整份材料的路径。
- * - 新增：按玩家真实槽位、数据组件和堆叠上限只读检查完整产物容量。
- * - 修改：空间不足时保持背包、合成输入和结果原样；空间足够才执行原版转移与消耗回调。
- * - 用途：保留 Forge 版已有的完整交付保证，避免 NeoForge 迁移造成合成产物丢失。
- *
- * 【变更记录 #3】2026-10-23（第 3 次备注 · 2.0.0-neoforge-transmutation-media）
- * - 删除：真实玩家配方刷新跳过 doLimitedCrafting 的路径。
- * - 新增：ServerPlayer 使用原版带世界与配方书校验的 setRecipeUsed 重载。
- * - 修改：无配方或未解锁时清除先前配方身份；非 ServerPlayer 的服务端测试玩家保留配方计算。
- * - 用途：追加网格遵守原版有限合成规则，并继续支持轻量 GameTest 玩家。
- */
 package com.primordial.neoforge.mixin;
 
 import java.util.Optional;
@@ -105,7 +84,6 @@ public abstract class NeoForgeTransmutationCraftingMixin extends PEHandContainer
                 this, transmutationInventory.player, true));
     }
 
-    /** The target version returns RecipeHolder from RecipeManager; retain its recipe identity for achievements. */
     @Override
     public void slotsChanged(Container changed) {
         super.slotsChanged(changed);
@@ -136,7 +114,6 @@ public abstract class NeoForgeTransmutationCraftingMixin extends PEHandContainer
         broadcastChanges();
     }
 
-    /** Let vanilla menu click handling process the added generic slots, then skip ProjectE's native-only branch. */
     @Inject(method = "clickPostValidate", at = @At("HEAD"), cancellable = true)
     private void primordial$validateCraftingSlots(int slot, int button, ClickType type, Player player,
             CallbackInfo callback) {
@@ -178,7 +155,8 @@ public abstract class NeoForgeTransmutationCraftingMixin extends PEHandContainer
         if (index < 27 || index >= NeoForgeTransmutationTable.NATIVE_SLOT_COUNT || index >= menu.slots.size()) return;
         Slot source = menu.getSlot(index);
         ItemStack stack = source.getItem();
-        if (!NeoForgeTransmutationContainerReturn.handles(stack)) return;
+        if (!NeoForgeTransmutationContainerReturn.enabled(transmutationInventory)
+                || !NeoForgeTransmutationContainerReturn.handles(stack)) return;
         if (transmutationInventory.isServer() && !NeoForgeTransmutationContainerReturn.sell(
                 transmutationInventory, stack, () -> source.set(ItemStack.EMPTY))) {
             player.displayClientMessage(net.minecraft.network.chat.Component.translatable(

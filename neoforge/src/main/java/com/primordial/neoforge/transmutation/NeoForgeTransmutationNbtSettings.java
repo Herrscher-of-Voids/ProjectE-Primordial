@@ -11,7 +11,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.saveddata.SavedData;
 
-/** Per-player learning preferences; existing knowledge is not rewritten. */
 public final class NeoForgeTransmutationNbtSettings extends SavedData {
     public static final String DATA_NAME = "primordial_nbt_settings";
     public static final int DEFAULT = 7;
@@ -27,7 +26,6 @@ public final class NeoForgeTransmutationNbtSettings extends SavedData {
     public int flags(UUID owner) { return settings.getOrDefault(owner, DEFAULT); }
 
     public void set(UUID owner, int flags) {
-        if (owner == null || flags < 0 || flags > 7) throw new IllegalArgumentException("Invalid NBT settings");
         if (flags(owner) != flags) {
             settings.put(owner, flags);
             setDirty();
@@ -48,7 +46,7 @@ public final class NeoForgeTransmutationNbtSettings extends SavedData {
         for (String key : players.getAllKeys()) {
             try {
                 int flags = players.getInt(key);
-                if (players.contains(key, Tag.TAG_INT) && flags >= 0 && flags <= 7)
+                if (players.contains(key, Tag.TAG_INT) && flags >= 0 && flags <= 15)
                     data.settings.put(UUID.fromString(key), flags);
             } catch (IllegalArgumentException invalidOwner) { }
         }

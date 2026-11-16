@@ -16,12 +16,16 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-/** Same position and independent three-button settings panel as Forge 1.20.1. */
 @EventBusSubscriber(modid = PrimordialNeoForgeMod.MOD_ID, value = Dist.CLIENT)
 public final class NeoForgeTransmutationNbtButtons {
     private static WeakReference<View> current = new WeakReference<>(null);
 
     private NeoForgeTransmutationNbtButtons() {}
+
+    public static boolean returnContents() {
+        View view = current.get();
+        return view == null || (view.flags & 8) == 0;
+    }
 
     // Install after media pages have collected ProjectE's native search/page widgets.
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -51,7 +55,7 @@ public final class NeoForgeTransmutationNbtButtons {
     private static final class View {
         final GUITransmutation screen;
         final Button settings;
-        final Button[] options = new Button[3];
+        final Button[] options = new Button[4];
         int flags = 7;
         boolean expanded, ready;
 
@@ -62,7 +66,7 @@ public final class NeoForgeTransmutationNbtButtons {
                 expanded = !expanded;
                 refresh();
             }).bounds(x, y, 26, 20).build();
-            String[] keys = {"retain", "damage", "enchant"};
+            String[] keys = {"retain", "damage", "enchant", "return_contents"};
             for (int index = 0; index < options.length; index++) {
                 int bit = 1 << index;
                 options[index] = Button.builder(Component.empty(), ignored -> {
@@ -77,12 +81,13 @@ public final class NeoForgeTransmutationNbtButtons {
 
         void refresh() {
             settings.visible = true;
-            String[] keys = {"retain_short", "damage_short", "enchant_short"};
+            String[] keys = {"retain_short", "damage_short", "enchant_short", "return_contents_short"};
             for (int index = 0; index < options.length; index++) {
                 options[index].visible = expanded;
                 options[index].active = ready;
+                boolean enabled = index == 3 ? (flags & 8) == 0 : (flags & (1 << index)) != 0;
                 options[index].setMessage(Component.translatable("screen.primordial.nbt." + keys[index])
-                        .append((flags & (1 << index)) != 0 ? "+" : "-"));
+                        .append(enabled ? "+" : "-"));
             }
         }
     }

@@ -11,7 +11,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
-/** The client submits only the current menu and three learning preference bits. */
 public final class NeoForgeTransmutationNbtPayloads {
     private NeoForgeTransmutationNbtPayloads() {}
 
@@ -45,7 +44,7 @@ public final class NeoForgeTransmutationNbtPayloads {
     public static State apply(ServerPlayer player, Settings request) {
         if (player == null || !player.server.isSameThread() || !(player.containerMenu instanceof TransmutationContainer)
                 || player.containerMenu.containerId != request.menuId() || !player.containerMenu.stillValid(player)
-                || request.flags() < -1 || request.flags() > 7) return null;
+                || request.flags() < -1 || request.flags() > 15) return null;
         var data = NeoForgeTransmutationNbtSettings.get(player.server);
         if (request.flags() >= 0) data.set(player.getUUID(), request.flags());
         return new State(request.menuId(), data.flags(player.getUUID()));
@@ -53,7 +52,7 @@ public final class NeoForgeTransmutationNbtPayloads {
 
     private static int readFlags(RegistryFriendlyByteBuf buffer, boolean queryAllowed) {
         int flags = buffer.readByte();
-        if (flags < (queryAllowed ? -1 : 0) || flags > 7) throw new DecoderException("Invalid transmutation NBT settings");
+        if (flags < (queryAllowed ? -1 : 0) || flags > 15) throw new DecoderException("Invalid transmutation NBT settings");
         return flags;
     }
 

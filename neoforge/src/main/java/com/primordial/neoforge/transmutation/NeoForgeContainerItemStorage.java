@@ -11,7 +11,6 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
-/** Reads storage without copying its identity, then drains the live inventory before returning its items. */
 final class NeoForgeContainerItemStorage {
     private static final int MAX_SLOTS = 4096;
     private static final int MAX_ITEMS = 256;
@@ -47,7 +46,6 @@ final class NeoForgeContainerItemStorage {
             List<ItemStack> contents = new ArrayList<>();
             int slots = 0;
             for (IItemHandler handler : handlers) {
-                if (!(handler instanceof IItemHandlerModifiable writable)) return null;
                 int size = handler.getSlots();
                 if (size < 0 || size > MAX_SLOTS - slots) return null;
                 slots += size;
@@ -59,6 +57,8 @@ final class NeoForgeContainerItemStorage {
                     if (!item.isEmpty()) contents.add(item.copy());
                     if (contents.size() > MAX_ITEMS) return null;
                 }
+                if (snapshot.stream().allMatch(ItemStack::isEmpty)) continue;
+                if (!(handler instanceof IItemHandlerModifiable writable)) return null;
                 inventories.add(new Inventory(writable, snapshot));
             }
             if (!contents.isEmpty() && stack.getCount() != 1) return null;

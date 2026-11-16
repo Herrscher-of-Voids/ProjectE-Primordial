@@ -1,4 +1,3 @@
-/** Return contained items and settle only a sanitized, empty storage item in ProjectE's transmutation table. */
 package com.primordial.neoforge.transmutation;
 
 import java.math.BigInteger;
@@ -28,7 +27,9 @@ import org.slf4j.Logger;
 
 public final class NeoForgeTransmutationContainerReturn {
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final Set<String> LOCAL = Set.of("chest", "trapped_chest", "barrel", "bundle", "shulker_box");
+    private static final Set<String> LOCAL = Set.of("chest", "trapped_chest", "barrel", "bundle", "shulker_box",
+            "hopper", "furnace", "blast_furnace", "smoker", "dispenser", "dropper", "brewing_stand",
+            "crafter", "chiseled_bookshelf");
     private static final int MAX_CONTENTS = 256;
     private static final ThreadLocal<Boolean> SETTLING = ThreadLocal.withInitial(() -> false);
 
@@ -37,6 +38,12 @@ public final class NeoForgeTransmutationContainerReturn {
     }
 
     private NeoForgeTransmutationContainerReturn() {}
+
+    public static boolean enabled(TransmutationInventory inventory) {
+        if (!inventory.isServer()) return ClientSettings.returnContents();
+        ServerPlayer player = (ServerPlayer) inventory.player;
+        return (NeoForgeTransmutationNbtSettings.get(player.server).flags(player.getUUID()) & 8) == 0;
+    }
 
     public static boolean handles(ItemStack stack) {
         return stack != null && !stack.isEmpty() && (localContainer(stack)
@@ -280,5 +287,11 @@ public final class NeoForgeTransmutationContainerReturn {
             if (result.size() > MAX_CONTENTS) return null;
         }
         return result;
+    }
+
+    private static final class ClientSettings {
+        static boolean returnContents() {
+            return com.primordial.neoforge.client.NeoForgeTransmutationNbtButtons.returnContents();
+        }
     }
 }

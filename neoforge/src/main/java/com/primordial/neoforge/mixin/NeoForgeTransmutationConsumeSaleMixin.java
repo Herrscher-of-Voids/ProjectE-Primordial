@@ -1,4 +1,3 @@
-/** Route direct ProjectE consume-slot insertion through safe local-container settlement. */
 package com.primordial.neoforge.mixin;
 
 import com.primordial.neoforge.transmutation.NeoForgeTransmutationContainerReturn;
@@ -19,7 +18,7 @@ public abstract class NeoForgeTransmutationConsumeSaleMixin {
 
     @Inject(method = "set", at = @At("HEAD"), cancellable = true)
     private void primordial$returnContainerContents(ItemStack stack, CallbackInfo callback) {
-        if (!NeoForgeTransmutationContainerReturn.handles(stack)) return;
+        if (!NeoForgeTransmutationContainerReturn.enabled(inv) || !NeoForgeTransmutationContainerReturn.handles(stack)) return;
         if (inv.isServer() && !NeoForgeTransmutationContainerReturn.sell(inv, stack, () -> {
         })) {
             inv.player.getInventory().placeItemBackInInventory(stack.copy());
