@@ -6,6 +6,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "ProjectECertificateMappingMixin",
+    "ProjectECustomPriceBlacklistMixin",
     "NeoForgeTransmutationCraftingMixin",
     "NeoForgeTransmutationConsumeSaleMixin",
     "NeoForgeAe2CraftingMixin",

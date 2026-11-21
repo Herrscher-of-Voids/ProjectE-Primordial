@@ -1,20 +1,3 @@
-/**
- * 【文件职责】编辑 ProjectE 原生基础物品价并持久化、重映射和同步，失败恢复旧状态。
- * 【变更记录 #1】2026-10-23 17:00:16（第 1 次备注 · 2.0.0-neoforge-pricing）
- * - 删除：无。新增：目标版原生 NSS Codec、活动资源上下文、long 边界和原子保存事务。
- * - 修改：保留未知 JSON 字段及组件项；合并原生命令待保存修改，恢复默认只删目标基础项。
- * - 用途：转化桌、Tooltip、回收与购买共用一张原生价表；损坏根文件不能被编辑器覆盖。
- * 【变更记录 #2】2026-10-23 17:11:28（第 2 次备注 · 2.0.0-neoforge-pricing）
- * - 删除：失败回滚时单个知识同步异常可能中断磁盘恢复的路径。
- * - 新增：各恢复步骤独立收集异常，客户端逐人同步故障互不阻断。
- * - 修改：只有失败映射才恢复误删知识；成功零价继续沿用原生知识清理。
- * - 用途：一个离线或故障连接不会阻止文件、报价与其他玩家恢复一致状态。
- * 【变更记录 #3】2026-10-23 17:31:58（第 3 次备注 · 2.0.0-neoforge-pricing）
- * - 删除：管理员只能通过编辑样本触发原生价表重读的限制。
- * - 新增：重载原生 CustomEMC 文件入口；与单项编辑共用提交、映射、失败回滚及同步事务。
- * - 修改：重载先严格检查原文；dirty 命令项按原生优先合并，写盘后清标记，未知字段保留。
- * - 用途：控制台 reload_values 真实重算原生价格，不用 flush 的窄 Codec 覆盖管理员扩展字段。
- */
 package com.primordial.neoforge.value;
 
 import java.io.IOException;
@@ -203,7 +186,7 @@ public final class NeoForgeProjectEItemPrices {
                 } catch (IOException rollback) { failure.addSuppressed(rollback); }
             }
             NeoForgeRecoveryPrices.invalidatePrices();
-            synchronize(server);
+            // 客户端仍持有旧价；集成服的旧表可能含客户端 Holder，回滚后无需重新编码发送。
             throw failure;
         }
         synchronize(server);
